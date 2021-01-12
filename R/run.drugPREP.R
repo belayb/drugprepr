@@ -8,7 +8,7 @@
 run.drugPREP<-function(dataset1=NULL, decisions=NULL)
 {
   #check if nessary columns are in the input data
-  must_names<-c("patid","pracid","prodcode","qty")
+  must_names<-c("patid","pracid","prodcode","qty")# update this with all names
   stopifnot(must_names%in%names(dataset1))
 
   mod_fun <- function(x) unique(x)[which.max(table(x))]
