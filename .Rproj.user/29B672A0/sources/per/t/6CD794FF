@@ -1,0 +1,26 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1610412816864.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3056520716",
+    "id" : "6CD794FF",
+    "lastKnownWriteTime" : 1610412903,
+    "last_content_update" : 1610412903283,
+    "path" : "C:/Users/user/Dropbox (The University of Manchester)/CPRDDrugPrep/CPRDDrugPrep/R/Implusible_values.R",
+    "project_path" : "R/Implusible_values.R",
+    "properties" : {
+        "cursorPosition" : "7,10",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
