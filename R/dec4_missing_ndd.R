@@ -23,6 +23,8 @@
 #' @export
 dec4_missing_ndd<-function(dataset1=NULL, decision )
 {
+  mod_fun <- function(x) unique(x)[which.max(table(x))]
+
   if(decision[4]=="4a"){
     #do nothing
     dataset1<-dataset1
@@ -30,49 +32,49 @@ dec4_missing_ndd<-function(dataset1=NULL, decision )
   else if (decision[4]=="4b1"){
     dataset1<-dataset1%>%
       dplyr::group_by(patid,prodcode) %>%
-      dplyr::mutate(ndd_new=ifelse(is.na(ndd_new), MIPndd,ndd_new))
+      dplyr::mutate(ndd=ifelse(is.na(ndd), mean(ndd,na.rm=T),ndd))
   }
 
   else if (decision[4]=="4b2"){
     dataset1<-dataset1%>%
       dplyr::group_by(pracid,prodcode) %>%
-      dplyr::mutate(ndd_new=ifelse(is.na(ndd_new), MPPndd,ndd_new))
+      dplyr::mutate(ndd=ifelse(is.na(ndd), mean(ndd,na.rm=T),ndd))
   }
   else if (decision[4]=="4b3"){
     dataset1<-dataset1%>%
       dplyr::group_by(prodcode) %>%
-      dplyr::mutate(ndd_new=ifelse(is.na(ndd_new), MPndd,ndd_new))
+      dplyr::mutate(ndd=ifelse(is.na(ndd), mean(ndd,na.rm=T),ndd))
   }
   else if (decision[4]=="4c1"){
     dataset1<-dataset1%>%
       dplyr::group_by(patid,prodcode) %>%
-      dplyr::mutate(ndd_new=ifelse(is.na(ndd_new), MdIPndd,ndd_new))
+      dplyr::mutate(ndd=ifelse(is.na(ndd), median(ndd,na.rm=T),ndd))
   }
 
   else if (decision[4]=="4c2"){
     dataset1<-dataset1%>%
       dplyr::group_by(pracid,prodcode) %>%
-      dplyr::mutate(ndd_new=ifelse(is.na(ndd_new), MdPPndd,ndd_new))
+      dplyr::mutate(ndd=ifelse(is.na(ndd), median(ndd,na.rm=T),ndd))
   }
   else if (decision[4]=="4c3"){
     dataset1<-dataset1%>%
       dplyr::group_by(prodcode) %>%
-      dplyr::mutate(ndd_new=ifelse(is.na(ndd_new), MdPndd,ndd_new))
+      dplyr::mutate(ndd=ifelse(is.na(ndd), median(ndd,na.rm=T),ndd))
   }
   else if (decision[4]=="4d1"){
     dataset1<-dataset1%>%
       dplyr::group_by(patid,prodcode) %>%
-      dplyr::mutate(ndd_new=ifelse(is.na(ndd_new), MoIPndd,ndd_new))
+      dplyr::mutate(ndd=ifelse(is.na(ndd), mod_fun(ndd,na.rm=T),ndd))
   }
   else if (decision[4]=="4d2"){
     dataset1<-dataset1%>%
       dplyr::group_by(pracid,prodcode) %>%
-      dplyr::mutate(ndd_new=ifelse(is.na(ndd_new), MoPPndd,ndd_new))
+      dplyr::mutate(ndd=ifelse(is.na(ndd), mod_fun(ndd,na.rm=T),ndd))
   }
   else if (decision[4]=="4d3"){
     dataset1<-dataset1%>%
       dplyr::group_by(prodcode) %>%
-      dplyr::mutate(ndd_new=ifelse(is.na(ndd_new), MoPndd,ndd_new))
+      dplyr::mutate(ndd=ifelse(is.na(ndd), mod_fun(ndd,na.rm=T),ndd))
   }
   return(dataset1)
 

@@ -4,7 +4,8 @@
 \alias{run.drugPREP}
 \title{run drug prep
 outer function to run all decisons
-some of the computation inside this function will be taken out}
+If you have implusible values to take action, run first the implusible_value function
+else you need to choose 'do nothing' for dec1 and dec3}
 \usage{
 run.drugPREP(dataset1 = NULL, decisions = NULL)
 }
@@ -17,5 +18,6 @@ dataset
 \description{
 run drug prep
 outer function to run all decisons
-some of the computation inside this function will be taken out
+If you have implusible values to take action, run first the implusible_value function
+else you need to choose 'do nothing' for dec1 and dec3
 }

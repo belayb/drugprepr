@@ -24,48 +24,47 @@
 #' @export
 dec3_implausible_ndd<-function(dataset1=NULL, decision )
 {
+  mod_fun <- function(x) unique(x)[which.max(table(x))]
+
   if(decision[3]=="3a")
   {
     #do nothing
-    dataset1<-dataset1%>%
-      dplyr::rowwise() %>%
-      dplyr::mutate(ndd_new=ndd)%>%
-      dplyr::ungroup()
+    dataset1<-dataset1
   }
   else if (decision[3]=="3b"){
     dataset1<-dataset1%>%
       dplyr::rowwise() %>%
-      dplyr::mutate(ndd_new=ifelse(implausible_ndd==1, NA,ndd_new))
+      dplyr::mutate(ndd=ifelse(implausible_ndd==1, NA,ndd))
   }
   else if (decision[3]=="3c1"){
     dataset1<-dataset1%>%
       dplyr::group_by(patid,prodcode) %>%
-      dplyr::mutate(ndd_new=ifelse(implausible_ndd==1, MIPndd,ndd))
+      dplyr::mutate(ndd=ifelse(implausible_ndd==1, mean(ndd,na.rm=T),ndd))
   }
   else if (decision[3]=="3c2"){
     dataset1<-dataset1%>%
       dplyr::group_by(pracid,prodcode) %>%
-      dplyr::mutate(ndd_new=ifelse(implausible_ndd==1, MPPndd,ndd))
+      dplyr::mutate(ndd=ifelse(implausible_ndd==1, mean(ndd,na.rm=T),ndd))
   }
   else if (decision[3]=="3c3"){
     dataset1<-dataset1%>%
       dplyr::group_by(prodcode) %>%
-      dplyr::mutate(ndd_new=ifelse(implausible_ndd==1, MPndd,ndd))
+      dplyr::mutate(ndd=ifelse(implausible_ndd==1, mean(ndd,na.rm=T),ndd))
   }
   else if (decision[3]=="3d1"){
     dataset1<-dataset1%>%
       dplyr::group_by(patid,prodcode) %>%
-      dplyr::mutate(ndd_new=ifelse(implausible_ndd==1, MdIPndd,ndd))
+      dplyr::mutate(ndd=ifelse(implausible_ndd==1, median(ndd,na.rm=T),ndd))
   }
   else if (decision[3]=="3d2"){
     dataset1<-dataset1%>%
       dplyr::group_by(pracid,prodcode) %>%
-      dplyr::mutate(MdPPndd=median(ndd, na.rm = T), ndd_new=ifelse(implausible_ndd==1, MdPPndd,ndd))
+      dplyr::mutate(ndd=ifelse(implausible_ndd==1, median(ndd,na.rm=T),ndd))
   }
   else if (decision[3]=="3d3"){
     dataset1<-dataset1%>%
       dplyr::group_by(prodcode) %>%
-      dplyr::mutate(ndd_new=ifelse(implausible_ndd==1, MdPndd,ndd))
+      dplyr::mutate(ndd=ifelse(implausible_ndd==1, median(ndd,na.rm=T),ndd))
   }
 
   else if(decision[3]=="3e1")
@@ -73,7 +72,7 @@ dec3_implausible_ndd<-function(dataset1=NULL, decision )
 
     dataset1<-dataset1%>%
       dplyr::group_by(patid,prodcode) %>%
-      dplyr::mutate(ndd_new=ifelse(implausible_ndd==1, MoIPndd,ndd))
+      dplyr::mutate(ndd=ifelse(implausible_ndd==1, mod_fun(ndd,na.rm=T),ndd))
   }
 
   else if(decision[3]=="3e2")
@@ -81,7 +80,7 @@ dec3_implausible_ndd<-function(dataset1=NULL, decision )
 
     dataset1<-dataset1%>%
       dplyr::group_by(pracid,prodcode) %>%
-      dplyr::mutate(ndd_new=ifelse(implausible_ndd==1, MoPPndd,ndd))
+      dplyr::mutate(ndd=ifelse(implausible_ndd==1, mod_fun(ndd,na.rm=T),ndd))
   }
 
   else if(decision[3]=="3e3")
@@ -89,7 +88,7 @@ dec3_implausible_ndd<-function(dataset1=NULL, decision )
 
     dataset1<-dataset1%>%
       dplyr::group_by(prodcode) %>%
-      dplyr::mutate(ndd_new=ifelse(implausible_ndd==1, MoPndd,ndd))
+      dplyr::mutate(ndd=ifelse(implausible_ndd==1, mod_fun(ndd,na.rm=T),ndd))
   }
   return(dataset1)
 

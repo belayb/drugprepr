@@ -25,61 +25,53 @@
 #' @export
 dec1_implausible_qty<-function(dataset1=NULL, decision)
 {
-  myfun <- function(x) unique(x)[which.max(table(x))]
+  mod_fun <- function(x) unique(x)[which.max(table(x))]
 
   if(decision[1]=="1a")
   {
     #do nothing
-    dataset1<-dataset1%>%
-      dplyr::rowwise() %>%
-      dplyr::mutate(qty_new=qty)%>%
-      dplyr::ungroup()
+    dataset1<-dataset1
   }
   else if (decision[1]=="1b"){
     dataset1<-dataset1%>%
       dplyr::rowwise() %>%
-      dplyr::mutate(qty_new=ifelse(implausible_qty==1, NA,qty))%>%
+      dplyr::mutate(qty=ifelse(implausible_qty==1, NA,qty))%>%
       dplyr::ungroup()
   }
   else if (decision[1]=="1c1"){
     dataset1<-dataset1%>%
       dplyr::group_by(patid,prodcode) %>%
-      dplyr::mutate(qty_new=ifelse(implausible_qty==1, MIPQ,qty))
+      dplyr::mutate(qty=ifelse(implausible_qty==1, mean(qty,na.rm=T),qty))
 
   }
   else if (decision[1]=="1c2"){
     dataset1<-dataset1%>%
       dplyr::group_by(pracid,prodcode) %>%
-      dplyr::mutate(qty_new=ifelse(implausible_qty==1, MPPQ,qty))
-    #Think on how to replace the immposible with this value
+      dplyr::mutate(qty=ifelse(implausible_qty==1, mean(qty,na.rm = T),qty))
 
   }
   else if (decision[1]=="1c3"){
     dataset1<-dataset1%>%
       dplyr::group_by(prodcode) %>%
-      dplyr::mutate(qty_new=ifelse(implausible_qty==1, MPQ,qty))
-    #Think on how to replace the immposible with this value
+      dplyr::mutate(qty=ifelse(implausible_qty==1, mean(qty,na.rm = T),qty))
 
   }
   else if (decision[1]=="1d1"){
     dataset1<-dataset1%>%
       dplyr::group_by(patid,prodcode) %>%
-      dplyr::mutate(qty_new=ifelse(implausible_qty==1, MdIPQ,qty))
-    #Think on how to replace the immposible with this value
+      dplyr::mutate(qty=ifelse(implausible_qty==1, median(qty,na.rm=T),qty))
 
   }
   else if (decision[1]=="1d2"){
     dataset1<-dataset1%>%
       dplyr::group_by(pracid,prodcode) %>%
-      dplyr::mutate(qty_new=ifelse(implausible_qty==1, MdPPQ,qty))
-    #Think on how to replace the immposible with this value
+      dplyr::mutate(qty=ifelse(implausible_qty==1, median(qty,na.rm=T),qty))
 
   }
   else if (decision[1]=="1d3"){
     dataset1<-dataset1%>%
       dplyr::group_by(prodcode) %>%
-      dplyr::mutate(qty_new=ifelse(implausible_qty==1, MdPQ,qty))
-    #Think on how to replace the immposible with this value
+      dplyr::mutate(qty=ifelse(implausible_qty==1, median(qty,na.rm=T),qty))
 
   }
   else if(decision[1]=="1e1")
@@ -87,21 +79,22 @@ dec1_implausible_qty<-function(dataset1=NULL, decision)
 
     dataset1<-dataset1%>%
       dplyr::group_by(patid,prodcode) %>%
-      dplyr::mutate(qty_new=ifelse(implausible_qty==1, MoIPQ,qty))
+      dplyr::mutate(qty=ifelse(implausible_qty==1, mod_fun(qty,na.rm=T),qty))
   }
   else if(decision[1]=="1e2")
   {
 
     dataset1<-dataset1%>%
       dplyr::group_by(pracid, prodcode) %>%
-      dplyr::mutate(qty_new=ifelse(implausible_qty==1, MoPPQ,qty))
+      dplyr::mutate(qty=ifelse(implausible_qty==1, mod_fun(qty,na.rm=T),qty))
   }
   else if(decision[1]=="1e3")
   {
 
     dataset1<-dataset1%>%
       dplyr::group_by(prodcode) %>%
-      dplyr::mutate(qty_new=ifelse(implausible_qty==1, MoPQ,qty))
+      dplyr::mutate(qty=ifelse(implausible_qty==1, mod_fun(qty,na.rm=T),qty))
   }
+  #other possible decison to be added
   return(dataset1)
 }

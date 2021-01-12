@@ -15,7 +15,7 @@
 #' @export
 dec5_clean_duration<-function(dataset1, decision)
 {
-  dataset1$new_duration<-round(dataset1$qty_new/dataset1$ndd_new)
+  dataset1$new_duration<-round(dataset1$qty/dataset1$ndd)
 
   if(decision[5]=="5a"){
     #do nothing

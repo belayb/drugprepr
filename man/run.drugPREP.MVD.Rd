@@ -3,10 +3,11 @@
 \name{run.drugPREP.MVD}
 \alias{run.drugPREP.MVD}
 \title{run drug prep multiverse
-outer function to run all decisons
-This function should accept multiple decisions for each step and
-create multiverse data
-some of the computation inside this function will be taken out}
+This function allows the user to define multiple analysis options for a particular step
+After creating permutation of each analysis option and step, it runs run.drugPREP
+Since there will be thousends of analysis pathways
+there is a need to distribute the computation
+The user I think need to disignate a specific directory for storing the generated multiverse data}
 \usage{
 run.drugPREP.MVD(dataset1 = NULL, decisions = NULL)
 }
@@ -17,9 +18,5 @@ run.drugPREP.MVD(dataset1 = NULL, decisions = NULL)
 dataset
 }
 \description{
-run drug prep multiverse
-outer function to run all decisons
-This function should accept multiple decisions for each step and
-create multiverse data
-some of the computation inside this function will be taken out
+Not sure yet what is the best approch for this step
 }
