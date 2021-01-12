@@ -7,6 +7,10 @@
 #' @export
 run.drugPREP<-function(dataset1=NULL, decisions=NULL)
 {
+  #check if nessary columns are in the input data
+  must_names<-c("patid","pracid","prodcode","qty")
+  stopifnot(must_names%in%names(dataset1))
+
   mod_fun <- function(x) unique(x)[which.max(table(x))]
   dataset1<-dataset1%>%
     dplyr::rowwise() %>%
