@@ -2,11 +2,11 @@ Package: CPRDDrugPrep
 Title: CPRD Drug Preparation
 Version: 0.0.0.9000
 Authors@R: 
-    c(person(given = "Belay Birlie",
+    c(person(given = "Belay",
            family = "Yimer",
            role = c("aut", "cre"),
            email = "BelayBirlie.Yimer@manchester.ac.uk",
-           comment = c(ORCID = "YOUR-ORCID-ID")),
+           comment = c(ORCID = "0000-0001-8621-6539")),
     person(given = "David",
            family = "Selby",
            role = c("aut"),
