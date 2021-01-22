@@ -23,6 +23,8 @@
 #' @export
 dec2_missing_qty<-function(dataset1=NULL, decision )
 {
+  mod_fun <- function(x) unique(x)[which.max(table(x))]
+
   if(decision[2]=="2a")
   {
     #do nothing
@@ -32,50 +34,50 @@ dec2_missing_qty<-function(dataset1=NULL, decision )
   else if (decision[2]=="2b1"){
     dataset1<-dataset1%>%
       dplyr::group_by(patid,prodcode) %>%
-      dplyr::mutate(qty_new=ifelse(is.na(qty_new), MIPQ,qty_new))
+      dplyr::mutate(qty=ifelse(is.na(qty), mean(qty,na.rm=T),qty))
   }
   else if (decision[2]=="2b2"){
     dataset1<-dataset1%>%
       dplyr::group_by(pracid,prodcode) %>%
-      dplyr::mutate(qty_new=ifelse(is.na(qty_new), MPPQ,qty_new))
+      dplyr::mutate(qty=ifelse(is.na(qty), mean(qty,na.rm=T),qty))
   }
   else if (decision[2]=="2b3"){
     dataset1<-dataset1%>%
       dplyr::group_by(prodcode) %>%
-      dplyr::mutate(qty_new=ifelse(is.na(qty_new), MPQ,qty_new))
+      dplyr::mutate(qty=ifelse(is.na(qty), mean(qty,na.rm=T),qty))
   }
 
   else if (decision[2]=="2c1"){
     dataset1<-dataset1%>%
       dplyr::group_by(patid,prodcode) %>%
-      dplyr::mutate(qty_new=ifelse(is.na(qty_new), MdIPQ,qty_new))
+      dplyr::mutate(qty=ifelse(is.na(qty), median(qty,na.rm=T),qty))
   }
   else if (decision[2]=="2c2"){
     dataset1<-dataset1%>%
       dplyr::group_by(pracid,prodcode) %>%
-      dplyr::mutate(qty_new=ifelse(is.na(qty_new), MdPPQ,qty_new))
+      dplyr::mutate(qty=ifelse(is.na(qty), median(qty,na.rm=T),qty))
   }
   else if (decision[2]=="2c3"){
     dataset1<-dataset1%>%
       dplyr::group_by(prodcode) %>%
-      dplyr::mutate(qty_new=ifelse(is.na(qty_new), MdPQ,qty_new))
+      dplyr::mutate(qty=ifelse(is.na(qty), median(qty,na.rm=T),qty))
   }
 
   else if (decision[2]=="2d1"){
     dataset1<-dataset1%>%
       dplyr::group_by(patid,prodcode) %>%
-      dplyr::mutate(qty_new=ifelse(is.na(qty_new), MoIPQ,qty_new))
+      dplyr::mutate(qty=ifelse(is.na(qty), mod_fun(qty,na.rm=T),qty))
   }
   else if (decision[2]=="2d2"){
     dataset1<-dataset1%>%
       dplyr::group_by(pracid,prodcode) %>%
-      dplyr::mutate(qty_new=ifelse(is.na(qty_new), MoPPQ,qty_new))
+      dplyr::mutate(qty=ifelse(is.na(qty), mod_fun(qty,na.rm=T),qty))
   }
 
   else if (decision[2]=="2d3"){
     dataset1<-dataset1%>%
       dplyr::group_by(prodcode) %>%
-      dplyr::mutate(qty_new=ifelse(is.na(qty_new), MoPQ,qty_new))
+      dplyr::mutate(qty=ifelse(is.na(qty), mod_fun(qty,na.rm=T),qty))
   }
   return(dataset1)
 }

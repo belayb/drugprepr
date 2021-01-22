@@ -19,20 +19,16 @@
 dec6_select_stop_date<-function(dataset1, decision)
 {
   dataset1$start<-dataset1$event_date
-  dataset1$stop1<-dataset1$start+dataset1$numdays
-  dataset1$stop2<-dataset1$start+dataset1$dose_duration
-  dataset1$stop3<-dataset1$start+dataset1$new_duration
-
   if(decision[6]=="6a"){
     #do nothing
-    dataset1$real_stop<-dataset1$stop1
+    dataset1$real_stop<-dataset1$start+dataset1$numdays
   }
   else if (decision[6]=="6b"){
-    dataset1$real_stop<-dataset1$stop2
+    dataset1$real_stop<-dataset1$start+dataset1$dose_duration
 
   }
   else if (decision[6]=="6c"){
-    dataset1$real_stop<-dataset1$stop3
+    dataset1$real_stop<-dataset1$start+dataset1$new_duration
 
   }
   return(dataset1)
