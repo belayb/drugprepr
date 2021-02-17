@@ -9,7 +9,7 @@ dec9_overlaping_prescription<-function(dataset1, decision)
 {
 
   # do the slicing first by patid and prodcode
-  dataset1<-dataset1[order(patid, event_date, prodcode)]
+  dataset1<-dataset1[order(patid, start, prodcode)]
 
   dataset1 <- intervalaverage::isolateoverlaps(dataset1,interval_vars=c("start","real_stop"),group_vars=c("patid","prodcode"))
   #may need checking the column names. Isolateoverlap creates two new column named start and stop while resevring the orginal
