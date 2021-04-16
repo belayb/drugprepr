@@ -5,7 +5,7 @@
 #' The last 4 columns will be populated by the user
 
 #' @param dataset
-#' @return dataset,decision
+#' @return dataset
 #' @export
 Implusible_values<-function(dataset1=NULL,min_max_dat=NULL)
 {
