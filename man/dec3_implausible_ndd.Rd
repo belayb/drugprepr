@@ -8,30 +8,10 @@ dec3_implausible_ndd(dataset1 = NULL, decision)
 }
 \arguments{
 \item{dataset1}{a data frame containg prescription information}
-
-\item{decision}{a character specifying the decison to consider for processing}
 }
 \value{
 data.frame
 }
 \description{
-This function acepts a data frame containg prodcode, ndd, and implusible ndd indicator and
-replace the implusible ndd by one of the following options.
-options are  3a  use implausible value
-3b  set to missing
-3c1  set to mean for individual's prescriptions for that drug
-3c2  set to mean for practice's prescriptions for that drug
-3c3  set to mean for populations's prescriptions for that drug
-3d1  set to median for individual's prescriptions for that drug
-3d2  set to median for practice's prescriptions for that drug
-3d3  set to median for population's prescriptions for that drug
-3e1  set to mode for individual's prescriptions for that drug
-3e2  set to mode for practice's prescriptions for that drug
-3e3  set to mode for population's prescriptions for that drug
-3f1  use value of individual's next prescription
-3f2  use value of practice's next prescription
-3f3  use value of population's next prescription
-3g1  use value of individual's previous prescription
-3g2  use value of practice's previous prescription
-3g3  use value of population's previous prescription
+This function acepts a data frame containg prodcode, ndd, and implusible ndd indicator and replace the implusible ndd by one of the following options.
 }

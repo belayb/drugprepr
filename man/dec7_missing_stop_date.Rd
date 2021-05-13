@@ -2,26 +2,25 @@
 % Please edit documentation in R/run.drugPREP.universe.R
 \name{dec7_missing_stop_date}
 \alias{dec7_missing_stop_date}
-\title{Handle missing stop dates
-options are	7a	Leave as missing, drop prescription
-7b	Use mean for that drug for that individual
-7c	Use mean for that drug for all individuals
-7d 	Use individual mean for that drug but if not available use population mean}
+\title{Handle missing stop dates}
 \usage{
 dec7_missing_stop_date(dataset1 = NULL, decision)
 }
 \arguments{
 \item{dataset1}{a data frame containg prescription information}
 
-\item{decision}{a character specifying the decison to consider for processing}
+\item{decision}{a character specifying the decison to consider for processing
+\itemize{
+\item{"7a"}{Leave as missing, drop prescription}
+\item{"7b"}{Use mean for that drug for that individual}
+\item{"7c"}{Use mean for that drug for all individuals}
+\item{"7d"}{Use individual mean for that drug but if not available use population mean}
+
+}}
 }
 \value{
 data.frame
 }
 \description{
 Handle missing stop dates
-options are	7a	Leave as missing, drop prescription
-7b	Use mean for that drug for that individual
-7c	Use mean for that drug for all individuals
-7d 	Use individual mean for that drug but if not available use population mean
 }

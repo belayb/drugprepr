@@ -12,7 +12,7 @@ ffreduce(value, function_list, decision)
 \arguments{
 \item{value, }{function_list, decision}
 
-\item{function_list}{list of function}
+\item{function_list}{list of decison nodes for processing}
 
 \item{decision}{decision vector}
 

@@ -1,27 +1,31 @@
 #' implausible  quantity
 #'
-#' This function acepts a data frame containg prodcode, implausible indicator and
-#' replace the implusible quntity by one of the following options.
-#' options are  1a  use implausible value
-#'              1b  set to missing
-#'              1c1  set to mean for individual's prescriptions for that drug
-#'              1c2  set to mean for practice's prescriptions for that drug
-#'              1c3  set to mean for populations's prescriptions for that drug
-#'              1d1  set to median for individual's prescriptions for that drug
-#'              1d2  set to median for practice's prescriptions for that drug
-#'              1d3  set to median for population's prescriptions for that drug
-#'              1e1  set to mode for individual's prescriptions for that drug
-#'              1e2  set to mode for practice's prescriptions for that drug
-#'              1e3  set to mode for population's prescriptions for that drug
-#'              1f1  use value of individual's next prescription
-#'              1f2  use value of practice's next prescription
-#'              1f3  use value of population's next prescription
-#'              1g1  use value of individual's previous prescription
-#'              1g2  use value of practice's previous prescription
-#'              1g3  use value of population's previous prescription
+#' This function acepts a data frame containg prodcode, implausible indicator and replace the implusible quntity by one of the following options.
+#'
+#'
 #'
 #' @param dataset1 a data frame containg prescription information
 #' @param decision a character specifying the decison to consider for processing
+##' \itemize{
+##' \item{"1a"}{use implausible value}
+##' \item{"1b"{set to missing}
+##' \item{"1c1"}{set to mean for individual's prescriptions for that drug}
+##' \item{"1c2"}{set to mean for practice's prescriptions for that drug}
+##' \item{"1c3"}{set to mean for populations's prescriptions for that drug}
+##' \item{"1d1"}{set to median for individual's prescriptions for that drug}
+##' \item{"1d2"}{set to median for practice's prescriptions for that drug}
+##' \item{"1d3"}{set to median for population's prescriptions for that drug}
+##' \item{"1e1"}{set to mode for individual's prescriptions for that drug}
+##' \item{"1e2"}{set to mode for practice's prescriptions for that drug}
+##' \item{"1e3"}{set to mode for population's prescriptions for that drug}
+##' \item{"1f1"}{use value of individual's next prescription}
+##' \item{"1f2"}{use value of practice's next prescription}
+##' \item{"1f3"}{use value of population's next prescription}
+##' \item{"1g1"}{use value of individual's previous prescription}
+##' \item{"1g2"}{use value of practice's previous prescription}
+##' \item{"1g3"}{use value of population's previous prescription}
+##' }
+##'
 #' @importFrom stats median
 
 #' @return data.frame
@@ -106,28 +110,29 @@ dec1_implausible_qty<-function(dataset1=NULL, decision)
 
 #' Missing  quantity
 #'
-#' This function acepts a data frame containg prodcode, and quantity and
-#' replace the missing quntity by one of the following options.
-#' options are  2a  Leave as missing (implicitly drop this prescription)
-#'              2b1  set to mean for individual's prescriptions for that drug
-#'              2b2  set to mean for practice's prescriptions for that drug
-#'              2b3  set to mean for populations's prescriptions for that drug
-#'              2c1  set to median for individual's prescriptions for that drug
-#'              2c2  set to median for practice's prescriptions for that drug
-#'              2c3  set to median for population's prescriptions for that drug
-#'              2d1  set to mode for individual's prescriptions for that drug
-#'              2d2  set to mode for practice's prescriptions for that drug
-#'              2d3  set to mode for population's prescriptions for that drug
-#'              2e1  use value of individual's next prescription
-#'              2e2  use value of practice's next prescription
-#'              2e3  use value of population's next prescription
-#'              2f1  use value of individual's previous prescription
-#'              2f2  use value of practice's previous prescription
-#'              2f3  use value of population's previous prescription
-
+#' This function acepts a data frame containg prodcode, and quantity and replace the missing quntity by one of the following options.
+#'
 #' @param dataset1 a data frame containg prescription information
-
+#'
 #' @param decision a character specifying the decison to consider for processing
+##' \itemize{
+##' \item{"2a"}{Leave as missing (implicitly drop this prescription)}
+##' \item{"2b1"}{set to mean for individual's prescriptions for that drug}
+##' \item{"2b2"}{set to mean for practice's prescriptions for that drug}
+##' \item{"2b3"}{set to mean for populations's prescriptions for that drug}
+##' \item{"2c1"}{set to median for individual's prescriptions for that drug}
+##' \item{"2c2"}{set to median for practice's prescriptions for that drug}
+##' \item{"2c3"}{set to median for population's prescriptions for that drug}
+##' \item{"2d1"}{set to mode for individual's prescriptions for that drug}
+##' \item{"2d2"}{set to mode for practice's prescriptions for that drug}
+##' \item{"2d3"}{set to mode for population's prescriptions for that drug}
+##' \item{"2e1"}{use value of individual's next prescription}
+##' \item{"2e2"}{use value of practice's next prescription}
+##' \item{"2e3"}{use value of population's next prescription}
+##' \item{"2f1"}{use value of individual's previous prescription}
+##' \item{"2f2"}{use value of practice}'s previous prescription
+##' \item{"2f3"}{use value of population's previous prescription}
+##' }
 
 #' @return data.frame
 
@@ -200,28 +205,30 @@ dec2_missing_qty<-function(dataset1=NULL, decision )
 
 #' Implusible  ndd
 #'
-#' This function acepts a data frame containg prodcode, ndd, and implusible ndd indicator and
-#' replace the implusible ndd by one of the following options.
-#' options are  3a  use implausible value
-#'              3b  set to missing
-#'              3c1  set to mean for individual's prescriptions for that drug
-#'              3c2  set to mean for practice's prescriptions for that drug
-#'              3c3  set to mean for populations's prescriptions for that drug
-#'              3d1  set to median for individual's prescriptions for that drug
-#'              3d2  set to median for practice's prescriptions for that drug
-#'              3d3  set to median for population's prescriptions for that drug
-#'              3e1  set to mode for individual's prescriptions for that drug
-#'              3e2  set to mode for practice's prescriptions for that drug
-#'              3e3  set to mode for population's prescriptions for that drug
-#'              3f1  use value of individual's next prescription
-#'              3f2  use value of practice's next prescription
-#'              3f3  use value of population's next prescription
-#'              3g1  use value of individual's previous prescription
-#'              3g2  use value of practice's previous prescription
-#'              3g3  use value of population's previous prescription
-
+#' This function acepts a data frame containg prodcode, ndd, and implusible ndd indicator and replace the implusible ndd by one of the following options.
+#'
 #' @param dataset1 a data frame containg prescription information
 #' @param decision a character specifying the decison to consider for processing
+##' \itemize{
+##' \item{"3a"}{use implausible value}
+##' \item{"3b"{set to missing}
+##' \item{"3c1"}{set to mean for individual's prescriptions for that drug}
+##' \item{"3c2"}{set to mean for practice's prescriptions for that drug}
+##' \item{"3c3"}{set to mean for populations's prescriptions for that drug}
+##' \item{"3d1"}{set to median for individual's prescriptions for that drug}
+##' \item{"3d2"}{set to median for practice's prescriptions for that drug}
+##' \item{"3d3"}{set to median for population's prescriptions for that drug}
+##' \item{"3e1"}{set to mode for individual's prescriptions for that drug}
+##' \item{"3e2"}{set to mode for practice's prescriptions for that drug}
+##' \item{"3e3"}{set to mode for population's prescriptions for that drug}
+##' \item{"3f1"}{use value of individual's next prescription}
+##' \item{"3f2"}{use value of practice's next prescription}
+##' \item{"3f3"}{use value of population's next prescription}
+##' \item{"3g1"}{use value of individual's previous prescription}
+##' \item{"3g2"}{use value of practice's previous prescription}
+##' \item{"3g3"}{use value of population's previous prescription}
+##' }
+##'
 #' @return data.frame
 
 #' @importFrom stats median
@@ -305,27 +312,28 @@ dec3_implausible_ndd<-function(dataset1=NULL, decision )
 
 #' Missing  ndd
 #'
-#' This function acepts a data frame containg prodcode, and ndd and
-#' replace the missing ndd by one of the following options.
-#' options are  4a  Leave as missing (implicitly drop this prescription)
-#'              4b1  set to mean for individual's prescriptions for that drug
-#'              4b2  set to mean for practice's prescriptions for that drug
-#'              4b3  set to mean for populations's prescriptions for that drug
-#'              4c1  set to median for individual's prescriptions for that drug
-#'              4c2  set to median for practice's prescriptions for that drug
-#'              4c3  set to median for population's prescriptions for that drug
-#'              4d1  set to mode for individual's prescriptions for that drug
-#'              4d2  set to mode for practice's prescriptions for that drug
-#'              4d3  set to mode for population's prescriptions for that drug
-#'              4e1  use value of individual's next prescription
-#'              4e2  use value of practice's next prescription
-#'              4e3  use value of population's next prescription
-#'              4f1  use value of individual's previous prescription
-#'              4f2  use value of practice's previous prescription
-#'              4f3  use value of population's previous prescription
-
+#'
 #' @param dataset1 a data frame containg prescription information
 #' @param decision a character specifying the decison to consider for processing
+##' \itemize{
+##' \item{"4a"}{Leave as missing (implicitly drop this prescription)}
+##' \item{"4b1"}{set to mean for individual's prescriptions for that drug}
+##' \item{"4b2"}{set to mean for practice's prescriptions for that drug}
+##' \item{"4b3"}{set to mean for populations's prescriptions for that drug}
+##' \item{"4c1"}{set to median for individual's prescriptions for that drug}
+##' \item{"4c2"}{set to median for practice's prescriptions for that drug}
+##' \item{"4c3"}{set to median for population's prescriptions for that drug}
+##' \item{"4d1"}{set to mode for individual's prescriptions for that drug}
+##' \item{"4d2"}{set to mode for practice's prescriptions for that drug}
+##' \item{"4d3"}{set to mode for population's prescriptions for that drug}
+##' \item{"4e1"}{use value of individual's next prescription}
+##' \item{"4e2"}{use value of practice's next prescription}
+##' \item{"4e3"}{use value of population's next prescription}
+##' \item{"4f1"}{use value of individual's previous prescription}
+##' \item{"4f2"}{use value of practice}'s previous prescription
+##' \item{"4f3"}{use value of population's previous prescription}
+##' }
+##'
 #' @return data.frame
 
 #' @importFrom stats median
@@ -394,19 +402,20 @@ dec4_missing_ndd<-function(dataset1=NULL, decision )
 
 #' Clean  duration
 #'
-#' This function acepts a data frame containg prodcode, qty, and ndd and
-#' compute duration and replace duration by  by one of the following options if they are longer than clinically plusible.
-#' options are	5a	leave duration as it is
-#'		5b_6	set to missing if > 6 months
-#'		5b_12	set to missing if > 12 months
-#'		5b_24	set to missing if > 24 months
-#'		5c_6	set to 6 months if > 6 months
-#'		5c_12	set to 12 months if > 12 months
-#'		5c_24	set to 24 months if > 24 months
+#' This function acepts a data frame containg prodcode, qty, and ndd and compute duration and replace duration by  by one of the following options if they are longer than clinically plusible.
 #'
-
 #' @param dataset1 a data frame containg prescription information
 #' @param decision a character specifying the decison to consider for processing
+##' \itemize{
+##'   \item{"5a"}{leave duration as it is}
+##'		\item{"5b_6"}{set to missing if > 6 months}
+##'		\item{"5b_12"}{set to missing if > 12 months}
+##'		\item{"5b_24"}{set to missing if > 24 months}
+##'		\item{"5c_6"}{set to 6 months if > 6 months}
+##'		\item{"5c_12"}{set to 12 months if > 12 months}
+##'		\item{"5c_24"}{set to 24 months if > 24 months}
+##' }
+##'
 #' @return data.frame
 #'
 #' @export
@@ -459,22 +468,15 @@ dec5_clean_duration<-function(dataset1=NULL, decision)
 
 #' Stop date
 #' Select which stop date to use
-#' options are	6a	stop1 (start + numdays)
-#'		6b	stop2 (start + dose_duration)
-#'		6c	stop3 (start + qty/ndd)
-#'			If only one stop available, use it
-#'			if two available and equal, use that date
-#'			if two available and unequal (but within x days), use mean
-#'			if three available and unequal, use mean of closest 2 if within x days
-#'				6d_15	x = 15
-#' 			6d_30	x = 30
-#'				6d_60	x = 60
-#'				6d_90	x = 90
-#'				6e 	x = something very big, like 9,999,999
 #'
-
 #' @param dataset1 a data frame containg prescription information
 #' @param decision a character specifying the decison to consider for processing
+##' \itemize{
+##' \item{"6a"}{stop1 (start + numdays)}
+##'	\item{"6b"}{stop2 (start + dose_duration)}
+##'	\item{"6c"}{stop3 (start + qty/ndd)}
+##'				}
+##'
 #' @return data.frame
 #'
 #' @export
@@ -497,14 +499,16 @@ dec6_select_stop_date<-function(dataset1=NULL, decision)
 }
 
 #' Handle missing stop dates
-#' options are	7a	Leave as missing, drop prescription
-#'		7b	Use mean for that drug for that individual
-#'		7c	Use mean for that drug for all individuals
-#'		7d 	Use individual mean for that drug but if not available use population mean
 #'
-
 #' @param dataset1 a data frame containg prescription information
 #' @param decision a character specifying the decison to consider for processing
+##'\itemize{
+##' \item{"7a"}{Leave as missing, drop prescription}
+##'	\item{"7b"}{Use mean for that drug for that individual}
+##'	\item{"7c"}{Use mean for that drug for all individuals}
+##'	\item{"7d"}{Use individual mean for that drug but if not available use population mean}
+##'
+##' }
 #' @return data.frame
 #'
 #' @export
@@ -533,18 +537,19 @@ dec7_missing_stop_date<-function(dataset1=NULL, decision)
 }
 
 #' Handle multiple prescriptions for same product on same day
-#' will always drop if textid == 0 and there is another, non-zero textid
-#' options are	8a	Do nothing: implicitly sum doses as in dec9 below
-#'		8b	use mean ndd and mean length
-#'		8c	choose prescription with smallest ndd
-#'		8d	choose prescription with largest ndd
-#'		8e	choose shortest prescription
-#'		8f	choose longest prescription
-#' 	8g	sum durations
 #'
-
 #' @param dataset1 a data frame containg prescription information
 #' @param decision a character specifying the decison to consider for processing
+##' \itemize{
+##' \item{"8a"}{do nothing}
+##'  \item{"8b"}{use mean ndd and mean length}
+##'  \item{"8c"}{choose prescription with smallest ndd}
+##'  \item{"8d"}{choose prescription with largest ndd}
+##'  \item{"8e"}{choose shortest prescription}
+##'  \item{"8f"}{choose longest prescription}
+##'  \item{"8g"}{sum durations}
+##' }
+##'
 #' @return data.frame
 #'
 #' @export
@@ -614,12 +619,16 @@ dec8_multipleprescription_same_start_date<-function(dataset1=NULL, decision)
 }
 
 #' Handle overlapping prescriptions
-#' options are:	9a  do nothing, allow prescriptions to overlap (implicity sum doses)
-#'              9b  move later prescription to next available time that this product is not prescribed
+#'
 #'
 
 #' @param dataset1 a data frame containg prescription information
 #' @param decision a character specifying the decison to consider for processing
+##' \itemize{
+##'  \item{"9a"}{do nothing, allow prescriptions to overlap (implicity sum doses)}
+##'  \item{"9b"}{move later prescription to next available time that this product is not prescribed}
+##' }
+##'
 #' @return data.frame
 #'
 #' @export
@@ -627,9 +636,6 @@ dec9_overlaping_prescription<-function(dataset1=NULL, decision)
 {
 
   #patid<-start<-prodcode<-real_stop<-ndd<-id.x<-id.y<-start.x<-start.y<-end.x<-end.y<-end<-NULL
-  # do the slicing first by patid and prodcode
-  data.table::setDT(dataset1)
-  dataset1<-dataset1[order(patid, start, prodcode)]
 
   if(decision[9]=="9a"){
     dataset1$start<-data.table::as.IDate(dataset1$start)#Isolateoverlap creates two new column named start and stop while resevring the orginal
@@ -680,7 +686,6 @@ dec9_overlaping_prescription<-function(dataset1=NULL, decision)
       return(y)
     }
     data.table::setDT(dataset1)
-    dataset1<-dataset1[order(patid, start, prodcode)]
     dataset1$patid_prodcode<-paste0(dataset1$patid,dataset1$prodcode)
     dataset1<-reshape::rename(dataset1, c("start"="start", "real_stop"="end"))
     dataset1<-cbind(dataset1,do.call(rbind,lapply(1:length(unique(dataset1$patid_prodcode)), function(x) shift_interval(dataset1[dataset1$patid_prodcode==unique(dataset1$patid_prodcode)[x],]))))
@@ -691,15 +696,17 @@ dec9_overlaping_prescription<-function(dataset1=NULL, decision)
 }
 
 #' dec10: Handle sequential prescriptions with short gaps
-#' options are	10a	Do nothing
-#'			change stop date of first prescription to start date of next if gap is <=
-#'			10b_15  15 days
-#'			10b_30  30 days
-#'			10b_60  60 days
 #'
 
 #' @param dataset1 a data frame containg prescription information
 #' @param decision a character specifying the decison to consider for processing
+##' \itemize{
+##'  \item{"10a"}{do nothing}
+##'  \item{"10b_15"}{change stop date of first prescription to start date of next if gap is <= 15 days}
+##'  \item{"10b_30"}{change stop date of first prescription to start date of next if gap is <= 30 days}
+##'  \item{"10b_60"}{change stop date of first prescription to start date of next if gap is <= 60 days}
+##' }
+##'
 #' @return data.frame
 #'
 #' @export
@@ -739,8 +746,9 @@ dec10_gap_bn_prescription<-function(dataset1=NULL, decision)
 
 #' freduce
 #' modified version of reduce function in r
+#'
 #' @param value value
-#' @param function_list list of function
+#' @param function_list list of decison nodes for processing
 #' @param decision decision vector
 #' @return value
 #'
@@ -759,9 +767,8 @@ ffreduce <- function(value, function_list,decision)
 
 
 #' run drug prep
-#' outer function to run all decisons
-#' If you have implusible values to take action, run first the implusible_value function
-#' else you need to choose 'do nothing' for dec1 and dec3
+#'
+#' outer function to run all decisons. If you have implusible values to take action, run first the implusible_value function, else you need to choose 'do nothing' for dec1 and dec3
 #'
 #' @param dataset1 a data frame containing prescription information
 #'

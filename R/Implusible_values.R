@@ -1,9 +1,5 @@
 #' Define implusible
-#' ideally create a shiny that will be populated by the user with min max values
-#' That is data set Immp_val will be generated from dataset1 by removing duplicate productnames
-#' and will have column Prdductcode, productname, qty_min, qty_max, ndd_min, ndd_max
-#' The last 4 columns will be populated by the user
-
+#'
 #' @param dataset1 a data frame object containing the prescription information
 #' @param min_max_dat a data frame object containing minimum and maximum possible values for each drug
 #' @return dataset

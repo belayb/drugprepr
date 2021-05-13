@@ -3,8 +3,7 @@
 \name{call_dosemine}
 \alias{call_dosemine}
 \title{Compute ndd
-This function calls the dosemining r package
-and compute the ndd according to the suplemented decision}
+This function calls the dosemining r package and compute the ndd according to the suplemented decision}
 \usage{
 call_dosemine(dataset1 = NULL, decision = NULL)
 }
@@ -18,6 +17,5 @@ dataset
 }
 \description{
 Compute ndd
-This function calls the dosemining r package
-and compute the ndd according to the suplemented decision
+This function calls the dosemining r package and compute the ndd according to the suplemented decision
 }

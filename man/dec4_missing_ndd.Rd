@@ -9,28 +9,29 @@ dec4_missing_ndd(dataset1 = NULL, decision)
 \arguments{
 \item{dataset1}{a data frame containg prescription information}
 
-\item{decision}{a character specifying the decison to consider for processing}
+\item{decision}{a character specifying the decison to consider for processing
+\itemize{
+\item{"4a"}{Leave as missing (implicitly drop this prescription)}
+\item{"4b1"}{set to mean for individual's prescriptions for that drug}
+\item{"4b2"}{set to mean for practice's prescriptions for that drug}
+\item{"4b3"}{set to mean for populations's prescriptions for that drug}
+\item{"4c1"}{set to median for individual's prescriptions for that drug}
+\item{"4c2"}{set to median for practice's prescriptions for that drug}
+\item{"4c3"}{set to median for population's prescriptions for that drug}
+\item{"4d1"}{set to mode for individual's prescriptions for that drug}
+\item{"4d2"}{set to mode for practice's prescriptions for that drug}
+\item{"4d3"}{set to mode for population's prescriptions for that drug}
+\item{"4e1"}{use value of individual's next prescription}
+\item{"4e2"}{use value of practice's next prescription}
+\item{"4e3"}{use value of population's next prescription}
+\item{"4f1"}{use value of individual's previous prescription}
+\item{"4f2"}{use value of practice}'s previous prescription
+\item{"4f3"}{use value of population's previous prescription}
+}}
 }
 \value{
 data.frame
 }
 \description{
-This function acepts a data frame containg prodcode, and ndd and
-replace the missing ndd by one of the following options.
-options are  4a  Leave as missing (implicitly drop this prescription)
-4b1  set to mean for individual's prescriptions for that drug
-4b2  set to mean for practice's prescriptions for that drug
-4b3  set to mean for populations's prescriptions for that drug
-4c1  set to median for individual's prescriptions for that drug
-4c2  set to median for practice's prescriptions for that drug
-4c3  set to median for population's prescriptions for that drug
-4d1  set to mode for individual's prescriptions for that drug
-4d2  set to mode for practice's prescriptions for that drug
-4d3  set to mode for population's prescriptions for that drug
-4e1  use value of individual's next prescription
-4e2  use value of practice's next prescription
-4e3  use value of population's next prescription
-4f1  use value of individual's previous prescription
-4f2  use value of practice's previous prescription
-4f3  use value of population's previous prescription
+Missing  ndd
 }
