@@ -2,34 +2,27 @@
 % Please edit documentation in R/run.drugPREP.universe.R
 \name{dec8_multipleprescription_same_start_date}
 \alias{dec8_multipleprescription_same_start_date}
-\title{Handle multiple prescriptions for same product on same day
-will always drop if textid == 0 and there is another, non-zero textid
-options are	8a	Do nothing: implicitly sum doses as in dec9 below
-8b	use mean ndd and mean length
-8c	choose prescription with smallest ndd
-8d	choose prescription with largest ndd
-8e	choose shortest prescription
-8f	choose longest prescription
-8g	sum durations}
+\title{Handle multiple prescriptions for same product on same day}
 \usage{
 dec8_multipleprescription_same_start_date(dataset1 = NULL, decision)
 }
 \arguments{
 \item{dataset1}{a data frame containg prescription information}
 
-\item{decision}{a character specifying the decison to consider for processing}
+\item{decision}{a character specifying the decison to consider for processing
+\itemize{
+\item{"8a"}{do nothing}
+\item{"8b"}{use mean ndd and mean length}
+\item{"8c"}{choose prescription with smallest ndd}
+\item{"8d"}{choose prescription with largest ndd}
+\item{"8e"}{choose shortest prescription}
+\item{"8f"}{choose longest prescription}
+\item{"8g"}{sum durations}
+}}
 }
 \value{
 data.frame
 }
 \description{
 Handle multiple prescriptions for same product on same day
-will always drop if textid == 0 and there is another, non-zero textid
-options are	8a	Do nothing: implicitly sum doses as in dec9 below
-8b	use mean ndd and mean length
-8c	choose prescription with smallest ndd
-8d	choose prescription with largest ndd
-8e	choose shortest prescription
-8f	choose longest prescription
-8g	sum durations
 }

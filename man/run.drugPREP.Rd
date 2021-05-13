@@ -2,10 +2,7 @@
 % Please edit documentation in R/run.drugPREP.universe.R
 \name{run.drugPREP}
 \alias{run.drugPREP}
-\title{run drug prep
-outer function to run all decisons
-If you have implusible values to take action, run first the implusible_value function
-else you need to choose 'do nothing' for dec1 and dec3}
+\title{run drug prep}
 \usage{
 run.drugPREP(dataset1 = NULL, decisions = NULL)
 }
@@ -18,8 +15,5 @@ run.drugPREP(dataset1 = NULL, decisions = NULL)
 data.frame
 }
 \description{
-run drug prep
-outer function to run all decisons
-If you have implusible values to take action, run first the implusible_value function
-else you need to choose 'do nothing' for dec1 and dec3
+outer function to run all decisons. If you have implusible values to take action, run first the implusible_value function, else you need to choose 'do nothing' for dec1 and dec3
 }

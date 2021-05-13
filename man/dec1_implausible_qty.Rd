@@ -8,30 +8,10 @@ dec1_implausible_qty(dataset1 = NULL, decision)
 }
 \arguments{
 \item{dataset1}{a data frame containg prescription information}
-
-\item{decision}{a character specifying the decison to consider for processing}
 }
 \value{
 data.frame
 }
 \description{
-This function acepts a data frame containg prodcode, implausible indicator and
-replace the implusible quntity by one of the following options.
-options are  1a  use implausible value
-1b  set to missing
-1c1  set to mean for individual's prescriptions for that drug
-1c2  set to mean for practice's prescriptions for that drug
-1c3  set to mean for populations's prescriptions for that drug
-1d1  set to median for individual's prescriptions for that drug
-1d2  set to median for practice's prescriptions for that drug
-1d3  set to median for population's prescriptions for that drug
-1e1  set to mode for individual's prescriptions for that drug
-1e2  set to mode for practice's prescriptions for that drug
-1e3  set to mode for population's prescriptions for that drug
-1f1  use value of individual's next prescription
-1f2  use value of practice's next prescription
-1f3  use value of population's next prescription
-1g1  use value of individual's previous prescription
-1g2  use value of practice's previous prescription
-1g3  use value of population's previous prescription
+This function acepts a data frame containg prodcode, implausible indicator and replace the implusible quntity by one of the following options.
 }
