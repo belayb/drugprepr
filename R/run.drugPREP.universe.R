@@ -2,13 +2,11 @@
 #'
 #' This function acepts a data frame containg prodcode, implausible indicator and replace the implusible quntity by one of the following options.
 #'
-#'
-#'
 #' @param dataset1 a data frame containg prescription information
 #' @param decision a character specifying the decison to consider for processing
 ##' \itemize{
 ##' \item{"1a"}{use implausible value}
-##' \item{"1b"{set to missing}
+##' \item{"1b"}{set to missing}
 ##' \item{"1c1"}{set to mean for individual's prescriptions for that drug}
 ##' \item{"1c2"}{set to mean for practice's prescriptions for that drug}
 ##' \item{"1c3"}{set to mean for populations's prescriptions for that drug}
@@ -27,7 +25,6 @@
 ##' }
 ##'
 #' @importFrom stats median
-
 #' @return data.frame
 #' @export
 dec1_implausible_qty<-function(dataset1=NULL, decision)
@@ -211,7 +208,7 @@ dec2_missing_qty<-function(dataset1=NULL, decision )
 #' @param decision a character specifying the decison to consider for processing
 ##' \itemize{
 ##' \item{"3a"}{use implausible value}
-##' \item{"3b"{set to missing}
+##' \item{"3b"}{set to missing}
 ##' \item{"3c1"}{set to mean for individual's prescriptions for that drug}
 ##' \item{"3c2"}{set to mean for practice's prescriptions for that drug}
 ##' \item{"3c3"}{set to mean for populations's prescriptions for that drug}
@@ -618,10 +615,44 @@ dec8_multipleprescription_same_start_date<-function(dataset1=NULL, decision)
   return(dataset1)
 }
 
+#' shift_interval
+#'
+#'
+#' @param x a data frame containg prescription start and stop dates
+#' @return data.frame
+#'
+#' @export
+
+shift_interval <- function(x) {
+  i <- 0
+  y <- x
+  overlap <- TRUE
+  while (overlap) {
+
+    i <- i + 1
+    overlaps <- y %>%
+      dplyr::mutate(dummy = 1) %>%
+      dplyr::full_join(., ., by = 'dummy') %>%
+      dplyr::filter(id.x < id.y) %>%
+      dplyr::mutate(overlap = DescTools::Overlap(cbind(start.x, end.x),
+                                                 cbind(start.y, end.y))) %>%
+      dplyr::filter(overlap > 0)
+    y <- overlaps %>%
+      dplyr::select(id = id.y, overlap) %>%
+      dplyr::slice(1) %>%
+      dplyr::right_join(y, by = 'id') %>%
+      dplyr::mutate(overlap = replace(overlap, is.na(overlap), 0),
+                    start = start + overlap,
+                    end = end + overlap) %>%
+      dplyr::select(-overlap)
+    overlap <- nrow(overlaps)
+  }
+  list(y)
+  return(y)
+}
 #' Handle overlapping prescriptions
 #'
 #'
-
 #' @param dataset1 a data frame containg prescription information
 #' @param decision a character specifying the decison to consider for processing
 ##' \itemize{
@@ -657,34 +688,6 @@ dec9_overlaping_prescription<-function(dataset1=NULL, decision)
   }
   else if (decision[9]=="9b"){
 
-
-    shift_interval <- function(x) {
-      i <- 0
-      y <- x
-      overlap <- TRUE
-      while (overlap) {
-
-        i <- i + 1
-        overlaps <- y %>%
-          dplyr::mutate(dummy = 1) %>%
-          dplyr::full_join(., ., by = 'dummy') %>%
-          dplyr::filter(id.x < id.y) %>%
-          dplyr::mutate(overlap = DescTools::Overlap(cbind(start.x, end.x),
-                                              cbind(start.y, end.y))) %>%
-          dplyr::filter(overlap > 0)
-        y <- overlaps %>%
-          dplyr::select(id = id.y, overlap) %>%
-          dplyr::slice(1) %>%
-          dplyr::right_join(y, by = 'id') %>%
-          dplyr::mutate(overlap = replace(overlap, is.na(overlap), 0),
-                        start = start + overlap,
-                        end = end + overlap) %>%
-          dplyr::select(-overlap)
-        overlap <- nrow(overlaps)
-      }
-      list(y)
-      return(y)
-    }
     data.table::setDT(dataset1)
     dataset1$patid_prodcode<-paste0(dataset1$patid,dataset1$prodcode)
     dataset1<-reshape::rename(dataset1, c("start"="start", "real_stop"="end"))
@@ -773,6 +776,48 @@ ffreduce <- function(value, function_list,decision)
 #' @param dataset1 a data frame containing prescription information
 #'
 #' @param decisions a character vector containing list of decison to be taken
+##' \itemize{
+##' \item{"decison1"}{ implussible qantity}
+###' \itemize{
+###' \item{"1a"}{use implausible value}
+###' \item{"1b"}{set to missing}
+###' \item{"1c1"}{set to mean for individual's prescriptions for that drug}
+###' \item{"1c2"}{set to mean for practice's prescriptions for that drug}
+###' \item{"1c3"}{set to mean for populations's prescriptions for that drug}
+###' \item{"1d1"}{set to median for individual's prescriptions for that drug}
+###' \item{"1d2"}{set to median for practice's prescriptions for that drug}
+###' \item{"1d3"}{set to median for population's prescriptions for that drug}
+###' \item{"1e1"}{set to mode for individual's prescriptions for that drug}
+###' \item{"1e2"}{set to mode for practice's prescriptions for that drug}
+###' \item{"1e3"}{set to mode for population's prescriptions for that drug}
+###' \item{"1f1"}{use value of individual's next prescription}
+###' \item{"1f2"}{use value of practice's next prescription}
+###' \item{"1f3"}{use value of population's next prescription}
+###' \item{"1g1"}{use value of individual's previous prescription}
+###' \item{"1g2"}{use value of practice's previous prescription}
+###' \item{"1g3"}{use value of population's previous prescription}
+###' }
+##' \item{"decsion2"}{ Missing quantity}
+###'\itemize{
+###' \item{"2a"}{Leave as missing (implicitly drop this prescription)}
+###' \item{"2b1"}{set to mean for individual's prescriptions for that drug}
+###' \item{"2b2"}{set to mean for practice's prescriptions for that drug}
+###' \item{"2b3"}{set to mean for populations's prescriptions for that drug}
+###' \item{"2c1"}{set to median for individual's prescriptions for that drug}
+###' \item{"2c2"}{set to median for practice's prescriptions for that drug}
+###' \item{"2c3"}{set to median for population's prescriptions for that drug}
+###' \item{"2d1"}{set to mode for individual's prescriptions for that drug}
+###' \item{"2d2"}{set to mode for practice's prescriptions for that drug}
+###' \item{"2d3"}{set to mode for population's prescriptions for that drug}
+###' \item{"2e1"}{use value of individual's next prescription}
+###' \item{"2e2"}{use value of practice's next prescription}
+###' \item{"2e3"}{use value of population's next prescription}
+###' \item{"2f1"}{use value of individual's previous prescription}
+###' \item{"2f2"}{use value of practice}'s previous prescription
+###' \item{"2f3"}{use value of population's previous prescription}
+###' }
+##' }
+##'
 #'
 #' @importFrom rlang .data
 
