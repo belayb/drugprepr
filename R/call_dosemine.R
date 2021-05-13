@@ -1,13 +1,32 @@
 #' Compute ndd
+#'
 #' This function calls the dosemining r package and compute the ndd according to the suplemented decision
 #'
 #' @param dataset1 a data frame object containing the prescription information
-#' @param decision a character vector for computing number of thing to take per day.
-#' @return dataset
-#' @export
+#' @param decision a character variable for computing number of thing to take per day.
+##' \itemize{
+##' \item{"min_min"}{ minimum dose number and minimum dose frequency}
+##' \item{"min_mean"}{ minimum dose number and mean dose frequency}
+##' \item{"min_max"}{ minimum dose number and maximum dose frequency}
+##' \item{"mean_min"}{ mean dose number and minimum dose frequency}
+##' \item{"mean_mean"}{ mean dose number and mean dose frequency}
+##' \item{"mean_max"}{ mean dose number and maximum dose frequency}
+##' \item{"max_min"}{ maximum dose number and minimum dose frequency}
+##' \item{"max_mean"}{ maximum dose number and mean dose frequency}
+##' \item{"max_max"}{ maximum dose number and maximum dose frequency}
+##' }
+##'
+#' @examples
+#'
+#' call_dosemine(dataset, "min_max")
+#'
+#' @return a data.frame the same row as \code(dataset1)
+#'
 #' @importFrom rlang .data
 #' @importFrom magrittr %>%
 #'
+#' @export
+
 call_dosemine<-function(dataset1=NULL, decision=NULL)
 {
   freq_2<-freq_1<-dose_2<-dose_1<-DF_mean<-DF_min<-DF_max<-DN_mean<-DN_min<-DN_max<-optional<-NULL
