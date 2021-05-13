@@ -1,6 +1,5 @@
 #' Compute ndd
-#' This function calls the dosemining r package
-#' and compute the ndd according to the suplemented decision
+#' This function calls the dosemining r package and compute the ndd according to the suplemented decision
 #'
 #' @param dataset1 a data frame object containing the prescription information
 #' @param decision a character vector for computing number of thing to take per day.
