@@ -6,10 +6,12 @@
 This function calls the dosemining r package
 and compute the ndd according to the suplemented decision}
 \usage{
-call_dosemine(dataset1 = NULL, decisions = NULL)
+call_dosemine(dataset1 = NULL, decision = NULL)
 }
 \arguments{
-\item{dataset, }{decisons,}
+\item{dataset1}{a data frame object containing the prescription information}
+
+\item{decision}{a character vector for computing number of thing to take per day.}
 }
 \value{
 dataset
