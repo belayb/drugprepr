@@ -50,11 +50,50 @@ run.drugPREP(dataset1 = NULL, decisions = NULL)
 \item{"2f2"}{use value of practice}'s previous prescription
 \item{"2f3"}{use value of population's previous prescription}
 }
+\item{"decison3"}{Implausible ndd}
+\itemize{
+\item{"3a"}{use implausible value}
+\item{"3b"}{set to missing}
+\item{"3c1"}{set to mean for individual's prescriptions for that drug}
+\item{"3c2"}{set to mean for practice's prescriptions for that drug}
+\item{"3c3"}{set to mean for populations's prescriptions for that drug}
+\item{"3d1"}{set to median for individual's prescriptions for that drug}
+\item{"3d2"}{set to median for practice's prescriptions for that drug}
+\item{"3d3"}{set to median for population's prescriptions for that drug}
+\item{"3e1"}{set to mode for individual's prescriptions for that drug}
+\item{"3e2"}{set to mode for practice's prescriptions for that drug}
+\item{"3e3"}{set to mode for population's prescriptions for that drug}
+\item{"3f1"}{use value of individual's next prescription}
+\item{"3f2"}{use value of practice's next prescription}
+\item{"3f3"}{use value of population's next prescription}
+\item{"3g1"}{use value of individual's previous prescription}
+\item{"3g2"}{use value of practice's previous prescription}
+\item{"3g3"}{use value of population's previous prescription}
+}
+\item{"Missing qty}
+\itemize{
+\item{"4a"}{Leave as missing (implicitly drop this prescription)}
+\item{"4b1"}{set to mean for individual's prescriptions for that drug}
+\item{"4b2"}{set to mean for practice's prescriptions for that drug}
+\item{"4b3"}{set to mean for populations's prescriptions for that drug}
+\item{"4c1"}{set to median for individual's prescriptions for that drug}
+\item{"4c2"}{set to median for practice's prescriptions for that drug}
+\item{"4c3"}{set to median for population's prescriptions for that drug}
+\item{"4d1"}{set to mode for individual's prescriptions for that drug}
+\item{"4d2"}{set to mode for practice's prescriptions for that drug}
+\item{"4d3"}{set to mode for population's prescriptions for that drug}
+\item{"4e1"}{use value of individual's next prescription}
+\item{"4e2"}{use value of practice's next prescription}
+\item{"4e3"}{use value of population's next prescription}
+\item{"4f1"}{use value of individual's previous prescription}
+\item{"4f2"}{use value of practice}'s previous prescription
+\item{"4f3"}{use value of population's previous prescription}
+}
 }}
 }
 \value{
 data.frame
 }
 \description{
-outer function to run all decisons. If you have implusible values to take action, run first the implusible_value function, else you need to choose 'do nothing' for dec1 and dec3
+An algorithm for the transparent and efficient preparation of CPRD drug data into information on individuals’ drug use over time. If you have implusible values (i.e., implusible quantity and ndd) to take action, run first the implusible_value function. If not, you need to choose 'do nothing' for dec1 and dec3.
 }
