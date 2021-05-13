@@ -20,11 +20,16 @@
 #'              1g2  use value of practice's previous prescription
 #'              1g3  use value of population's previous prescription
 #'
-#' @param dataset, decsion
-#' @return dataset
+#' @param dataset1 a data frame containg prescription information
+#' @param decision a character specifying the decison to consider for processing
+#' @importFrom stats median
+
+#' @return data.frame
 #' @export
 dec1_implausible_qty<-function(dataset1=NULL, decision)
 {
+  #implausible_qty<-qty<-patid<-prodcode<-pracid<-NULL
+
   mod_fun <- function(x) unique(x)[which.max(table(x))]
 
   if(decision[1]=="1a")
@@ -119,11 +124,21 @@ dec1_implausible_qty<-function(dataset1=NULL, decision)
 #'              2f1  use value of individual's previous prescription
 #'              2f2  use value of practice's previous prescription
 #'              2f3  use value of population's previous prescription
-#' @param dataset, decsion
-#' @return dataset
+
+#' @param dataset1 a data frame containg prescription information
+
+#' @param decision a character specifying the decison to consider for processing
+
+#' @return data.frame
+
+#' @importFrom stats median
+
+
 #' @export
 dec2_missing_qty<-function(dataset1=NULL, decision )
 {
+  #qty<-patid<-prodcode<-pracid<-NULL
+
   mod_fun <- function(x) unique(x)[which.max(table(x))]
 
   if(decision[2]=="2a")
@@ -204,11 +219,20 @@ dec2_missing_qty<-function(dataset1=NULL, decision )
 #'              3g1  use value of individual's previous prescription
 #'              3g2  use value of practice's previous prescription
 #'              3g3  use value of population's previous prescription
-#' @param dataset, decsion
-#' @return dataset
+
+#' @param dataset1 a data frame containg prescription information
+#' @param decision a character specifying the decison to consider for processing
+#' @return data.frame
+
+#' @importFrom stats median
+#'
 #' @export
 dec3_implausible_ndd<-function(dataset1=NULL, decision )
 {
+
+  #implausible_ndd<-ndd<-patid<-prodcode<-pracid<-NULL
+
+
   mod_fun <- function(x) unique(x)[which.max(table(x))]
 
   if(decision[3]=="3a")
@@ -299,11 +323,18 @@ dec3_implausible_ndd<-function(dataset1=NULL, decision )
 #'              4f1  use value of individual's previous prescription
 #'              4f2  use value of practice's previous prescription
 #'              4f3  use value of population's previous prescription
-#' @param dataset, decsion
-#' @return dataset
+
+#' @param dataset1 a data frame containg prescription information
+#' @param decision a character specifying the decison to consider for processing
+#' @return data.frame
+
+#' @importFrom stats median
+#'
 #' @export
 dec4_missing_ndd<-function(dataset1=NULL, decision )
 {
+  #ndd<-patid<-prodcode<-pracid<-NULL
+
   mod_fun <- function(x) unique(x)[which.max(table(x))]
 
   if(decision[4]=="4a"){
@@ -373,10 +404,13 @@ dec4_missing_ndd<-function(dataset1=NULL, decision )
 #'		5c_12	set to 12 months if > 12 months
 #'		5c_24	set to 24 months if > 24 months
 #'
-#' @param dataset, decsion
-#' @return dataset
+
+#' @param dataset1 a data frame containg prescription information
+#' @param decision a character specifying the decison to consider for processing
+#' @return data.frame
+#'
 #' @export
-dec5_clean_duration<-function(dataset1, decision)
+dec5_clean_duration<-function(dataset1=NULL, decision)
 {
   dataset1$new_duration<-round(dataset1$qty/dataset1$ndd)
 
@@ -384,37 +418,37 @@ dec5_clean_duration<-function(dataset1, decision)
     #do nothing
     dataset1<-dataset1
   }
-  else if (decision[4]=="5b_6"){
+  else if (decision[5]=="5b_6"){
     dataset1$new_duration[dataset1$new_duration>183]<-NA
     dataset1$numdays[dataset1$numdays>183]<-NA
     dataset1$dose_duration[dataset1$dose_duration>183]<-NA
 
   }
-  else if (decision[4]=="5b_12"){
+  else if (decision[5]=="5b_12"){
     dataset1$new_duration[dataset1$new_duration>365]<-NA
     dataset1$numdays[dataset1$numdays>365]<-NA
     dataset1$dose_duration[dataset1$dose_duration>365]<-NA
 
   }
-  else if (decision[4]=="5b_24"){
+  else if (decision[5]=="5b_24"){
     dataset1$new_duration[dataset1$new_duration>730]<-NA
     dataset1$numdays[dataset1$numdays>730]<-NA
     dataset1$dose_duration[dataset1$dose_duration>730]<-NA
 
   }
-  else if (decision[4]=="5c_6"){
+  else if (decision[5]=="5c_6"){
     dataset1$new_duration[dataset1$new_duration>183]<-183
     dataset1$numdays[dataset1$numdays>183]<-183
     dataset1$dose_duration[dataset1$dose_duration>183]<-183
 
   }
-  else if (decision[4]=="5c_12"){
+  else if (decision[5]=="5c_12"){
     dataset1$new_duration[dataset1$new_duration>365]<-365
     dataset1$numdays[dataset1$numdays>365]<-365
     dataset1$dose_duration[dataset1$dose_duration>183]<-183
 
   }
-  else if (decision[4]=="5c_24"){
+  else if (decision[5]=="5c_24"){
     dataset1$new_duration[dataset1$new_duration>730]<-730
     dataset1$numdays[dataset1$numdays>730]<-730
     dataset1$dose_duration[dataset1$dose_duration>730]<-730
@@ -438,12 +472,15 @@ dec5_clean_duration<-function(dataset1, decision)
 #'				6d_90	x = 90
 #'				6e 	x = something very big, like 9,999,999
 #'
-#' @param dataset, decsion
-#' @return dataset
+
+#' @param dataset1 a data frame containg prescription information
+#' @param decision a character specifying the decison to consider for processing
+#' @return data.frame
+#'
 #' @export
-dec6_select_stop_date<-function(dataset1, decision)
+dec6_select_stop_date<-function(dataset1=NULL, decision)
 {
-  dataset1$start<-as.IDate(dataset1$event_date)
+  dataset1$start<-data.table::as.IDate(dataset1$event_date)
   if(decision[6]=="6a"){
     dataset1$real_stop<-dataset1$start+dataset1$numdays
   }
@@ -465,11 +502,16 @@ dec6_select_stop_date<-function(dataset1, decision)
 #'		7c	Use mean for that drug for all individuals
 #'		7d 	Use individual mean for that drug but if not available use population mean
 #'
-#' @param dataset, decsion
-#' @return dataset
+
+#' @param dataset1 a data frame containg prescription information
+#' @param decision a character specifying the decison to consider for processing
+#' @return data.frame
+#'
 #' @export
-dec7_missing_stop_date<-function(dataset1, decision)
+dec7_missing_stop_date<-function(dataset1=NULL, decision)
 {
+  #patid<-prodcode<-real_stop<-start<-new_duration<-NULL
+
   if(decision[7]=="7a"){
     #do nothing
     dataset1<-dataset1[!is.na(dataset1$real_stop),]
@@ -500,11 +542,16 @@ dec7_missing_stop_date<-function(dataset1, decision)
 #'		8f	choose longest prescription
 #' 	8g	sum durations
 #'
-#' @param dataset, decsion
-#' @return dataset
+
+#' @param dataset1 a data frame containg prescription information
+#' @param decision a character specifying the decison to consider for processing
+#' @return data.frame
+#'
 #' @export
-dec8_multipleprescription_same_start_date<-function(dataset1, decision)
+dec8_multipleprescription_same_start_date<-function(dataset1=NULL, decision)
 {
+  #patid<-prodcode<-start<-real_stop<-ndd<-max_ndd<-min_ndd<-min_stop<-max_stop<-new_duration<-NULL
+
   if(decision[8]=="8a"){
     #do nothing
     dataset1<-dataset1
@@ -570,21 +617,26 @@ dec8_multipleprescription_same_start_date<-function(dataset1, decision)
 #' options are:	9a  do nothing, allow prescriptions to overlap (implicity sum doses)
 #'              9b  move later prescription to next available time that this product is not prescribed
 #'
-#' @param dataset, decsion
-#' @return dataset
+
+#' @param dataset1 a data frame containg prescription information
+#' @param decision a character specifying the decison to consider for processing
+#' @return data.frame
+#'
 #' @export
-dec9_overlaping_prescription<-function(dataset1, decision)
+dec9_overlaping_prescription<-function(dataset1=NULL, decision)
 {
 
+  #patid<-start<-prodcode<-real_stop<-ndd<-id.x<-id.y<-start.x<-start.y<-end.x<-end.y<-end<-NULL
   # do the slicing first by patid and prodcode
-  dataset1<-data.table::setDT(dataset1)[order(patid, start, prodcode)]
+  data.table::setDT(dataset1)
+  dataset1<-dataset1[order(patid, start, prodcode)]
 
   if(decision[9]=="9a"){
-    dataset1$start<-as.IDate(dataset1$start)#Isolateoverlap creates two new column named start and stop while resevring the orginal
-    dataset1$real_stop<-as.IDate(dataset1$real_stop)#Isolateoverlap creates two new column named start and stop while resevring the orginal
+    dataset1$start<-data.table::as.IDate(dataset1$start)#Isolateoverlap creates two new column named start and stop while resevring the orginal
+    dataset1$real_stop<-data.table::as.IDate(dataset1$real_stop)#Isolateoverlap creates two new column named start and stop while resevring the orginal
 
     dataset1 <- dataset1 %>%
-      rename(rstart = start, rreal_stop=real_stop)#to aviod naming confilict with interval_vars_out
+      reshape::rename(rstart = start, rreal_stop=real_stop)#to aviod naming confilict with interval_vars_out
 
     dataset1 <- intervalaverage::isolateoverlaps(dataset1,interval_vars=c("rstart","rreal_stop"),group_vars=c("patid","prodcode"), interval_vars_out = c("start", "real_stop"))
     #do nothing- sum overlaping doses and remove duplicate
@@ -594,8 +646,10 @@ dec9_overlaping_prescription<-function(dataset1, decision)
     dataset1<-dataset1[ !(duplicated(dataset1[, c("patid","prodcode","start")])),]
     dataset1$ndd<-dataset1$sum_ndd # do we need to check for implusibility
     #dataset1<-dataset1[,-c("sum_ndd")]
+    dataset1$real_stop<-as.POSIXct(dataset1$real_stop)
+
   }
-  else if (decision[8]=="8b"){
+  else if (decision[9]=="9b"){
 
 
     shift_interval <- function(x) {
@@ -607,30 +661,31 @@ dec9_overlaping_prescription<-function(dataset1, decision)
         i <- i + 1
         overlaps <- y %>%
           dplyr::mutate(dummy = 1) %>%
-          full_join(., ., by = 'dummy') %>%
-          filter(id.x < id.y) %>%
-          mutate(overlap = DescTools::Overlap(cbind(start.x, end.x),
+          dplyr::full_join(., ., by = 'dummy') %>%
+          dplyr::filter(id.x < id.y) %>%
+          dplyr::mutate(overlap = DescTools::Overlap(cbind(start.x, end.x),
                                               cbind(start.y, end.y))) %>%
           dplyr::filter(overlap > 0)
         y <- overlaps %>%
-          select(id = id.y, overlap) %>%
-          slice(1) %>%
-          right_join(y, by = 'id') %>%
+          dplyr::select(id = id.y, overlap) %>%
+          dplyr::slice(1) %>%
+          dplyr::right_join(y, by = 'id') %>%
           dplyr::mutate(overlap = replace(overlap, is.na(overlap), 0),
                         start = start + overlap,
                         end = end + overlap) %>%
-          select(-overlap)
+          dplyr::select(-overlap)
         overlap <- nrow(overlaps)
       }
       list(y)
       return(y)
     }
-
-    dataset1<-data.table::setDT(dataset1)[order(patid, start, prodcode)]
+    data.table::setDT(dataset1)
+    dataset1<-dataset1[order(patid, start, prodcode)]
     dataset1$patid_prodcode<-paste0(dataset1$patid,dataset1$prodcode)
-    dataset1<-reshape:::rename(dataset1, c("start"="start", "real_stop"="end"))
+    dataset1<-reshape::rename(dataset1, c("start"="start", "real_stop"="end"))
     dataset1<-cbind(dataset1,do.call(rbind,lapply(1:length(unique(dataset1$patid_prodcode)), function(x) shift_interval(dataset1[dataset1$patid_prodcode==unique(dataset1$patid_prodcode)[x],]))))
-  }
+  dataset1$real_stop<-as.POSIXct(dataset1$real_stop)
+    }
   return(dataset1)
 
 }
@@ -642,17 +697,22 @@ dec9_overlaping_prescription<-function(dataset1, decision)
 #'			10b_30  30 days
 #'			10b_60  60 days
 #'
-#' @param dataset, decsion
-#' @return dataset
+
+#' @param dataset1 a data frame containg prescription information
+#' @param decision a character specifying the decison to consider for processing
+#' @return data.frame
+#'
 #' @export
-dec10_gap_bn_prescription<-function(dataset1, decision)
+dec10_gap_bn_prescription<-function(dataset1=NULL, decision)
 {
+  #patid<-start<-prodcode<-gap_to_next<-real_stop<-NULL
+
   dataset1<-data.table::setDT(dataset1)
   dataset1<-dataset1[order(patid,start, prodcode)]
 
   dataset1<-dataset1%>%
     dplyr::group_by(patid,prodcode) %>%
-    dplyr::mutate(gap_to_next=lead(start)-real_stop)
+    dplyr::mutate(gap_to_next=dplyr::lead(start)-real_stop)
 
   if(decision[10]=="10a"){
     #do nothing
@@ -661,17 +721,17 @@ dec10_gap_bn_prescription<-function(dataset1, decision)
   else if (decision[10]=="10b"){
     dataset1<-dataset1%>%
       dplyr::group_by(patid,prodcode) %>%
-      dplyr::mutate(real_stop=replace(real_stop,gap_to_next<16,lead(start)))
+      dplyr::mutate(real_stop=replace(real_stop,gap_to_next<16,dplyr::lead(start)))
   }
   else if (decision[10]=="10c"){
     dataset1<-dataset1%>%
       dplyr::group_by(patid,prodcode) %>%
-      dplyr::mutate(real_stop=replace(real_stop,gap_to_next<31,lead(start)))
+      dplyr::mutate(real_stop=replace(real_stop,gap_to_next<31,dplyr::lead(start)))
   }
   else if (decision[10]=="10d"){
     dataset1<-dataset1%>%
       dplyr::group_by(patid,prodcode) %>%
-      dplyr::mutate(real_stop=replace(real_stop,gap_to_next<61,lead(start)))
+      dplyr::mutate(real_stop=replace(real_stop,gap_to_next<61,dplyr::lead(start)))
   }
 
   return(dataset1)
@@ -679,7 +739,9 @@ dec10_gap_bn_prescription<-function(dataset1, decision)
 
 #' freduce
 #' modified version of reduce function in r
-#' @param value, function_list, decision
+#' @param value value
+#' @param function_list list of function
+#' @param decision decision vector
 #' @return value
 #'
 ffreduce <- function(value, function_list,decision)
@@ -701,8 +763,14 @@ ffreduce <- function(value, function_list,decision)
 #' If you have implusible values to take action, run first the implusible_value function
 #' else you need to choose 'do nothing' for dec1 and dec3
 #'
-#' @param dataset, decisons,
-#' @return dataset
+#' @param dataset1 a data frame containing prescription information
+#'
+#' @param decisions a character vector containing list of decison to be taken
+#'
+#' @importFrom rlang .data
+
+#' @return data.frame
+#'
 #' @export
 run.drugPREP<-function(dataset1=NULL, decisions=NULL)
 {
@@ -714,8 +782,8 @@ run.drugPREP<-function(dataset1=NULL, decisions=NULL)
                      dec5_clean_duration, dec6_select_stop_date,dec7_missing_stop_date,
                      dec8_multipleprescription_same_start_date,dec9_overlaping_prescription,
                      dec10_gap_bn_prescription)
-  decision=decisions
-  run_decisions<-ffreduce(dataset1, function_list, decision)
+  decisions=decisions
+  run_decisions<-ffreduce(dataset1, function_list, decisions)
   return(run_decisions)
 }
 

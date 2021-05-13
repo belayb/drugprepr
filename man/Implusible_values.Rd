@@ -10,8 +10,13 @@ The last 4 columns will be populated by the user}
 \usage{
 Implusible_values(dataset1 = NULL, min_max_dat = NULL)
 }
+\arguments{
+\item{dataset1}{a data frame object containing the prescription information}
+
+\item{min_max_dat}{a data frame object containing minimum and maximum possible values for each drug}
+}
 \value{
-dataset,decision
+dataset
 }
 \description{
 Define implusible
