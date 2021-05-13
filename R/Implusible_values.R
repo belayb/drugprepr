@@ -10,7 +10,7 @@
 #' @return dataset
 #'
 #' @export
-
+#'
 Implausible_values<-function(dataset1=NULL,min_max_dat=NULL)
 {
   if(is.null(dataset1)) {stop("\n Data set with information from therapy file of CPRD has to be supplimented")}
