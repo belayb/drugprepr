@@ -9,7 +9,48 @@ run.drugPREP(dataset1 = NULL, decisions = NULL)
 \arguments{
 \item{dataset1}{a data frame containing prescription information}
 
-\item{decisions}{a character vector containing list of decison to be taken}
+\item{decisions}{a character vector containing list of decison to be taken
+\itemize{
+\item{"decison1"}{ implussible qantity}
+\itemize{
+\item{"1a"}{use implausible value}
+\item{"1b"}{set to missing}
+\item{"1c1"}{set to mean for individual's prescriptions for that drug}
+\item{"1c2"}{set to mean for practice's prescriptions for that drug}
+\item{"1c3"}{set to mean for populations's prescriptions for that drug}
+\item{"1d1"}{set to median for individual's prescriptions for that drug}
+\item{"1d2"}{set to median for practice's prescriptions for that drug}
+\item{"1d3"}{set to median for population's prescriptions for that drug}
+\item{"1e1"}{set to mode for individual's prescriptions for that drug}
+\item{"1e2"}{set to mode for practice's prescriptions for that drug}
+\item{"1e3"}{set to mode for population's prescriptions for that drug}
+\item{"1f1"}{use value of individual's next prescription}
+\item{"1f2"}{use value of practice's next prescription}
+\item{"1f3"}{use value of population's next prescription}
+\item{"1g1"}{use value of individual's previous prescription}
+\item{"1g2"}{use value of practice's previous prescription}
+\item{"1g3"}{use value of population's previous prescription}
+}
+\item{"decsion2"}{ Missing quantity}
+\itemize{
+\item{"2a"}{Leave as missing (implicitly drop this prescription)}
+\item{"2b1"}{set to mean for individual's prescriptions for that drug}
+\item{"2b2"}{set to mean for practice's prescriptions for that drug}
+\item{"2b3"}{set to mean for populations's prescriptions for that drug}
+\item{"2c1"}{set to median for individual's prescriptions for that drug}
+\item{"2c2"}{set to median for practice's prescriptions for that drug}
+\item{"2c3"}{set to median for population's prescriptions for that drug}
+\item{"2d1"}{set to mode for individual's prescriptions for that drug}
+\item{"2d2"}{set to mode for practice's prescriptions for that drug}
+\item{"2d3"}{set to mode for population's prescriptions for that drug}
+\item{"2e1"}{use value of individual's next prescription}
+\item{"2e2"}{use value of practice's next prescription}
+\item{"2e3"}{use value of population's next prescription}
+\item{"2f1"}{use value of individual's previous prescription}
+\item{"2f2"}{use value of practice}'s previous prescription
+\item{"2f3"}{use value of population's previous prescription}
+}
+}}
 }
 \value{
 data.frame

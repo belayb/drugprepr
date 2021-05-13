@@ -8,6 +8,27 @@ dec3_implausible_ndd(dataset1 = NULL, decision)
 }
 \arguments{
 \item{dataset1}{a data frame containg prescription information}
+
+\item{decision}{a character specifying the decison to consider for processing
+\itemize{
+\item{"3a"}{use implausible value}
+\item{"3b"}{set to missing}
+\item{"3c1"}{set to mean for individual's prescriptions for that drug}
+\item{"3c2"}{set to mean for practice's prescriptions for that drug}
+\item{"3c3"}{set to mean for populations's prescriptions for that drug}
+\item{"3d1"}{set to median for individual's prescriptions for that drug}
+\item{"3d2"}{set to median for practice's prescriptions for that drug}
+\item{"3d3"}{set to median for population's prescriptions for that drug}
+\item{"3e1"}{set to mode for individual's prescriptions for that drug}
+\item{"3e2"}{set to mode for practice's prescriptions for that drug}
+\item{"3e3"}{set to mode for population's prescriptions for that drug}
+\item{"3f1"}{use value of individual's next prescription}
+\item{"3f2"}{use value of practice's next prescription}
+\item{"3f3"}{use value of population's next prescription}
+\item{"3g1"}{use value of individual's previous prescription}
+\item{"3g2"}{use value of practice's previous prescription}
+\item{"3g3"}{use value of population's previous prescription}
+}}
 }
 \value{
 data.frame
