@@ -16,11 +16,8 @@
 ##' \item{"max_max"}{ maximum dose number and maximum dose frequency}
 ##' }
 ##'
-#' @examples
 #'
-#' call_dosemine(dataset, "min_max")
-#'
-#' @return a data.frame the same row as \code(dataset1)
+#' @return a data.frame the same row as dataset1
 #'
 #' @importFrom rlang .data
 #' @importFrom magrittr %>%

@@ -2,20 +2,29 @@
 % Please edit documentation in R/call_dosemine.R
 \name{call_dosemine}
 \alias{call_dosemine}
-\title{Compute ndd
-This function calls the dosemining r package and compute the ndd according to the suplemented decision}
+\title{Compute ndd}
 \usage{
 call_dosemine(dataset1 = NULL, decision = NULL)
 }
 \arguments{
 \item{dataset1}{a data frame object containing the prescription information}
 
-\item{decision}{a character vector for computing number of thing to take per day.}
+\item{decision}{a character variable for computing number of thing to take per day.
+\itemize{
+\item{"min_min"}{ minimum dose number and minimum dose frequency}
+\item{"min_mean"}{ minimum dose number and mean dose frequency}
+\item{"min_max"}{ minimum dose number and maximum dose frequency}
+\item{"mean_min"}{ mean dose number and minimum dose frequency}
+\item{"mean_mean"}{ mean dose number and mean dose frequency}
+\item{"mean_max"}{ mean dose number and maximum dose frequency}
+\item{"max_min"}{ maximum dose number and minimum dose frequency}
+\item{"max_mean"}{ maximum dose number and mean dose frequency}
+\item{"max_max"}{ maximum dose number and maximum dose frequency}
+}}
 }
 \value{
-dataset
+a data.frame the same row as dataset1
 }
 \description{
-Compute ndd
 This function calls the dosemining r package and compute the ndd according to the suplemented decision
 }

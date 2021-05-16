@@ -34,5 +34,5 @@ dec1_implausible_qty(dataset1 = NULL, decision)
 data.frame
 }
 \description{
-This function acepts a data frame containg prodcode, implausible indicator and replace the implusible quntity by one of the following options.
+This function accepts a data frame containg prodcode, implausible indicator and replace the implusible quntity by one of the following options.
 }

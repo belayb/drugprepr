@@ -17,7 +17,12 @@ knitr::opts_chunk$set(
 
 This vignette describes how you can use the `CPRDDrugPrep` package to transform CPRD drug data contained in the 'therapy.txt' file into information on individuals’ drug use over time. We will walk through all the steps needed to perform the transformation.
 
+First, we have to load the `CPRDDrugPrep` package in the R-enviroment as follow. 
 
 ```{r setup}
 library(CPRDDrugPrep)
 ```
+
+# The CPRD Data Stracture 
+
+CPRD Gold data follows the CPRD Gold specification https://cprdcw.cprd.com/_docs/CPRD_GOLD_Full_Data_Specification_v2.0.pdf. 
