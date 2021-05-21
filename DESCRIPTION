@@ -13,8 +13,7 @@ Authors@R:
            email = "David.Selby@manchester.ac.uk",
            comment = c(ORCID = "0000-0001-8026-5663")))
 Description: The R package CPRDDrugPrep prepares the prescription data from CPRD in to analysis ready format with start and stop date for each prescription per individual.
-License: `use_mit_license()`, `use_gpl3_license()` or friends to
-    pick a license
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
@@ -22,10 +21,17 @@ RoxygenNote: 7.1.1
 Imports:
 	data.table (>= 1.9.4),
 	dplyr,
-	doseminer
+	doseminer,
+	DescTools,
+	intervalaverage, 
+	reshape, 
+	splitstackshape,
+	rlang,
+	magrittr
 Depends: 
     R (>= 2.10)
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat
 VignetteBuilder: knitr
