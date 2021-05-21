@@ -42,7 +42,7 @@ call_dosemine<-function(dataset1=NULL, decision=NULL)
   names(temp_presc)[1]<-"dossageid"
   dataset1<-dplyr::left_join(dataset1,temp_presc,by="dossageid")
   dataset1<-dataset1%>%dplyr::rowwise()%>%dplyr::mutate(ndd1=DN_min*DF_min, ndd2=DN_min*DF_mean, ndd3=DN_min*DF_max, ndd4=DN_mean*DF_min, ndd5=DN_mean*DF_mean,
-                                         ndd6=DN_mean*DF_max, ndd7=DN_max*DF_min, ndd8=DN_max*DF_mean, ndd9=DN_max*DF_max)#you have to move this computation to the ifelse section
+                                         ndd6=DN_mean*DF_max, ndd7=DN_max*DF_min, ndd8=DN_max*DF_mean, ndd9=DN_max*DF_max) #you have to move this computation to the ifelse section
 
   if(decision=="min_min"){
     dataset1$ndd<-dataset1$ndd1
