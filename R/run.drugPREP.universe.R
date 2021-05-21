@@ -866,7 +866,7 @@ ffreduce <- function(value, function_list,decision)
 run.drugPREP<-function(dataset1=NULL, decisions=NULL)
 {
   #check if nessary columns are in the input data
-  must_names<-c("patid","event_date","prodcode","qty","ndd","numdays","dose_duration")#u need pracid -remove it for now
+  must_names<-c("patid","event_date","prodcode","qty","ndd","numdays","dose_duration", "id")#u need pracid -remove it for now
   stopifnot(must_names%in%names(dataset1))
 
   function_list=list(dec1_implausible_qty, dec2_missing_qty,dec3_implausible_ndd,dec4_missing_ndd,
