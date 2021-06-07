@@ -2,12 +2,12 @@
 % Please edit documentation in R/run.drugPREP.universe.R
 \name{dec4_missing_ndd}
 \alias{dec4_missing_ndd}
-\title{Missing  ndd}
+\title{Missing ndd}
 \usage{
 dec4_missing_ndd(dataset1 = NULL, decision)
 }
 \arguments{
-\item{dataset1}{a data frame containg prescription information}
+\item{dataset1}{a data frame containing prescription information}
 
 \item{decision}{a character specifying the decison to consider for processing
 \itemize{
@@ -30,8 +30,11 @@ dec4_missing_ndd(dataset1 = NULL, decision)
 }}
 }
 \value{
-data.frame
+Dataframe with the same structure as the input
 }
 \description{
-Missing  ndd
+This function accepts a data frame containing prescription information and
+replace the missing ndd by one of the following options. The input data
+must have the following columns: patid, prodcode, pracid (if practice level
+information is used for replacement) and ndd.
 }

@@ -7,7 +7,7 @@
 dec9_overlaping_prescription(dataset1 = NULL, decision)
 }
 \arguments{
-\item{dataset1}{a data frame containg prescription information}
+\item{dataset1}{a data frame containing prescription information}
 
 \item{decision}{a character specifying the decison to consider for processing
 \itemize{
@@ -16,8 +16,13 @@ dec9_overlaping_prescription(dataset1 = NULL, decision)
 }}
 }
 \value{
-data.frame
+Dataframe with the same structure as the input.
 }
 \description{
-Handle overlapping prescriptions
+In situations where one prescription start before the end date of previous prescription
+of the same type (prodcode) for an individual, this function either moves the start date
+of the prescription to the end date of the previous prescription or sums the ndd of the two
+prescrption at the time overlap depending on the users decision.
+The input data must have the following columns: patid,prodcode,start, real_stop,
+and ndd.
 }

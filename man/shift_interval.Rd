@@ -10,7 +10,7 @@ shift_interval(x)
 \item{x}{a data frame containg prescription start and stop dates}
 }
 \value{
-data.frame
+Dataframe with the same structure as the input
 }
 \description{
 shift_interval

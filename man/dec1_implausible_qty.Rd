@@ -2,14 +2,14 @@
 % Please edit documentation in R/run.drugPREP.universe.R
 \name{dec1_implausible_qty}
 \alias{dec1_implausible_qty}
-\title{implausible  quantity}
+\title{Implausible  quantity}
 \usage{
 dec1_implausible_qty(dataset1 = NULL, decision)
 }
 \arguments{
-\item{dataset1}{a data frame containg prescription information}
+\item{dataset1}{a data frame containing prescription information.}
 
-\item{decision}{a character specifying the decison to consider for processing
+\item{decision}{a character specifying the decison to consider for processing.
 \itemize{
 \item{"1a"}{use implausible value}
 \item{"1b"}{set to missing}
@@ -31,8 +31,14 @@ dec1_implausible_qty(dataset1 = NULL, decision)
 }}
 }
 \value{
-data.frame
+Dataframe with the same structure as the input
 }
 \description{
-This function accepts a data frame containg prodcode, implausible indicator and replace the implusible quntity by one of the following options.
+This function accepts a data frame containing prescription information and
+replace the implusible quntity by one of the following options.
+The user must provide a data input with the following column names:
+patid, prodcode, qty (quantity), implausible_qty and pracid (if practice level
+information is used for replacement). The implausible_qty column will take value 1
+if the given qty in the data is not a plausible value and 0 otherwise. If this column
+not provided then only decision 1a (do nothing) can be chosen.
 }

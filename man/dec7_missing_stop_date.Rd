@@ -7,7 +7,7 @@
 dec7_missing_stop_date(dataset1 = NULL, decision)
 }
 \arguments{
-\item{dataset1}{a data frame containg prescription information}
+\item{dataset1}{a data frame containing prescription information}
 
 \item{decision}{a character specifying the decison to consider for processing
 \itemize{
@@ -19,8 +19,11 @@ dec7_missing_stop_date(dataset1 = NULL, decision)
 }}
 }
 \value{
-data.frame
+Dataframe with the same structure as the input
 }
 \description{
-Handle missing stop dates
+This function identify missing stop dates and perform the following tasks depending on
+the given decision. This function can only be called after dec6_select_stop_date is
+executed. The input dataset must have the following columns: patid, prodcode, real_stop,
+and new_duration.
 }

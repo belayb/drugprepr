@@ -95,5 +95,8 @@ run.drugPREP(dataset1 = NULL, decisions = NULL)
 data.frame
 }
 \description{
-An algorithm for the transparent and efficient preparation of CPRD drug data into information on individuals’ drug use over time. If you have implusible values (i.e., implusible quantity and ndd) to take action, run first the implusible_value function. If not, you need to choose 'do nothing' for dec1 and dec3.
+Utility function to run all decisions sequentially.
+If you have implusible values (i.e., implusible quantity and ndd) to take action,
+run first the implusible_value function.
+If not, you need to choose 'do nothing' for dec1 and dec3.
 }

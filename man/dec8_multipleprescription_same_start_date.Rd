@@ -21,8 +21,11 @@ dec8_multipleprescription_same_start_date(dataset1 = NULL, decision)
 }}
 }
 \value{
-data.frame
+Dataframe with the same structure as the input
 }
 \description{
-Handle multiple prescriptions for same product on same day
+In situations where rows of identical prescription for the same individual at the same time
+is found in the data, this function removes the duplicated prescriptions by choosing one of the
+following options. The input data must have the following columns: patid,prodcode,start, real_stop,
+and ndd. It's adviced that this function is called after dec6_select_stop_date is executed.
 }

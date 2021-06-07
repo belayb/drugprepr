@@ -2,12 +2,12 @@
 % Please edit documentation in R/run.drugPREP.universe.R
 \name{dec5_clean_duration}
 \alias{dec5_clean_duration}
-\title{Clean  duration}
+\title{Clean duration}
 \usage{
 dec5_clean_duration(dataset1 = NULL, decision)
 }
 \arguments{
-\item{dataset1}{a data frame containg prescription information}
+\item{dataset1}{a data frame containing prescription information}
 
 \item{decision}{a character specifying the decison to consider for processing
 \itemize{
@@ -21,8 +21,12 @@ dec5_clean_duration(dataset1 = NULL, decision)
 }}
 }
 \value{
-data.frame
+Dataframe with the same structure as the input
 }
 \description{
-This function acepts a data frame containg prodcode, qty, and ndd and compute duration and replace duration by  by one of the following options if they are longer than clinically plusible.
+This function accepts a data frame containing prescription information
+and compute duration and replace duration by one of the following
+options if they are longer than clinically plusible duration. The
+input dataset must have the following columns: qty, ndd, numdays and
+dose_duration.
 }
