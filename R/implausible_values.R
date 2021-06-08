@@ -27,6 +27,7 @@ Implausible_values <- function(dataset1 = NULL, min_max_dat = NULL) {
       implausible_qty = (qty > qty_max | qty < qty_min) & !is.na(qty),
       implausible_ndd = (ndd > max_rec_ndd | ndd < min_rec_ndd) & !is.na(ndd)
     ) %>%
+    dplyr::select(-c(qty_max, qty_min, max_rec_ndd, min_rec_ndd)) %>%
     dplyr::ungroup()
 
   return(dataset1)

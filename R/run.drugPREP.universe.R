@@ -492,6 +492,8 @@ dec6_select_stop_date <- function(dataset1 = NULL, decision) {
   else if (decision[6] == "6c") {
     dataset1$real_stop <- dataset1$start + dataset1$new_duration
   }
+  dataset1 <- dataset1 %>%
+    dplyr::select(-c(event_date))
   return(dataset1)
   # i will add the three other decisons latter
 }
@@ -573,38 +575,37 @@ dec8_multipleprescription_same_start_date <- function(dataset1 = NULL, decision)
     dataset1 <- dataset1 %>%
       dplyr::group_by(patid, prodcode, start) %>%
       dplyr::mutate(
-        mean_stop = mean(as.numeric(real_stop - start),na.rm=T),
+        mean_stop = mean(as.numeric(real_stop - start), na.rm = T),
         mean_ndd = mean(ndd, na.rm = T),
-        real_stop = start+mean_stop,
+        real_stop = start + mean_stop,
         ndd = mean_ndd
       )
     dataset1 <- dataset1[!(duplicated(dataset1[, c("patid", "prodcode", "start")])), ]
-    dataset1 <- dataset1%>%dplyr::select(-c(mean_stop,mean_ndd))
-
+    dataset1 <- dataset1 %>% dplyr::select(-c(mean_stop, mean_ndd))
   }
   else if (decision[8] == "8c") {
     dataset1 <- dataset1 %>%
       dplyr::group_by(patid, prodcode, start) %>%
       dplyr::mutate(
-        min_stop = min(as.numeric(real_stop - start),na.rm=T),
+        min_stop = min(as.numeric(real_stop - start), na.rm = T),
         min_ndd = min(ndd, na.rm = T),
-        real_stop = start+min_stop,
+        real_stop = start + min_stop,
         ndd = min_ndd
       )
     dataset1 <- dataset1[!(duplicated(dataset1[, c("patid", "prodcode", "start")])), ]
-    dataset1 <- dataset1%>%dplyr::select(-c(min_stop,min_ndd))
+    dataset1 <- dataset1 %>% dplyr::select(-c(min_stop, min_ndd))
   }
   else if (decision[8] == "8d") {
     dataset1 <- dataset1 %>%
       dplyr::group_by(patid, prodcode, start) %>%
       dplyr::mutate(
-        max_stop = max(as.numeric(real_stop - start),na.rm=T),
+        max_stop = max(as.numeric(real_stop - start), na.rm = T),
         max_ndd = max(ndd, na.rm = T),
-        real_stop = start+max_stop,
+        real_stop = start + max_stop,
         ndd = max_ndd
       )
     dataset1 <- dataset1[!(duplicated(dataset1[, c("patid", "prodcode", "start")])), ]
-    dataset1 <- dataset1%>%dplyr::select(-c(max_stop,max_ndd))
+    dataset1 <- dataset1 %>% dplyr::select(-c(max_stop, max_ndd))
   }
 
   else if (decision[8] == "8e") {
@@ -612,12 +613,11 @@ dec8_multipleprescription_same_start_date <- function(dataset1 = NULL, decision)
       dplyr::group_by(patid, prodcode, start) %>%
       dplyr::mutate(
         sum_duration = sum(new_duration, na.rm = T),
-        real_stop = start+sum_duration,
+        real_stop = start + sum_duration,
         new_duration = sum_duration
       )
     dataset1 <- dataset1[!(duplicated(dataset1[, c("patid", "prodcode", "start")])), ]
-    dataset1 <- dataset1%>%dplyr::select(-c(sum_duration))
-
+    dataset1 <- dataset1 %>% dplyr::select(-c(sum_duration))
   }
   return(dataset1)
 }
@@ -631,7 +631,7 @@ dec8_multipleprescription_same_start_date <- function(dataset1 = NULL, decision)
 #' @export
 
 shift_interval <- function(x) {
-  x$id<-seq_along(x$patid)
+  x$id <- seq_along(x$patid)
   i <- 0
   y <- x
   overlap <- TRUE
@@ -698,7 +698,7 @@ dec9_overlaping_prescription <- function(dataset1 = NULL, decision) {
       group_vars = c("patid", "prodcode"),
       interval_vars_out = c("rstart", "rreal_stop")
     )
-    dataset1<-as.data.frame(dataset1)
+    dataset1 <- as.data.frame(dataset1)
     # do nothing- sum overlaping doses and remove duplicate
     dataset1 <- dataset1 %>%
       dplyr::group_by(patid, prodcode, start) %>%
@@ -707,13 +707,17 @@ dec9_overlaping_prescription <- function(dataset1 = NULL, decision) {
     dataset1$ndd <- dataset1$sum_ndd # do we need to check for implusibility
     # dataset1<-dataset1[,-c("sum_ndd")]
     dataset1$real_stop <- as.POSIXct(dataset1$real_stop)
+    dataset1 <- dataset1 %>%
+      dplyr::ungroup() %>%
+      dplyr::select(-c(start, real_stop, sum_ndd))
+    dataset1 <- reshape::rename(dataset1, c("rstart" = "start", "rreal_stop" = "real_stop"))
   }
   else if (decision[9] == "9b") {
     data.table::setDT(dataset1)
     dataset1$patid_prodcode <- paste0(dataset1$patid, dataset1$prodcode)
     dataset1 <- reshape::rename(dataset1, c("start" = "start", "real_stop" = "end"))
-    dataset1 <- dataset1%>%
-      dplyr::group_by(patid_prodcode)%>%
+    dataset1 <- dataset1 %>%
+      dplyr::group_by(patid_prodcode) %>%
       dplyr::arrange(start)
     dataset1 <- do.call(rbind, lapply(
       1:length(unique(dataset1$patid_prodcode)),
@@ -744,16 +748,23 @@ dec9_overlaping_prescription <- function(dataset1 = NULL, decision) {
 #'
 #' @export
 dec10_gap_bn_prescription <- function(dataset1 = NULL, decision) {
-  message("Started executing dec10:dealing with short gaps between presecriptions using decision")
+  message("Started executing dec10:dealing with short gaps between presecriptions")
 
   # patid<-start<-prodcode<-gap_to_next<-real_stop<-NULL
 
-  dataset1 <- data.table::setDT(dataset1)
-  dataset1 <- dataset1[order(patid, start, prodcode)]
+  dataset1 <- dataset1 %>%
+    dplyr::group_by(patid, prodcode) %>%
+    dplyr::arrange(start)
 
   dataset1 <- dataset1 %>%
     dplyr::group_by(patid, prodcode) %>%
-    dplyr::mutate(gap_to_next = dplyr::lead(start) - real_stop)
+    dplyr::mutate(
+      gap_to_next =
+        dplyr::case_when(
+          dplyr::n_distinct(start) > 1 & start != dplyr::last(start) ~ as.numeric(dplyr::lead(start) - real_stop),
+          TRUE ~ 100000
+        )
+    )
 
   if (decision[10] == "10a") {
     # do nothing
@@ -762,17 +773,17 @@ dec10_gap_bn_prescription <- function(dataset1 = NULL, decision) {
   else if (decision[10] == "10b") {
     dataset1 <- dataset1 %>%
       dplyr::group_by(patid, prodcode) %>%
-      dplyr::mutate(real_stop = replace(real_stop, gap_to_next < 16, dplyr::lead(start)))
+      dplyr::mutate(real_stop = replace(real_stop, gap_to_next < 16 & gap_to_next>1, dplyr::lead(start)))
   }
   else if (decision[10] == "10c") {
     dataset1 <- dataset1 %>%
       dplyr::group_by(patid, prodcode) %>%
-      dplyr::mutate(real_stop = replace(real_stop, gap_to_next < 31, dplyr::lead(start)))
+      dplyr::mutate(real_stop = replace(real_stop, gap_to_next < 31 & gap_to_next>1, dplyr::lead(start)))
   }
   else if (decision[10] == "10d") {
     dataset1 <- dataset1 %>%
       dplyr::group_by(patid, prodcode) %>%
-      dplyr::mutate(real_stop = replace(real_stop, gap_to_next < 61, dplyr::lead(start)))
+      dplyr::mutate(real_stop = replace(real_stop, gap_to_next < 61 & gap_to_next>1, dplyr::lead(start)))
   }
 
   return(dataset1)
@@ -878,7 +889,7 @@ dec10_gap_bn_prescription <- function(dataset1 = NULL, decision) {
 #' @export
 run.drugPREP <- function(dataset1 = NULL, decisions = NULL) {
   # check if nessary columns are in the input data
-  must_names <- c("patid", "event_date", "prodcode", "qty", "ndd", "numdays", "dose_duration", "id") # u need pracid -remove it for now
+  must_names <- c("patid","pracid","implausible_qty","implausible_ndd", "event_date", "prodcode", "qty", "ndd", "numdays", "dose_duration") # u need pracid -remove it for now
   stopifnot(must_names %in% names(dataset1))
 
   function_list <- list(

@@ -98,6 +98,9 @@ compute_ndd <- function(dataset1 = NULL, decision = NULL) {
       dplyr::rowwise() %>%
       dplyr::mutate(ndd = DN_max * DF_max)
   }
+  dataset1 <- dataset1 %>%
+    dplyr::ungroup() %>% # NB 'rowwise()' is often very inefficient
+    dplyr::select(-matches("ndd\\d|^DN|^DF")) # get rid of DN_x, DF_x and ndd# cols
 
   return(dataset1)
 }
