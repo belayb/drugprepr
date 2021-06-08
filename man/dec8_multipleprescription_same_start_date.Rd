@@ -13,11 +13,9 @@ dec8_multipleprescription_same_start_date(dataset1 = NULL, decision)
 \itemize{
 \item{"8a"}{do nothing}
 \item{"8b"}{use mean ndd and mean length}
-\item{"8c"}{choose prescription with smallest ndd}
-\item{"8d"}{choose prescription with largest ndd}
-\item{"8e"}{choose shortest prescription}
-\item{"8f"}{choose longest prescription}
-\item{"8g"}{sum durations}
+\item{"8c"}{choose shortest prescription}
+\item{"8d"}{choose longest prescription}
+\item{"8e"}{sum durations}
 }}
 }
 \value{
