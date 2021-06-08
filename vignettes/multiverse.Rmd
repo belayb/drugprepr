@@ -1,8 +1,8 @@
 ---
-title: "DrugPrepR package design document"
+title: "drugprepCPRD package design document"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{DrugPrepR package design document}
+  %\VignetteIndexEntry{drugprepCPRD package design document}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -22,7 +22,7 @@ The purpose of this document is to plan out the design of the package.
 We start with a dataset that looks a little bit like this.
 
 ```{r setup}
-library(CPRDDrugPrep)
+library(drugprepCPRD)
 knitr::kable(dataset)
 ```
 

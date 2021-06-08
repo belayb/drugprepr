@@ -552,11 +552,9 @@ dec7_missing_stop_date <- function(dataset1 = NULL, decision) {
 ##' \itemize{
 ##' \item{"8a"}{do nothing}
 ##'  \item{"8b"}{use mean ndd and mean length}
-##'  \item{"8c"}{choose prescription with smallest ndd}
-##'  \item{"8d"}{choose prescription with largest ndd}
-##'  \item{"8e"}{choose shortest prescription}
-##'  \item{"8f"}{choose longest prescription}
-##'  \item{"8g"}{sum durations}
+##'  \item{"8c"}{choose shortest prescription}
+##'  \item{"8d"}{choose longest prescription}
+##'  \item{"8e"}{sum durations}
 ##' }
 ##'
 #' @return Dataframe with the same structure as the input
@@ -575,53 +573,51 @@ dec8_multipleprescription_same_start_date <- function(dataset1 = NULL, decision)
     dataset1 <- dataset1 %>%
       dplyr::group_by(patid, prodcode, start) %>%
       dplyr::mutate(
-        mean_stop = mean(as.numeric(real_stop[!is.na(real_stop)] - start[is.na(start)])),
-        mean_ndd = mean(ndd, na.rm = T)
+        mean_stop = mean(as.numeric(real_stop - start),na.rm=T),
+        mean_ndd = mean(ndd, na.rm = T),
+        real_stop = start+mean_stop,
+        ndd = mean_ndd
       )
     dataset1 <- dataset1[!(duplicated(dataset1[, c("patid", "prodcode", "start")])), ]
-    dataset1$real_stop <- dataset1$mean_stop
-    dataset1$ndd <- dataset1$mean_ndd
-    dataset1 <- dataset1[, -c("mean_stop", "mean_ndd")]
+    dataset1 <- dataset1%>%dplyr::select(-c(mean_stop,mean_ndd))
+
   }
   else if (decision[8] == "8c") {
     dataset1 <- dataset1 %>%
       dplyr::group_by(patid, prodcode, start) %>%
-      dplyr::mutate(min_ndd = min(ndd[!is.na(ndd)]))
-    dataset1 <- dataset1[dataset1$ndd == min_ndd, ]
+      dplyr::mutate(
+        min_stop = min(as.numeric(real_stop - start),na.rm=T),
+        min_ndd = min(ndd, na.rm = T),
+        real_stop = start+min_stop,
+        ndd = min_ndd
+      )
     dataset1 <- dataset1[!(duplicated(dataset1[, c("patid", "prodcode", "start")])), ]
-    dataset1 <- dataset1[, -c("min_ndd")]
+    dataset1 <- dataset1%>%dplyr::select(-c(min_stop,min_ndd))
   }
   else if (decision[8] == "8d") {
     dataset1 <- dataset1 %>%
       dplyr::group_by(patid, prodcode, start) %>%
-      dplyr::mutate(max_ndd = max(ndd[!is.na(ndd)]))
-    dataset1 <- dataset1[dataset1$ndd == max_ndd, ]
+      dplyr::mutate(
+        max_stop = max(as.numeric(real_stop - start),na.rm=T),
+        max_ndd = max(ndd, na.rm = T),
+        real_stop = start+max_stop,
+        ndd = max_ndd
+      )
     dataset1 <- dataset1[!(duplicated(dataset1[, c("patid", "prodcode", "start")])), ]
-    dataset1 <- dataset1[, -c("max_ndd")]
+    dataset1 <- dataset1%>%dplyr::select(-c(max_stop,max_ndd))
   }
+
   else if (decision[8] == "8e") {
     dataset1 <- dataset1 %>%
       dplyr::group_by(patid, prodcode, start) %>%
-      dplyr::mutate(min_stop = min(real_stop[!is.na(real_stop)]))
-    dataset1 <- dataset1[dataset1$real_stop == min_stop, ]
+      dplyr::mutate(
+        sum_duration = sum(new_duration, na.rm = T),
+        real_stop = start+sum_duration,
+        new_duration = sum_duration
+      )
     dataset1 <- dataset1[!(duplicated(dataset1[, c("patid", "prodcode", "start")])), ]
-    dataset1 <- dataset1[, -c("min_stop")]
-  }
-  else if (decision[8] == "8f") {
-    dataset1 <- dataset1 %>%
-      dplyr::group_by(patid, prodcode, start) %>%
-      dplyr::mutate(max_stop = max(real_stop[!is.na(real_stop)]))
-    dataset1 <- dataset1[dataset1$real_stop == max_stop, ]
-    dataset1 <- dataset1[!(duplicated(dataset1[, c("patid", "prodcode", "start")])), ]
-    dataset1 <- dataset1[, -c("max_stop")]
-  }
-  else if (decision[8] == "8g") {
-    dataset1 <- dataset1 %>%
-      dplyr::group_by(patid, prodcode, start) %>%
-      dplyr::mutate(sum_duration = sum(new_duration[!is.na(new_duration)]))
-    dataset1$real_stop <- dataset1$start + dataset1$sum_duration
-    dataset1 <- dataset1[!(duplicated(dataset1[, c("patid", "prodcode", "start")])), ]
-    dataset1 <- dataset1[, -c("sum_duration")]
+    dataset1 <- dataset1%>%dplyr::select(-c(sum_duration))
+
   }
   return(dataset1)
 }
@@ -635,6 +631,7 @@ dec8_multipleprescription_same_start_date <- function(dataset1 = NULL, decision)
 #' @export
 
 shift_interval <- function(x) {
+  x$id<-seq_along(x$patid)
   i <- 0
   y <- x
   overlap <- TRUE
@@ -695,14 +692,11 @@ dec9_overlaping_prescription <- function(dataset1 = NULL, decision) {
     dataset1$start <- data.table::as.IDate(dataset1$start)
     dataset1$real_stop <- data.table::as.IDate(dataset1$real_stop)
     # Isolateoverlap creates two new column named start and stop while resevring the orginal
-    # to aviod naming confilict with interval_vars_out
-    dataset1 <- dataset1 %>%
-      reshape::rename(rstart = start, rreal_stop = real_stop)
-
-    dataset1 <- intervalaverage::isolateoverlaps(dataset1,
-      interval_vars = c("rstart", "rreal_stop"),
+    # to aviod naming confilict with interval_vars_out we hold the new data under the name rstart and rreal_stop
+    dataset1 <- intervalaverage::isolateoverlaps(data.table::setDT(dataset1),
+      interval_vars = c("start", "real_stop"),
       group_vars = c("patid", "prodcode"),
-      interval_vars_out = c("start", "real_stop")
+      interval_vars_out = c("rstart", "rreal_stop")
     )
     dataset1<-as.data.frame(dataset1)
     # do nothing- sum overlaping doses and remove duplicate
@@ -718,13 +712,16 @@ dec9_overlaping_prescription <- function(dataset1 = NULL, decision) {
     data.table::setDT(dataset1)
     dataset1$patid_prodcode <- paste0(dataset1$patid, dataset1$prodcode)
     dataset1 <- reshape::rename(dataset1, c("start" = "start", "real_stop" = "end"))
-    dataset1 <- cbind(dataset1, do.call(rbind, lapply(
+    dataset1 <- dataset1%>%
+      dplyr::group_by(patid_prodcode)%>%
+      dplyr::arrange(start)
+    dataset1 <- do.call(rbind, lapply(
       1:length(unique(dataset1$patid_prodcode)),
       function(x) {
         shift_interval(dataset1[dataset1$patid_prodcode == unique(dataset1$patid_prodcode)[x], ])
       }
-    )))
-    dataset1$real_stop <- as.POSIXct(dataset1$real_stop)
+    ))
+    dataset1 <- reshape::rename(dataset1, c("start" = "start", "end" = "real_stop"))
   }
   return(dataset1)
 }

@@ -21,5 +21,6 @@ dec10_gap_bn_prescription(dataset1 = NULL, decision)
 Dataframe with the same structure as the input
 }
 \description{
-Handle sequential prescriptions with short gaps
+This function provides option for filling gaps between prescription of the same type
+for an individual depending on the choosen decison.
 }

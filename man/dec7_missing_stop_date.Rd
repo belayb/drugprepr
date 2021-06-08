@@ -2,7 +2,7 @@
 % Please edit documentation in R/run.drugPREP.universe.R
 \name{dec7_missing_stop_date}
 \alias{dec7_missing_stop_date}
-\title{Handle missing stop dates}
+\title{Missing stop date}
 \usage{
 dec7_missing_stop_date(dataset1 = NULL, decision)
 }

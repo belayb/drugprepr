@@ -1,0 +1,28 @@
+---
+title: "introduction_to_drugprepCPRD"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{introduction_to_drugprepCPRD}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+# Introduction 
+
+This vignette describes how you can use the `drugprepCPRD` package to transform CPRD drug data contained in the 'therapy.txt' file into information on individuals’ drug use over time. We will walk through all the steps needed to perform the transformation.
+
+First, we have to load the `drugprepCPRD` package in the R-enviroment as follow. 
+
+```{r setup}
+library(drugprepCPRD)
+```
+
+# The CPRD Data Stracture 
+
+CPRD Gold data follows the CPRD Gold specification https://cprdcw.cprd.com/_docs/CPRD_GOLD_Full_Data_Specification_v2.0.pdf. 

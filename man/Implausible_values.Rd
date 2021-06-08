@@ -12,8 +12,9 @@ Implausible_values(dataset1 = NULL, min_max_dat = NULL)
 \item{min_max_dat}{a data frame object containing minimum and maximum possible values for each drug}
 }
 \value{
-dataset
+Dataframe with the same structure as the input.
 }
 \description{
-This function flag quantity and ndd informations that are beyond the acceptable levels in the dataset. The acceptable level is obtained from NICE BNF.
+This function flag quantity and ndd informations that are beyond the acceptable levels in the dataset.
+The acceptable level is obtained from NICE BNF.
 }

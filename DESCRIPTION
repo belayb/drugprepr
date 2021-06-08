@@ -1,4 +1,4 @@
-Package: CPRDDrugPrep
+Package: drugprepCPRD
 Title: CPRD Drug Preparation
 Version: 0.0.0.9001
 Authors@R: 
@@ -12,7 +12,7 @@ Authors@R:
            role = c("aut"),
            email = "David.Selby@manchester.ac.uk",
            comment = c(ORCID = "0000-0001-8026-5663")))
-Description: The R package CPRDDrugPrep prepares the prescription data from CPRD in to analysis ready format with start and stop date for each prescription per individual.
+Description: The R package drugprepCPRD prepares the prescription data from CPRD in to analysis ready format with start and stop date for each prescription per individual.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
