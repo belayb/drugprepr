@@ -565,7 +565,7 @@ dec7_missing_stop_date <- function(dataset1 = NULL, decision) {
 dec8_multipleprescription_same_start_date <- function(dataset1 = NULL, decision) {
   message("Started executing dec8:idealing with multiple prescription")
 
-  # patid<-prodcode<-start<-real_stop<-ndd<-max_ndd<-min_ndd<-min_stop<-max_stop<-new_duration<-NULL
+  max_ndd<-min_ndd<-min_stop<-max_stop<-mean_stop<-mean_ndd<-NULL
 
   if (decision[8] == "8a") {
     # do nothing

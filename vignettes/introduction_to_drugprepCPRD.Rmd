@@ -25,4 +25,4 @@ library(drugprepCPRD)
 
 # The CPRD Data Stracture 
 
-CPRD Gold data follows the CPRD Gold specification https://cprdcw.cprd.com/_docs/CPRD_GOLD_Full_Data_Specification_v2.0.pdf. 
+CPRD Gold data follows the CPRD Gold specification 
