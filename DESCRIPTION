@@ -11,8 +11,26 @@ Authors@R:
            family = "Selby",
            role = c("aut"),
            email = "David.Selby@manchester.ac.uk",
-           comment = c(ORCID = "0000-0001-8026-5663")))
-Description: The R package drugprepCPRD prepares the prescription data from CPRD in to analysis ready format with start and stop date for each prescription per individual.
+           comment = c(ORCID = "0000-0001-8026-5663")),
+    person(given = "Meghna",
+           family = "Jani",
+           role = c("aut"),
+           email = "meghna.jani@manchester.ac.uk"),
+    person(given = "Goran",
+           family = "Nenadic",
+           role = c("aut"),
+           email = "goran.nenadic@manchester.ac.uk"),
+    person(given = "Mark",
+           family = "Lunt",
+           role = c("aut"),
+           email = "mark.lunt@manchester.ac.uk"),
+    person(given = "William G.",
+           family = "Dixon",
+           role = c("aut"),
+           email = "will.dixon@manchester.ac.uk")
+           )
+Maintainer: Belay Birlie Yimer <belaybirlie.yimer@manchester.ac.uk>
+Description: The R package drugprepCPRD prepares the prescription data from CPRD in to analysis ready format with start and stop date for each prescription per individual. Based on Pye et al. (2018) <https://doi.org/10.1002/pds.4440>
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

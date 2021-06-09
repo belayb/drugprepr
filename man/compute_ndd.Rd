@@ -25,12 +25,13 @@ expected to be a result of merging CPRD 'therapy' table with 'commondosage' tabl
 }}
 }
 \value{
-Dataframe with the same structure as the input
+Dataframe with the same structure as the input with additional column named ndd
 }
 \description{
 The function calls the doseminer r-package to extract doses from text prescription
 and compute the (ndd) according to the given decision.
 The general formula for computing (ndd) is given by (ndd=DF*DN/DI), where (DF) is dose
 frequency, (DN) is dose number, and (DI) is dose interval. Prescriptions
-can have a varible dose frequency or dose number such as '2-4 tablets'.
+can have a varible dose frequency or dose number such as '2-4 tablets'. In this case, the user can choose
+minimum or maximum or average of value of DN or DF.
 }

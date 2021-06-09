@@ -624,6 +624,7 @@ dec8_multipleprescription_same_start_date <- function(dataset1 = NULL, decision)
 
 #' shift_interval
 #'
+#' Internal function used by dec9
 #'
 #' @param x a data frame containg prescription start and stop dates
 #' @return Dataframe with the same structure as the input
@@ -799,91 +800,15 @@ dec10_gap_bn_prescription <- function(dataset1 = NULL, decision) {
 #'
 #' @param dataset1 a data frame containing prescription information
 #'
-#' @param decisions a character vector containing list of decison to be taken
-##' \itemize{
-##' \item{"decison1"}{ implussible qantity}
-###' \itemize{
-###' \item{"1a"}{use implausible value}
-###' \item{"1b"}{set to missing}
-###' \item{"1c1"}{set to mean for individual's prescriptions for that drug}
-###' \item{"1c2"}{set to mean for practice's prescriptions for that drug}
-###' \item{"1c3"}{set to mean for populations's prescriptions for that drug}
-###' \item{"1d1"}{set to median for individual's prescriptions for that drug}
-###' \item{"1d2"}{set to median for practice's prescriptions for that drug}
-###' \item{"1d3"}{set to median for population's prescriptions for that drug}
-###' \item{"1e1"}{set to mode for individual's prescriptions for that drug}
-###' \item{"1e2"}{set to mode for practice's prescriptions for that drug}
-###' \item{"1e3"}{set to mode for population's prescriptions for that drug}
-###' \item{"1f1"}{use value of individual's next prescription}
-###' \item{"1f2"}{use value of practice's next prescription}
-###' \item{"1f3"}{use value of population's next prescription}
-###' \item{"1g1"}{use value of individual's previous prescription}
-###' \item{"1g2"}{use value of practice's previous prescription}
-###' \item{"1g3"}{use value of population's previous prescription}
-###' }
-##' \item{"decsion2"}{ Missing quantity}
-###' \itemize{
-###' \item{"2a"}{Leave as missing (implicitly drop this prescription)}
-###' \item{"2b1"}{set to mean for individual's prescriptions for that drug}
-###' \item{"2b2"}{set to mean for practice's prescriptions for that drug}
-###' \item{"2b3"}{set to mean for populations's prescriptions for that drug}
-###' \item{"2c1"}{set to median for individual's prescriptions for that drug}
-###' \item{"2c2"}{set to median for practice's prescriptions for that drug}
-###' \item{"2c3"}{set to median for population's prescriptions for that drug}
-###' \item{"2d1"}{set to mode for individual's prescriptions for that drug}
-###' \item{"2d2"}{set to mode for practice's prescriptions for that drug}
-###' \item{"2d3"}{set to mode for population's prescriptions for that drug}
-###' \item{"2e1"}{use value of individual's next prescription}
-###' \item{"2e2"}{use value of practice's next prescription}
-###' \item{"2e3"}{use value of population's next prescription}
-###' \item{"2f1"}{use value of individual's previous prescription}
-###' \item{"2f2"}{use value of practice}'s previous prescription
-###' \item{"2f3"}{use value of population's previous prescription}
-###' }
-##' \item{"decison3"}{Implausible ndd}
-###' \itemize{
-###' \item{"3a"}{use implausible value}
-###' \item{"3b"}{set to missing}
-###' \item{"3c1"}{set to mean for individual's prescriptions for that drug}
-###' \item{"3c2"}{set to mean for practice's prescriptions for that drug}
-###' \item{"3c3"}{set to mean for populations's prescriptions for that drug}
-###' \item{"3d1"}{set to median for individual's prescriptions for that drug}
-###' \item{"3d2"}{set to median for practice's prescriptions for that drug}
-###' \item{"3d3"}{set to median for population's prescriptions for that drug}
-###' \item{"3e1"}{set to mode for individual's prescriptions for that drug}
-###' \item{"3e2"}{set to mode for practice's prescriptions for that drug}
-###' \item{"3e3"}{set to mode for population's prescriptions for that drug}
-###' \item{"3f1"}{use value of individual's next prescription}
-###' \item{"3f2"}{use value of practice's next prescription}
-###' \item{"3f3"}{use value of population's next prescription}
-###' \item{"3g1"}{use value of individual's previous prescription}
-###' \item{"3g2"}{use value of practice's previous prescription}
-###' \item{"3g3"}{use value of population's previous prescription}
-###' }
-##' \item{"Missing qty}
-###' \itemize{
-###' \item{"4a"}{Leave as missing (implicitly drop this prescription)}
-###' \item{"4b1"}{set to mean for individual's prescriptions for that drug}
-###' \item{"4b2"}{set to mean for practice's prescriptions for that drug}
-###' \item{"4b3"}{set to mean for populations's prescriptions for that drug}
-###' \item{"4c1"}{set to median for individual's prescriptions for that drug}
-###' \item{"4c2"}{set to median for practice's prescriptions for that drug}
-###' \item{"4c3"}{set to median for population's prescriptions for that drug}
-###' \item{"4d1"}{set to mode for individual's prescriptions for that drug}
-###' \item{"4d2"}{set to mode for practice's prescriptions for that drug}
-###' \item{"4d3"}{set to mode for population's prescriptions for that drug}
-###' \item{"4e1"}{use value of individual's next prescription}
-###' \item{"4e2"}{use value of practice's next prescription}
-###' \item{"4e3"}{use value of population's next prescription}
-###' \item{"4f1"}{use value of individual's previous prescription}
-###' \item{"4f2"}{use value of practice}'s previous prescription
-###' \item{"4f3"}{use value of population's previous prescription}
-###' }
-##' }
-##'
+#' @param decisions a character vector containing list of decison to be taken. See dec1-dec10
+#' for possible values to specify under the decisions argument.
+#'
+#' @examples
+#' dd1<-compute_ndd(dataset1,"min_min")
+#' dd1<-Implausible_values(dd1,min_max_dat)
+#' dd1<-run.drugPREP(dd1,c("1b","2b1","3b","4b1","5b_6","6c","7a","8d","9a","10b"))
 #'
 #' @importFrom rlang .data
-
 #' @return data.frame
 #'
 #' @export

@@ -13,5 +13,5 @@ shift_interval(x)
 Dataframe with the same structure as the input
 }
 \description{
-shift_interval
+Internal function used by dec9
 }

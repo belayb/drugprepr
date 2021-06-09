@@ -5,7 +5,8 @@
 #' and compute the (ndd) according to the given decision.
 #' The general formula for computing (ndd) is given by (ndd=DF*DN/DI), where (DF) is dose
 #' frequency, (DN) is dose number, and (DI) is dose interval. Prescriptions
-#' can have a varible dose frequency or dose number such as '2-4 tablets'.
+#' can have a varible dose frequency or dose number such as '2-4 tablets'. In this case, the user can choose
+#' minimum or maximum or average of value of DN or DF.
 #'
 #'
 #' @param dataset1 a data frame object containing the prescription information.
@@ -25,7 +26,7 @@
 ##' }
 ##'
 #'
-#' @return Dataframe with the same structure as the input
+#' @return Dataframe with the same structure as the input with additional column named ndd
 #'
 #' @importFrom rlang .data
 #' @importFrom magrittr %>%

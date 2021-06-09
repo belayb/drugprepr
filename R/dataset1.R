@@ -6,7 +6,7 @@
 #' @format A data frame with 18 rows and 9 variables:
 #' \describe{
 #'   \item{patid}{unique identifier given to a patient in CPRD GOLD}
-#'   \item{pracid}{weight of the diamond, in carats}
+#'   \item{pracid}{unique identifier given to a practice in CPRD GOLD}
 #'   \item{event_date}{Date associated with the event, as entered by the GP}
 #'   \item{prodcode}{CPRD unique code for the treatment selected by the GP}
 #'   \item{dossageid}{Identifier that allows dosage information on the event to be retrieved from Common Dosages Lookup table}
