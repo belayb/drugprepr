@@ -1,8 +1,15 @@
 ---
 title: "Introduction to `drugprepCPRD`"
-author: Belay B. Yimer, David Sleby, Meghna Jani, Goran Nenadic,Mark Lunt, William G. Dixon
-output: rmarkdown::pdf_document
-date: Jun 2021
+author:
+  - Belay B. Yimer
+  - David A. Selby
+  - Meghna Jani
+  - Goran Nenadic
+  - Mark Lunt
+  - William G. Dixon
+output: pdf_document
+papersize: a4
+date: June 2021
 vignette: >
   %\VignetteIndexEntry{introduction_to_drugprepCPRD}
   %\VignetteEngine{knitr::rmarkdown}
@@ -18,20 +25,21 @@ knitr::opts_chunk$set(
 
 # Motivation 
 
-The Clinical Practice Research Datalink (CPRD), a UK database of anonymised primary care electronic health records (EHRs), is one of the widely used EHR to study the effectiveness and safety of medications.  However, prescription data from CPRD are often messy, with inherent issues such as missing information on stop date, quantity, and unstructured free-text instructions. Data preparation steps of exposure information are rarely fully reported in pharmacoepidemiology studies, yet assumptions made during this stage can have considerable implications for risk attribution of possible adverse events (AEs). We have previously developed a framework for dealing with missing information on stop dates and other issues such as overlapping prescriptions. The framework was implemented using `STATA` software. Beside being only available for `STATA` users, the earlier algorithm did not deal with the free text prescriptions. The current r-package `drugprepCPRD`, build up on the earlier algorithm, and aims to make the framework available to wider audience through the implementation in a free open-source software. 
+The Clinical Practice Research Datalink (CPRD), a UK database of anonymised primary care electronic health records (EHRs), is one of the widely used EHR to study the effectiveness and safety of medications.  However, prescription data from CPRD are often messy, with inherent issues such as missing information on stop date, quantity, and unstructured free-text instructions. Data preparation steps of exposure information are rarely fully reported in pharmacoepidemiology studies, yet assumptions made during this stage can have considerable implications for risk attribution of possible adverse events (AEs). We have previously developed a framework for dealing with missing information on stop dates and other issues such as overlapping prescriptions. The framework was implemented using \textsc{Stata} software. Beside being only available for \textsc{Stata} users, the earlier algorithm did not deal with the free text prescriptions. The current r-package `drugprepCPRD`, build up on the earlier algorithm, and aims to make the framework available to wider audience through the implementation in a free open-source software. 
 
-This vignette describes how to use the `drugprepCPRD` package to transform CPRD drug data contained in the 'therapy.txt' file into information on individuals’ drug use over time. We will walk through all the steps needed to perform the transformation. We assume the user are familiar with CPRD data and have basic knowledge of R-software. 
+This vignette describes how to use the `drugprepCPRD` package to transform CPRD drug data contained in the `therapy.txt` file into information on individuals’ drug use over time. We will walk through all the steps needed to perform the transformation. We assume the user are familiar with CPRD data and have basic knowledge of R software. 
 
 
 # The CPRD Data  
 
-The CPRD Gold data follows the CPRD Gold specification (https://cprdcw.cprd.com/_docs/CPRD_GOLD_Full_Data_Specification_v2.0.pdf). It is made-up of several tables containing information related to the patients. One of the CPRD tables called 'Therapy' contain the prescription information for a patient. This table can be linked to the 'commondoage' lookup table to get the text instruction for the prescribed product. Table 1 below presents a hypothetical prescription data for two individuals. 
+The CPRD Gold data follows the CPRD Gold specification (https://cprdcw.cprd.com/_docs/CPRD_GOLD_Full_Data_Specification_v2.0.pdf). It is made-up of several tables containing information related to the patients. One of the CPRD tables called 'Therapy' contain the prescription information for a patient. This table can be linked to the 'commondoage' lookup table to get the text instruction for the prescribed product. Table \ref{tab:dataset1} below presents a hypothetical prescription data for two individuals. 
 
-
-```{r , echo=FALSE}
+```{r dataset1, echo=FALSE}
 library(drugprepCPRD)
-dataset1 
-
+library(kableExtra)
+kable(dataset1, booktabs = TRUE,
+      caption = 'Hypothetical prescription data for two individuals. Stored in \\texttt{dataset1}') %>%
+  kable_styling(latex_options = 'scale_down')
 ```
 
 The event_date in the above table is often used as the start date of exposure but the stop date of the exposure is not available as per se and we have to compute it from the available information. CPRD provides two options namely, numdays and dose_duration which can be used to define the stop date. However, this values are often missing and does not give flexibility for the researcher in defining the stop date in the case of prescription with a variable dose frequency (number of times the prescription to be taken per day) and dose number (e.g., number of tablets to take at a time). 
@@ -42,20 +50,41 @@ As described below, the `drugprepCPRD` package will extract the dose frequency a
 
 The `drugprepCPRD` is made up of the following function that must be executed sequentially. 
 
-* **Compute ndd**: Extract dose frequency (number of times the prescription to be taken per day) and dose number (e.g., number of tablets to take at a time) from the free text and compute the number of daily dose. 
-* **Define implusible values**: Given “Plausible” values (e.g. based on prescribing guidelines and clinical experience), this stage identifies those values outside the plausible values range.
-* **Dec1-Handle implausible qty**: Values outside the “Plausible” range may be [1a] ignored,  [1b] set to missing, or imputed. Imputation options include: [1c1] set to the mean value for that  patient for that product code, [1c2] set to the mean value for that practice for that product code, [1c3] set to the mean value for the whole cohort for that product  code, etc,. See the package manual for all possible options. 
-* **Dec2-Handle missing qty**: – Options for missing qty are: [2a] leave as missing, [2b1] set to the mean value for that patient for that product code, [2b2] set to the  mean value for that practice for that product code, [2c] set to the mean value for the whole  cohort for that product code, etc,.
-* **Dec3-Handle implausible ndd**:  Options for implausible ndd are the same as for decision 1.
-* **Dec4-Handle missing ndd**: Options for missing ndd are the same as for decision 2.
-* **Dec5-Clean duration**: cleans implausibly high values for each of the three available duration variables (numdays, dose_duration, and qty/ndd). Options for cleaning each duration variable are: [5a] make no changes, [5b(X)] set to missing if duration is greater than X months, or [5c(X)] set to X if duration is greater than X  months. X is 6, 12, or 24.
-* **Dec6-Select stop date**: defines a stop date for each prescription. calculate stop date as prescription start date + one of the following duration  definitions: [6a] numdays, [6b] dose_duration, [6c] qty/ndd, or [6d(X)] 
+Compute ndd
+: Extract dose frequency (number of times the prescription to be taken per day) and dose number (e.g., number of tablets to take at a time) from the free text and compute the number of daily dose.
 
-* **Dec7-Handle missing stop date**: if stop date is missing: [7a] keep as missing, [7b] set to the mean value for that  product code for that patient, [7c] set to the mean value for that product code for the whole  cohort, [7d] set to the mean value for that product code for that patient, otherwise set to the mean value for that product code for the whole cohort.
+Define implusible values
+: Given “Plausible” values (e.g. based on prescribing guidelines and clinical experience), this stage identifies those values outside the plausible values range.
 
-* **Dec8-Handle multiple prescriptions**: for multiple prescriptions for the same product code on the same day, but with different stop dates, options are: [8a] do nothing, ; [8b] calculate the mean duration of prescriptions and drop redundant records; [8c] keep the record with the shortest duration; [8d] keep the record with with the longest duration; [8e] sum the durations and drop redundant records.
-* **Dec9-Handle overlaping prescriptions**: for consecutive records with overlapping start and stop dates, options are [9a] to ignore the overlap but sum ndds; [9b] move the overlapping time.
-* **Dec10-Handle short gaps between prescriptions**: handles small gaps between consecutive prescriptions by either allowing these gaps to remain classified as unexposed or reclassifying the gaps as exposed when the gap is less than a  specified number of days. options include [10a] do nothing – the gap remains classified as unexposed; [10b(X)] move the stop date of the preceding prescription to “fill in” the gap, reclassifying the time as exposed, if the gap between consecutive prescriptions is less than X days. X is 15, 30, or 60
+Dec1-Handle implausible qty
+: Values outside the “Plausible” range may be [1a] ignored,  [1b] set to missing, or imputed. Imputation options include: [1c1] set to the mean value for that  patient for that product code, [1c2] set to the mean value for that practice for that product code, [1c3] set to the mean value for the whole cohort for that product  code, etc,. See the package manual for all possible options.
+
+Dec2-Handle missing qty
+: – Options for missing qty are: [2a] leave as missing, [2b1] set to the mean value for that patient for that product code, [2b2] set to the  mean value for that practice for that product code, [2c] set to the mean value for the whole  cohort for that product code, etc,.
+
+Dec3-Handle implausible ndd
+:  Options for implausible ndd are the same as for decision 1.
+
+Dec4-Handle missing ndd
+: Options for missing ndd are the same as for decision 2.
+
+Dec5-Clean duration
+: cleans implausibly high values for each of the three available duration variables (numdays, dose_duration, and qty/ndd). Options for cleaning each duration variable are: [5a] make no changes, [5b(X)] set to missing if duration is greater than X months, or [5c(X)] set to X if duration is greater than X  months. X is 6, 12, or 24.
+
+Dec6-Select stop date
+: defines a stop date for each prescription. calculate stop date as prescription start date + one of the following duration  definitions: [6a] numdays, [6b] dose_duration, [6c] qty/ndd, or [6d(X)]
+
+Dec7-Handle missing stop date
+: if stop date is missing: [7a] keep as missing, [7b] set to the mean value for that  product code for that patient, [7c] set to the mean value for that product code for the whole  cohort, [7d] set to the mean value for that product code for that patient, otherwise set to the mean value for that product code for the whole cohort.
+
+Dec8-Handle multiple prescriptions
+: for multiple prescriptions for the same product code on the same day, but with different stop dates, options are: [8a] do nothing, ; [8b] calculate the mean duration of prescriptions and drop redundant records; [8c] keep the record with the shortest duration; [8d] keep the record with with the longest duration; [8e] sum the durations and drop redundant records.
+
+Dec9-Handle overlaping prescriptions
+: for consecutive records with overlapping start and stop dates, options are [9a] to ignore the overlap but sum ndds; [9b] move the overlapping time.
+
+Dec10-Handle short gaps between prescriptions
+: handles small gaps between consecutive prescriptions by either allowing these gaps to remain classified as unexposed or reclassifying the gaps as exposed when the gap is less than a  specified number of days. options include [10a] do nothing – the gap remains classified as unexposed; [10b(X)] move the stop date of the preceding prescription to “fill in” the gap, reclassifying the time as exposed, if the gap between consecutive prescriptions is less than X days. X is 15, 30, or 60
 
 
 
