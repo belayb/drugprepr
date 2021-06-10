@@ -2,7 +2,7 @@
 % Please edit documentation in R/run.drugPREP.universe.R
 \name{dec10_gap_bn_prescription}
 \alias{dec10_gap_bn_prescription}
-\title{dec10: Handle sequential prescriptions with short gaps}
+\title{Handle sequential prescriptions with short gaps}
 \usage{
 dec10_gap_bn_prescription(dataset1 = NULL, decision)
 }
@@ -18,8 +18,9 @@ dec10_gap_bn_prescription(dataset1 = NULL, decision)
 }}
 }
 \value{
-data.frame
+Dataframe with the same structure as the input
 }
 \description{
-dec10: Handle sequential prescriptions with short gaps
+This function provides option for filling gaps between prescription of the same type
+for an individual depending on the choosen decison.
 }

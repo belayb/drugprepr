@@ -1,8 +1,8 @@
 ---
-title: "DrugPrepR package design document"
+title: "drugprepCPRD package design document"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{DrugPrepR package design document}
+  %\VignetteIndexEntry{drugprepCPRD package design document}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -22,8 +22,8 @@ The purpose of this document is to plan out the design of the package.
 We start with a dataset that looks a little bit like this.
 
 ```{r setup}
-library(CPRDDrugPrep)
-knitr::kable(dataset)
+library(drugprepCPRD)
+knitr::kable(dataset1)
 ```
 
 Where values are **implausible** (larger than the reference maximum, smaller than the reference minimum) or **missing** (i.e. `NA`), we have to choose how to replace them.
@@ -76,7 +76,7 @@ where `grp` may take the values `patid` (individual), `pracid` (practice) or `NU
 We might also consider a **data.table** implementation with similar notation:
 
 ```{r, eval=FALSE}
-dataset[ids_to_replace, ndd := fun(ndd), by = grp]
+dataset1[ids_to_replace, ndd := fun(ndd), by = grp]
 ```
 
 Everything beyond this is simply writing wrappers to handle multiple variables or decisions and pass these arguments to such an expression, as well as to collate the outputs into a dataset for fitting and comparing models.

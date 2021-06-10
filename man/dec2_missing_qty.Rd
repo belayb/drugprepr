@@ -2,12 +2,12 @@
 % Please edit documentation in R/run.drugPREP.universe.R
 \name{dec2_missing_qty}
 \alias{dec2_missing_qty}
-\title{Missing  quantity}
+\title{Missing quantity}
 \usage{
 dec2_missing_qty(dataset1 = NULL, decision)
 }
 \arguments{
-\item{dataset1}{a data frame containg prescription information}
+\item{dataset1}{a data frame containing prescription information}
 
 \item{decision}{a character specifying the decison to consider for processing
 \itemize{
@@ -30,8 +30,11 @@ dec2_missing_qty(dataset1 = NULL, decision)
 }}
 }
 \value{
-data.frame
+Dataframe with the same structure as the input
 }
 \description{
-This function acepts a data frame containg prodcode, and quantity and replace the missing quntity by one of the following options.
+This function accepts a data frame containing prescription information and
+replace the missing quntity by one of the following options. The input data
+must have the following columns: patid, prodcode, pracid (if practice level
+information is used for replacement) and qty.
 }

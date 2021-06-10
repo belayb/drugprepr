@@ -13,16 +13,17 @@ dec8_multipleprescription_same_start_date(dataset1 = NULL, decision)
 \itemize{
 \item{"8a"}{do nothing}
 \item{"8b"}{use mean ndd and mean length}
-\item{"8c"}{choose prescription with smallest ndd}
-\item{"8d"}{choose prescription with largest ndd}
-\item{"8e"}{choose shortest prescription}
-\item{"8f"}{choose longest prescription}
-\item{"8g"}{sum durations}
+\item{"8c"}{choose shortest prescription}
+\item{"8d"}{choose longest prescription}
+\item{"8e"}{sum durations}
 }}
 }
 \value{
-data.frame
+Dataframe with the same structure as the input
 }
 \description{
-Handle multiple prescriptions for same product on same day
+In situations where rows of identical prescription for the same individual at the same time
+is found in the data, this function removes the duplicated prescriptions by choosing one of the
+following options. The input data must have the following columns: patid,prodcode,start, real_stop,
+and ndd. It's adviced that this function is called after dec6_select_stop_date is executed.
 }

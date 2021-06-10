@@ -2,13 +2,12 @@
 % Please edit documentation in R/run.drugPREP.universe.R
 \name{dec6_select_stop_date}
 \alias{dec6_select_stop_date}
-\title{Stop date
-Select which stop date to use}
+\title{Select stop date}
 \usage{
 dec6_select_stop_date(dataset1 = NULL, decision)
 }
 \arguments{
-\item{dataset1}{a data frame containg prescription information}
+\item{dataset1}{a data frame containing prescription information}
 
 \item{decision}{a character specifying the decison to consider for processing
 \itemize{
@@ -18,9 +17,12 @@ dec6_select_stop_date(dataset1 = NULL, decision)
 }}
 }
 \value{
-data.frame
+Dataframe with the same structure as the input
 }
 \description{
-Stop date
-Select which stop date to use
+This function accepts a data frame containing prescription information already processed by
+dec5_clean_duration, and select which stop date to use from one of the following options.
+This step can only be called after dec5_clean_duration is executed.  The input dataset
+must have the following columns: event_date, numdays, dose_duration, new_duration (column
+name created by dec5_clean_duration).
 }

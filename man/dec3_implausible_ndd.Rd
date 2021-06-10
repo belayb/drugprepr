@@ -2,12 +2,12 @@
 % Please edit documentation in R/run.drugPREP.universe.R
 \name{dec3_implausible_ndd}
 \alias{dec3_implausible_ndd}
-\title{Implusible  ndd}
+\title{Implusible ndd}
 \usage{
 dec3_implausible_ndd(dataset1 = NULL, decision)
 }
 \arguments{
-\item{dataset1}{a data frame containg prescription information}
+\item{dataset1}{a data frame containing prescription information}
 
 \item{decision}{a character specifying the decison to consider for processing
 \itemize{
@@ -31,8 +31,14 @@ dec3_implausible_ndd(dataset1 = NULL, decision)
 }}
 }
 \value{
-data.frame
+Dataframe with the same structure as the input
 }
 \description{
-This function acepts a data frame containg prodcode, ndd, and implusible ndd indicator and replace the implusible ndd by one of the following options.
+This function accepts a data frame containing prescription information
+and replace the implusible ndd by one of the following options.
+The user must provide a data input with the following column names:
+patid, prodcode, ndd, implausible_ndd and pracid (if practice level
+information is used for replacement). The implausible_ndd column will take value 1
+if the given ndd in the data is not a plausible value and 0 otherwise. If this column
+not provided then only decision 1a (do nothing) can be chosen.
 }
