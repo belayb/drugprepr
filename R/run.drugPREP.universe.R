@@ -392,6 +392,9 @@ dec4_missing_ndd <- function(dataset1 = NULL, decision) {
       dplyr::group_by(prodcode) %>%
       dplyr::mutate(ndd = ifelse(is.na(ndd), mod_fun(ndd, na.rm = T), ndd))
   }
+  dataset1 <- dataset1 %>%
+    dplyr::ungroup() %>%
+    dplyr::select(-c(implausible_qty, implausible_ndd, optional))
   return(dataset1)
 }
 
@@ -702,15 +705,14 @@ dec9_overlaping_prescription <- function(dataset1 = NULL, decision) {
     dataset1 <- as.data.frame(dataset1)
     # do nothing- sum overlaping doses and remove duplicate
     dataset1 <- dataset1 %>%
-      dplyr::group_by(patid, prodcode, start) %>%
+      dplyr::group_by(patid, prodcode, rstart) %>%
       dplyr::mutate(sum_ndd = sum(ndd, na.rm = T))
-    dataset1 <- dataset1[!(duplicated(dataset1[, c("patid", "prodcode", "start")])), ]
     dataset1$ndd <- dataset1$sum_ndd # do we need to check for implusibility
-    # dataset1<-dataset1[,-c("sum_ndd")]
-    dataset1$real_stop <- as.POSIXct(dataset1$real_stop)
+    dataset1 <- dataset1[!(duplicated(dataset1[, c("patid", "prodcode", "rstart")])), ]
+    #dataset1$real_stop <- as.POSIXct(dataset1$rreal_stop)
     dataset1 <- dataset1 %>%
-      dplyr::ungroup() %>%
-      dplyr::select(-c(start, real_stop, sum_ndd))
+     dplyr::ungroup() %>%
+     dplyr::select(-c(start, real_stop, sum_ndd))
     dataset1 <- reshape::rename(dataset1, c("rstart" = "start", "rreal_stop" = "real_stop"))
   }
   else if (decision[9] == "9b") {
