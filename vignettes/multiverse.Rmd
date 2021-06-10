@@ -56,7 +56,7 @@ Ideally, we can generate a dataset corresponding to each decision and fit a mode
 Before wrapping things into a package and trying to optimize, let's consider a case study and how we might approach the problem _without_ the benefit of a dedicated set of functions, so it becomes clear where the tedious or complicated parts are.
 Then we can wrap things up as we go.
 
-The atomic element of the package should be an `impute` function, which takes three principal inputs:
+The atomic element of the package should be an `impute` function, which takes four principal inputs:
 
 1. the variable of interest
 2. indices to replace (e.g. which values are 'implausible' or missing)
@@ -79,4 +79,4 @@ We might also consider a **data.table** implementation with similar notation:
 dataset[ids_to_replace, ndd := fun(ndd), by = grp]
 ```
 
-Everything beyond this is simply writing wrappers to handle multiple variables or decisions and pass these arguments to such an expression, as well as to collat the outputs into a dataset for fitting and comparing models.
+Everything beyond this is simply writing wrappers to handle multiple variables or decisions and pass these arguments to such an expression, as well as to collate the outputs into a dataset for fitting and comparing models.
