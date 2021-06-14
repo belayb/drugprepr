@@ -1,6 +1,6 @@
 Package: drugprepCPRD
 Title: CPRD Drug Preparation
-Version: 0.0.0.9001
+Version: 0.0.0.9002
 Authors@R: 
     c(person(given = "Belay Birlie",
            family = "Yimer",
@@ -51,5 +51,6 @@ Depends:
 Suggests: 
     knitr,
     rmarkdown,
-    testthat
+    testthat,
+    kableExtra
 VignetteBuilder: knitr

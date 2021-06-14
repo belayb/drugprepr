@@ -4,10 +4,10 @@
 \alias{compute_ndd}
 \title{Compute the number of daily dose (ndd)}
 \usage{
-compute_ndd(dataset1 = NULL, decision = NULL)
+compute_ndd(data = NULL, decision = NULL)
 }
 \arguments{
-\item{dataset1}{a data frame object containing the prescription information.
+\item{data}{a data frame object containing the prescription information.
 The dataset is must have column names 'dosageid' and 'text'. This dataset is
 expected to be a result of merging CPRD 'therapy' table with 'commondosage' table.}
 
@@ -34,4 +34,8 @@ The general formula for computing (ndd) is given by (ndd=DF*DN/DI), where (DF) i
 frequency, (DN) is dose number, and (DI) is dose interval. Prescriptions
 can have a varible dose frequency or dose number such as '2-4 tablets'. In this case, the user can choose
 minimum or maximum or average of value of DN or DF.
+}
+\examples{
+compute_ndd(dataset1, "min_min")
+
 }
