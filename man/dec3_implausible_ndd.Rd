@@ -4,10 +4,10 @@
 \alias{dec3_implausible_ndd}
 \title{Implusible ndd}
 \usage{
-dec3_implausible_ndd(dataset1 = NULL, decision)
+dec3_implausible_ndd(data = NULL, decision)
 }
 \arguments{
-\item{dataset1}{a data frame containing prescription information}
+\item{data}{a data frame containing prescription information}
 
 \item{decision}{a character specifying the decison to consider for processing
 \itemize{

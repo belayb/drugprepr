@@ -4,10 +4,10 @@
 \alias{dec4_missing_ndd}
 \title{Missing ndd}
 \usage{
-dec4_missing_ndd(dataset1 = NULL, decision)
+dec4_missing_ndd(data = NULL, decision)
 }
 \arguments{
-\item{dataset1}{a data frame containing prescription information}
+\item{data}{a data frame containing prescription information}
 
 \item{decision}{a character specifying the decison to consider for processing
 \itemize{
@@ -25,7 +25,7 @@ dec4_missing_ndd(dataset1 = NULL, decision)
 \item{"4e2"}{use value of practice's next prescription}
 \item{"4e3"}{use value of population's next prescription}
 \item{"4f1"}{use value of individual's previous prescription}
-\item{"4f2"}{use value of practice}'s previous prescription
+\item{"4f2"}{use value of practice's previous prescription}
 \item{"4f3"}{use value of population's previous prescription}
 }}
 }

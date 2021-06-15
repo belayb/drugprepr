@@ -43,7 +43,6 @@ get_mode <- function(v) {
 #'
 #' @export
 dec1_implausible_qty <- function(data = NULL, decision) {
-  # implausible_qty<-qty<-patid<-prodcode<-pracid<-NULL
   message("Started executing dec1:implausible_qty")
 
   decision_group <- switch(
@@ -103,7 +102,6 @@ dec1_implausible_qty <- function(data = NULL, decision) {
 
 #' @export
 dec2_missing_qty <- function(data = NULL, decision) {
-  # qty<-patid<-prodcode<-pracid<-NULL
   message("Started executing dec2:missing_qty")
 
   decision_group <- switch(
@@ -139,7 +137,7 @@ dec2_missing_qty <- function(data = NULL, decision) {
 #' if the given ndd in the data is not a plausible value and 0 otherwise. If this column
 #' not provided then only decision 1a (do nothing) can be chosen.
 #'
-#' @param dataset1 a data frame containing prescription information
+#' @param data a data frame containing prescription information
 #' @param decision a character specifying the decison to consider for processing
 ##' \itemize{
 ##' \item{"3a"}{use implausible value}
@@ -166,72 +164,30 @@ dec2_missing_qty <- function(data = NULL, decision) {
 #' @importFrom stats median
 #'
 #' @export
-dec3_implausible_ndd <- function(dataset1 = NULL, decision) {
+dec3_implausible_ndd <- function(data = NULL, decision) {
   message("Started executing dec3:implausible_ndd")
 
-  # implausible_ndd<-ndd<-patid<-prodcode<-pracid<-NULL
+  decision_group <- switch(
+    substring(decision[3], 3),
+    '1' = c('prodcode', 'patid'),
+    '2' = c('prodcode', 'pracid'),
+    '3' = 'prodcode',
+    NULL
+  )
 
+  decision_fun <- switch(
+    substring(decision[3], 1, 2),
+    '3a' = identity,
+    '3b' = function(x) NA,
+    '3c' = function(x) mean(x, na.rm = TRUE),
+    '3d' = function(x) median(x, na.rm = TRUE),
+    '3e' = function(x) get_mode(v),
+    stop(paste('Decision rule', decision, 'is not yet implemented'))
+  )
 
-  mod_fun <- function(x) unique(x)[which.max(table(x))]
-
-  if (decision[3] == "3a") {
-    # do nothing
-    dataset1 <- dataset1
-  }
-  else if (decision[3] == "3b") {
-    dataset1 <- dataset1 %>%
-      dplyr::rowwise() %>%
-      dplyr::mutate(ndd = ifelse(implausible_ndd == 1, NA, ndd))
-  }
-  else if (decision[3] == "3c1") {
-    dataset1 <- dataset1 %>%
-      dplyr::group_by(patid, prodcode) %>%
-      dplyr::mutate(ndd = ifelse(implausible_ndd == 1, mean(ndd, na.rm = T), ndd))
-  }
-  else if (decision[3] == "3c2") {
-    dataset1 <- dataset1 %>%
-      dplyr::group_by(pracid, prodcode) %>%
-      dplyr::mutate(ndd = ifelse(implausible_ndd == 1, mean(ndd, na.rm = T), ndd))
-  }
-  else if (decision[3] == "3c3") {
-    dataset1 <- dataset1 %>%
-      dplyr::group_by(prodcode) %>%
-      dplyr::mutate(ndd = ifelse(implausible_ndd == 1, mean(ndd, na.rm = T), ndd))
-  }
-  else if (decision[3] == "3d1") {
-    dataset1 <- dataset1 %>%
-      dplyr::group_by(patid, prodcode) %>%
-      dplyr::mutate(ndd = ifelse(implausible_ndd == 1, median(ndd, na.rm = T), ndd))
-  }
-  else if (decision[3] == "3d2") {
-    dataset1 <- dataset1 %>%
-      dplyr::group_by(pracid, prodcode) %>%
-      dplyr::mutate(ndd = ifelse(implausible_ndd == 1, median(ndd, na.rm = T), ndd))
-  }
-  else if (decision[3] == "3d3") {
-    dataset1 <- dataset1 %>%
-      dplyr::group_by(prodcode) %>%
-      dplyr::mutate(ndd = ifelse(implausible_ndd == 1, median(ndd, na.rm = T), ndd))
-  }
-
-  else if (decision[3] == "3e1") {
-    dataset1 <- dataset1 %>%
-      dplyr::group_by(patid, prodcode) %>%
-      dplyr::mutate(ndd = ifelse(implausible_ndd == 1, mod_fun(ndd, na.rm = T), ndd))
-  }
-
-  else if (decision[3] == "3e2") {
-    dataset1 <- dataset1 %>%
-      dplyr::group_by(pracid, prodcode) %>%
-      dplyr::mutate(ndd = ifelse(implausible_ndd == 1, mod_fun(ndd, na.rm = T), ndd))
-  }
-
-  else if (decision[3] == "3e3") {
-    dataset1 <- dataset1 %>%
-      dplyr::group_by(prodcode) %>%
-      dplyr::mutate(ndd = ifelse(implausible_ndd == 1, mod_fun(ndd, na.rm = T), ndd))
-  }
-  return(dataset1)
+  data %>%
+    dplyr::group_by(dplyr::across(dplyr::all_of(decision_group))) %>%
+    dplyr::mutate(ndd = ifelse(implausible_ndd, decision_fun(ndd), ndd))
 }
 
 #' Missing ndd
@@ -241,7 +197,7 @@ dec3_implausible_ndd <- function(dataset1 = NULL, decision) {
 #' must have the following columns: patid, prodcode, pracid (if practice level
 #' information is used for replacement) and ndd.
 #'
-#' @param dataset1 a data frame containing prescription information
+#' @param data a data frame containing prescription information
 #' @param decision a character specifying the decison to consider for processing
 ##' \itemize{
 ##' \item{"4a"}{Leave as missing (implicitly drop this prescription)}
@@ -258,7 +214,7 @@ dec3_implausible_ndd <- function(dataset1 = NULL, decision) {
 ##' \item{"4e2"}{use value of practice's next prescription}
 ##' \item{"4e3"}{use value of population's next prescription}
 ##' \item{"4f1"}{use value of individual's previous prescription}
-##' \item{"4f2"}{use value of practice}'s previous prescription
+##' \item{"4f2"}{use value of practice's previous prescription}
 ##' \item{"4f3"}{use value of population's previous prescription}
 ##' }
 ##'
@@ -267,68 +223,30 @@ dec3_implausible_ndd <- function(dataset1 = NULL, decision) {
 #' @importFrom stats median
 #'
 #' @export
-dec4_missing_ndd <- function(dataset1 = NULL, decision) {
+dec4_missing_ndd <- function(data = NULL, decision) {
   message("Started executing dec4:missing_ndd")
 
-  # ndd<-patid<-prodcode<-pracid<-NULL
+  decision_group <- switch(
+    substring(decision[4], 3),
+    '1' = c('prodcode', 'patid'),
+    '2' = c('prodcode', 'pracid'),
+    '3' = 'prodcode',
+    NULL
+  )
 
-  mod_fun <- function(x) unique(x)[which.max(table(x))]
+  decision_fun <- switch(
+    substring(decision[4], 1, 2),
+    '4a' = identity,
+    '4b' = function(x) NA,
+    '4c' = function(x) mean(x, na.rm = TRUE),
+    '4d' = function(x) median(x, na.rm = TRUE),
+    '4e' = function(x) get_mode(v),
+    stop(paste('Decision rule', decision, 'is not yet implemented'))
+  )
 
-  if (decision[4] == "4a") {
-    # do nothing
-    dataset1 <- dataset1
-  }
-  else if (decision[4] == "4b1") {
-    dataset1 <- dataset1 %>%
-      dplyr::group_by(patid, prodcode) %>%
-      dplyr::mutate(ndd = ifelse(is.na(ndd), mean(ndd, na.rm = T), ndd))
-  }
-
-  else if (decision[4] == "4b2") {
-    dataset1 <- dataset1 %>%
-      dplyr::group_by(pracid, prodcode) %>%
-      dplyr::mutate(ndd = ifelse(is.na(ndd), mean(ndd, na.rm = T), ndd))
-  }
-  else if (decision[4] == "4b3") {
-    dataset1 <- dataset1 %>%
-      dplyr::group_by(prodcode) %>%
-      dplyr::mutate(ndd = ifelse(is.na(ndd), mean(ndd, na.rm = T), ndd))
-  }
-  else if (decision[4] == "4c1") {
-    dataset1 <- dataset1 %>%
-      dplyr::group_by(patid, prodcode) %>%
-      dplyr::mutate(ndd = ifelse(is.na(ndd), median(ndd, na.rm = T), ndd))
-  }
-
-  else if (decision[4] == "4c2") {
-    dataset1 <- dataset1 %>%
-      dplyr::group_by(pracid, prodcode) %>%
-      dplyr::mutate(ndd = ifelse(is.na(ndd), median(ndd, na.rm = T), ndd))
-  }
-  else if (decision[4] == "4c3") {
-    dataset1 <- dataset1 %>%
-      dplyr::group_by(prodcode) %>%
-      dplyr::mutate(ndd = ifelse(is.na(ndd), median(ndd, na.rm = T), ndd))
-  }
-  else if (decision[4] == "4d1") {
-    dataset1 <- dataset1 %>%
-      dplyr::group_by(patid, prodcode) %>%
-      dplyr::mutate(ndd = ifelse(is.na(ndd), mod_fun(ndd, na.rm = T), ndd))
-  }
-  else if (decision[4] == "4d2") {
-    dataset1 <- dataset1 %>%
-      dplyr::group_by(pracid, prodcode) %>%
-      dplyr::mutate(ndd = ifelse(is.na(ndd), mod_fun(ndd, na.rm = T), ndd))
-  }
-  else if (decision[4] == "4d3") {
-    dataset1 <- dataset1 %>%
-      dplyr::group_by(prodcode) %>%
-      dplyr::mutate(ndd = ifelse(is.na(ndd), mod_fun(ndd, na.rm = T), ndd))
-  }
-  dataset1 <- dataset1 %>%
-    dplyr::ungroup() %>%
-    dplyr::select(-c(implausible_qty, implausible_ndd, optional))
-  return(dataset1)
+  data %>%
+    dplyr::group_by(dplyr::across(dplyr::all_of(decision_group))) %>%
+    dplyr::mutate(ndd = ifelse(is.na(ndd), decision_fun(ndd), ndd))
 }
 
 #' Clean duration
