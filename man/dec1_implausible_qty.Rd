@@ -4,10 +4,10 @@
 \alias{dec1_implausible_qty}
 \title{Implausible  quantity}
 \usage{
-dec1_implausible_qty(dataset1 = NULL, decision)
+dec1_implausible_qty(data = NULL, decision)
 }
 \arguments{
-\item{dataset1}{a data frame containing prescription information.}
+\item{data}{a data frame containing prescription information.}
 
 \item{decision}{a character specifying the decison to consider for processing.
 \itemize{

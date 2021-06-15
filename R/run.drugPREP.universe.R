@@ -8,96 +8,65 @@
 #' if the given qty in the data is not a plausible value and 0 otherwise. If this column
 #' not provided then only decision 1a (do nothing) can be chosen.
 #'
-#' @param dataset1 a data frame containing prescription information.
+#' @param data a data frame containing prescription information.
 #' @param decision a character specifying the decison to consider for processing.
-##' \itemize{
-##' \item{"1a"}{use implausible value}
-##' \item{"1b"}{set to missing}
-##' \item{"1c1"}{set to mean for individual's prescriptions for that drug}
-##' \item{"1c2"}{set to mean for practice's prescriptions for that drug}
-##' \item{"1c3"}{set to mean for populations's prescriptions for that drug}
-##' \item{"1d1"}{set to median for individual's prescriptions for that drug}
-##' \item{"1d2"}{set to median for practice's prescriptions for that drug}
-##' \item{"1d3"}{set to median for population's prescriptions for that drug}
-##' \item{"1e1"}{set to mode for individual's prescriptions for that drug}
-##' \item{"1e2"}{set to mode for practice's prescriptions for that drug}
-##' \item{"1e3"}{set to mode for population's prescriptions for that drug}
-##' \item{"1f1"}{use value of individual's next prescription}
-##' \item{"1f2"}{use value of practice's next prescription}
-##' \item{"1f3"}{use value of population's next prescription}
-##' \item{"1g1"}{use value of individual's previous prescription}
-##' \item{"1g2"}{use value of practice's previous prescription}
-##' \item{"1g3"}{use value of population's previous prescription}
-##' }
-##'
-#' @importFrom stats median
+#' \itemize{
+#' \item{"1a"}{use implausible value}
+#' \item{"1b"}{set to missing}
+#' \item{"1c1"}{set to mean for individual's prescriptions for that drug}
+#' \item{"1c2"}{set to mean for practice's prescriptions for that drug}
+#' \item{"1c3"}{set to mean for populations's prescriptions for that drug}
+#' \item{"1d1"}{set to median for individual's prescriptions for that drug}
+#' \item{"1d2"}{set to median for practice's prescriptions for that drug}
+#' \item{"1d3"}{set to median for population's prescriptions for that drug}
+#' \item{"1e1"}{set to mode for individual's prescriptions for that drug}
+#' \item{"1e2"}{set to mode for practice's prescriptions for that drug}
+#' \item{"1e3"}{set to mode for population's prescriptions for that drug}
+#' \item{"1f1"}{use value of individual's next prescription}
+#' \item{"1f2"}{use value of practice's next prescription}
+#' \item{"1f3"}{use value of population's next prescription}
+#' \item{"1g1"}{use value of individual's previous prescription}
+#' \item{"1g2"}{use value of practice's previous prescription}
+#' \item{"1g3"}{use value of population's previous prescription}
+#' }
+#'
+#' @importFrom magrittr %>%
+#' @importFrom dplyr across all_of group_by mutate
 #'
 #' @return Dataframe with the same structure as the input
 #'
 #' @export
-dec1_implausible_qty <- function(dataset1 = NULL, decision) {
+dec1_implausible_qty <- function(data = NULL, decision) {
   # implausible_qty<-qty<-patid<-prodcode<-pracid<-NULL
   message("Started executing dec1:implausible_qty")
 
-  mod_fun <- function(x) unique(x)[which.max(table(x))]
+  get_mode <- function(v) {
+    # Returns the most common value. If multiple: whichever appears first.
+    uniqv <- unique(v)
+    uniqv[which.max(tabulate(match(v, uniqv)))]
+  }
 
-  if (decision[1] == "1a") {
-    # do nothing
-    dataset1 <- dataset1
-  }
-  else if (decision[1] == "1b") {
-    dataset1 <- dataset1 %>%
-      dplyr::rowwise() %>%
-      dplyr::mutate(qty = ifelse(implausible_qty == 1, NA, qty)) %>%
-      dplyr::ungroup()
-  }
-  else if (decision[1] == "1c1") {
-    dataset1 <- dataset1 %>%
-      dplyr::group_by(patid, prodcode) %>%
-      dplyr::mutate(qty = ifelse(implausible_qty == 1, mean(qty, na.rm = T), qty))
-  }
-  else if (decision[1] == "1c2") {
-    dataset1 <- dataset1 %>%
-      dplyr::group_by(pracid, prodcode) %>%
-      dplyr::mutate(qty = ifelse(implausible_qty == 1, mean(qty, na.rm = T), qty))
-  }
-  else if (decision[1] == "1c3") {
-    dataset1 <- dataset1 %>%
-      dplyr::group_by(prodcode) %>%
-      dplyr::mutate(qty = ifelse(implausible_qty == 1, mean(qty, na.rm = T), qty))
-  }
-  else if (decision[1] == "1d1") {
-    dataset1 <- dataset1 %>%
-      dplyr::group_by(patid, prodcode) %>%
-      dplyr::mutate(qty = ifelse(implausible_qty == 1, median(qty, na.rm = T), qty))
-  }
-  else if (decision[1] == "1d2") {
-    dataset1 <- dataset1 %>%
-      dplyr::group_by(pracid, prodcode) %>%
-      dplyr::mutate(qty = ifelse(implausible_qty == 1, median(qty, na.rm = T), qty))
-  }
-  else if (decision[1] == "1d3") {
-    dataset1 <- dataset1 %>%
-      dplyr::group_by(prodcode) %>%
-      dplyr::mutate(qty = ifelse(implausible_qty == 1, median(qty, na.rm = T), qty))
-  }
-  else if (decision[1] == "1e1") {
-    dataset1 <- dataset1 %>%
-      dplyr::group_by(patid, prodcode) %>%
-      dplyr::mutate(qty = ifelse(implausible_qty == 1, mod_fun(qty, na.rm = T), qty))
-  }
-  else if (decision[1] == "1e2") {
-    dataset1 <- dataset1 %>%
-      dplyr::group_by(pracid, prodcode) %>%
-      dplyr::mutate(qty = ifelse(implausible_qty == 1, mod_fun(qty, na.rm = T), qty))
-  }
-  else if (decision[1] == "1e3") {
-    dataset1 <- dataset1 %>%
-      dplyr::group_by(prodcode) %>%
-      dplyr::mutate(qty = ifelse(implausible_qty == 1, mod_fun(qty, na.rm = T), qty))
-  }
-  # other possible decison to be added
-  return(dataset1)
+  decision_group <- switch(
+    substring(decision[1], 3),
+    '1' = c('prodcode', 'patid'),
+    '2' = c('prodcode', 'pracid'),
+    '3' = 'pracid',
+    NULL
+  )
+
+  decision_fun <- switch(
+    substring(decision[1], 1, 2),
+    '1a' = identity,
+    '1b' = function(x) NA,
+    '1c' = function(x) mean(x, na.rm = TRUE),
+    '1d' = function(x) median(x, na.rm = TRUE),
+    '1e' = function(x) get_mode(v),
+    stop(paste('Decision rule', decision, 'is not yet implemented'))
+  )
+
+  data %>%
+    dplyr::group_by(dplyr::across(dplyr::all_of(decision_group))) %>%
+    dplyr::mutate(qty = ifelse(implausible_qty, decision_fun(qty), qty))
 }
 
 #' Missing quantity
