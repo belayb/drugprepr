@@ -4,10 +4,10 @@
 \alias{run.drugPREP}
 \title{run drug prep}
 \usage{
-run.drugPREP(dataset1 = NULL, decisions = NULL)
+run.drugPREP(data = NULL, decisions = NULL)
 }
 \arguments{
-\item{dataset1}{a data frame containing prescription information}
+\item{data}{a data frame containing prescription information}
 
 \item{decisions}{a character vector containing list of decison to be taken. See dec1-dec10
 for possible values to specify under the decisions argument.}
@@ -22,7 +22,7 @@ run first the implusible_value function.
 If not, you need to choose 'do nothing' for dec1 and dec3.
 }
 \examples{
-dd1<-compute_ndd(dataset1,"min_min")
+dd1<-compute_ndd(data,"min_min")
 dd1<-Implausible_values(dd1,min_max_dat)
 dd1<-run.drugPREP(dd1,c("1b","2b1","3b","4b1","5b_6","6c","7a","8d","9a","10b"))
 

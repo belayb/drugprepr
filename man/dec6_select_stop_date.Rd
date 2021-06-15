@@ -4,10 +4,10 @@
 \alias{dec6_select_stop_date}
 \title{Select stop date}
 \usage{
-dec6_select_stop_date(dataset1 = NULL, decision)
+dec6_select_stop_date(data = NULL, decision)
 }
 \arguments{
-\item{dataset1}{a data frame containing prescription information}
+\item{data}{a data frame containing prescription information}
 
 \item{decision}{a character specifying the decison to consider for processing
 \itemize{

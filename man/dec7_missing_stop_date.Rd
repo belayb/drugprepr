@@ -4,10 +4,10 @@
 \alias{dec7_missing_stop_date}
 \title{Missing stop date}
 \usage{
-dec7_missing_stop_date(dataset1 = NULL, decision)
+dec7_missing_stop_date(data = NULL, decision)
 }
 \arguments{
-\item{dataset1}{a data frame containing prescription information}
+\item{data}{a data frame containing prescription information}
 
 \item{decision}{a character specifying the decison to consider for processing
 \itemize{

@@ -4,10 +4,10 @@
 \alias{dec8_multipleprescription_same_start_date}
 \title{Handle multiple prescriptions for same product on same day}
 \usage{
-dec8_multipleprescription_same_start_date(dataset1 = NULL, decision)
+dec8_multipleprescription_same_start_date(data = NULL, decision)
 }
 \arguments{
-\item{dataset1}{a data frame containg prescription information}
+\item{data}{a data frame containg prescription information}
 
 \item{decision}{a character specifying the decison to consider for processing
 \itemize{

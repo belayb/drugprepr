@@ -4,10 +4,10 @@
 \alias{dec5_clean_duration}
 \title{Clean duration}
 \usage{
-dec5_clean_duration(dataset1 = NULL, decision)
+dec5_clean_duration(data = NULL, decision)
 }
 \arguments{
-\item{dataset1}{a data frame containing prescription information}
+\item{data}{a data frame containing prescription information}
 
 \item{decision}{a character specifying the decison to consider for processing
 \itemize{

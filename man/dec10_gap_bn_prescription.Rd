@@ -4,10 +4,10 @@
 \alias{dec10_gap_bn_prescription}
 \title{Handle sequential prescriptions with short gaps}
 \usage{
-dec10_gap_bn_prescription(dataset1 = NULL, decision)
+dec10_gap_bn_prescription(data = NULL, decision)
 }
 \arguments{
-\item{dataset1}{a data frame containg prescription information}
+\item{data}{a data frame containg prescription information}
 
 \item{decision}{a character specifying the decison to consider for processing
 \itemize{

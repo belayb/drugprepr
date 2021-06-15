@@ -4,10 +4,10 @@
 \alias{dec9_overlaping_prescription}
 \title{Handle overlapping prescriptions}
 \usage{
-dec9_overlaping_prescription(dataset1 = NULL, decision)
+dec9_overlaping_prescription(data = NULL, decision)
 }
 \arguments{
-\item{dataset1}{a data frame containing prescription information}
+\item{data}{a data frame containing prescription information}
 
 \item{decision}{a character specifying the decison to consider for processing
 \itemize{
