@@ -50,7 +50,7 @@ dec1_implausible_qty <- function(data = NULL, decision) {
     substring(decision[1], 3),
     '1' = c('prodcode', 'patid'),
     '2' = c('prodcode', 'pracid'),
-    '3' = 'pracid',
+    '3' = 'prodcode',
     NULL
   )
 
