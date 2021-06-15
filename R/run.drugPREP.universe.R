@@ -1,3 +1,9 @@
+get_mode <- function(v) {
+  # Returns the most common value. If multiple: whichever appears first.
+  uniqv <- unique(v)
+  uniqv[which.max(tabulate(match(v, uniqv)))]
+}
+
 #' Implausible  quantity
 #'
 #' This function accepts a data frame containing prescription information and
@@ -40,12 +46,6 @@ dec1_implausible_qty <- function(data = NULL, decision) {
   # implausible_qty<-qty<-patid<-prodcode<-pracid<-NULL
   message("Started executing dec1:implausible_qty")
 
-  get_mode <- function(v) {
-    # Returns the most common value. If multiple: whichever appears first.
-    uniqv <- unique(v)
-    uniqv[which.max(tabulate(match(v, uniqv)))]
-  }
-
   decision_group <- switch(
     substring(decision[1], 3),
     '1' = c('prodcode', 'patid'),
@@ -76,7 +76,7 @@ dec1_implausible_qty <- function(data = NULL, decision) {
 #' must have the following columns: patid, prodcode, pracid (if practice level
 #' information is used for replacement) and qty.
 #'
-#' @param dataset1 a data frame containing prescription information
+#' @param data a data frame containing prescription information
 #'
 #' @param decision a character specifying the decison to consider for processing
 ##' \itemize{
@@ -97,72 +97,36 @@ dec1_implausible_qty <- function(data = NULL, decision) {
 ##' \item{"2f2"}{use value of practice}'s previous prescription
 ##' \item{"2f3"}{use value of population's previous prescription}
 ##' }
-
 #' @return Dataframe with the same structure as the input
-
 #' @importFrom stats median
 
 
 #' @export
-dec2_missing_qty <- function(dataset1 = NULL, decision) {
+dec2_missing_qty <- function(data = NULL, decision) {
   # qty<-patid<-prodcode<-pracid<-NULL
   message("Started executing dec2:missing_qty")
 
-  mod_fun <- function(x) unique(x)[which.max(table(x))]
+  decision_group <- switch(
+    substring(decision[2], 3),
+    '1' = c('prodcode', 'patid'),
+    '2' = c('prodcode', 'pracid'),
+    '3' = 'prodcode',
+    NULL
+  )
 
-  if (decision[2] == "2a") {
-    # do nothing
-    dataset1 <- dataset1
-  }
-  else if (decision[2] == "2b1") {
-    dataset1 <- dataset1 %>%
-      dplyr::group_by(patid, prodcode) %>%
-      dplyr::mutate(qty = ifelse(is.na(qty), mean(qty, na.rm = T), qty))
-  }
-  else if (decision[2] == "2b2") {
-    dataset1 <- dataset1 %>%
-      dplyr::group_by(pracid, prodcode) %>%
-      dplyr::mutate(qty = ifelse(is.na(qty), mean(qty, na.rm = T), qty))
-  }
-  else if (decision[2] == "2b3") {
-    dataset1 <- dataset1 %>%
-      dplyr::group_by(prodcode) %>%
-      dplyr::mutate(qty = ifelse(is.na(qty), mean(qty, na.rm = T), qty))
-  }
+  decision_fun <- switch(
+    substring(decision[2], 1, 2),
+    '2a' = identity,
+    '2b' = function(x) NA,
+    '2c' = function(x) mean(x, na.rm = TRUE),
+    '2d' = function(x) median(x, na.rm = TRUE),
+    '2e' = function(x) get_mode(v),
+    stop(paste('Decision rule', decision, 'is not yet implemented'))
+  )
 
-  else if (decision[2] == "2c1") {
-    dataset1 <- dataset1 %>%
-      dplyr::group_by(patid, prodcode) %>%
-      dplyr::mutate(qty = ifelse(is.na(qty), median(qty, na.rm = T), qty))
-  }
-  else if (decision[2] == "2c2") {
-    dataset1 <- dataset1 %>%
-      dplyr::group_by(pracid, prodcode) %>%
-      dplyr::mutate(qty = ifelse(is.na(qty), median(qty, na.rm = T), qty))
-  }
-  else if (decision[2] == "2c3") {
-    dataset1 <- dataset1 %>%
-      dplyr::group_by(prodcode) %>%
-      dplyr::mutate(qty = ifelse(is.na(qty), median(qty, na.rm = T), qty))
-  }
-
-  else if (decision[2] == "2d1") {
-    dataset1 <- dataset1 %>%
-      dplyr::group_by(patid, prodcode) %>%
-      dplyr::mutate(qty = ifelse(is.na(qty), mod_fun(qty, na.rm = T), qty))
-  }
-  else if (decision[2] == "2d2") {
-    dataset1 <- dataset1 %>%
-      dplyr::group_by(pracid, prodcode) %>%
-      dplyr::mutate(qty = ifelse(is.na(qty), mod_fun(qty, na.rm = T), qty))
-  }
-
-  else if (decision[2] == "2d3") {
-    dataset1 <- dataset1 %>%
-      dplyr::group_by(prodcode) %>%
-      dplyr::mutate(qty = ifelse(is.na(qty), mod_fun(qty, na.rm = T), qty))
-  }
-  return(dataset1)
+  data %>%
+    dplyr::group_by(dplyr::across(dplyr::all_of(decision_group))) %>%
+    dplyr::mutate(qty = ifelse(is.na(qty), decision_fun(qty), qty))
 }
 
 #' Implusible ndd

@@ -4,10 +4,10 @@
 \alias{dec2_missing_qty}
 \title{Missing quantity}
 \usage{
-dec2_missing_qty(dataset1 = NULL, decision)
+dec2_missing_qty(data = NULL, decision)
 }
 \arguments{
-\item{dataset1}{a data frame containing prescription information}
+\item{data}{a data frame containing prescription information}
 
 \item{decision}{a character specifying the decison to consider for processing
 \itemize{
