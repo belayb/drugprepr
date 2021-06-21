@@ -327,21 +327,15 @@ dec5_clean_duration <- function(data = NULL, decision) {
 #' @export
 dec6_select_stop_date <- function(data = NULL, decision) {
   message("Started executing dec6:select stop date")
-
-  data$start <- data$event_date
-  if (decision[6] == "6a") {
-    data$real_stop <- data$start + data$numdays
-  }
-  else if (decision[6] == "6b") {
-    data$real_stop <- data$start + data$dose_duration
-  }
-  else if (decision[6] == "6c") {
-    data$real_stop <- data$start + data$new_duration
-  }
-  data <- data %>%
-    dplyr::select(-c(event_date))
-  return(data)
-  # i will add the three other decisons latter
+  d6 <- substring(decision[6], 2)
+  data %>%
+    dplyr::mutate(real_stop = start + switch(d6,
+                                      a = numdays,
+                                      b = dose_duration,
+                                      c = new_duration,
+                                      stop('Not implemented'))) %>%
+    dplyr::select(-event_date)
+  # NB need to add other decisions later
 }
 
 #' Missing stop date
