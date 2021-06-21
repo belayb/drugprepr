@@ -276,47 +276,34 @@ dec4_missing_ndd <- function(data = NULL, decision) {
 ##'
 #' @return Dataframe with the same structure as the input
 #'
+#' @importFrom dplyr %>% mutate across
+#'
 #' @export
 dec5_clean_duration <- function(data = NULL, decision) {
   message("Started executing dec5:clean duration")
 
-  data$new_duration <- round(data$qty / data$ndd)
+  replacement_type <- substring(decision[5], 2, 2) # a, b or c
+  condition <- substring(decision[5], 4, 5) # '', 6, 12 or 24
 
-  if (decision[5] == "5a") {
-    # do nothing
-    data <- data
-  }
-  else if (decision[5] == "5b_6") {
-    data$new_duration[data$new_duration > 183] <- NA
-    data$numdays[data$numdays > 183] <- NA
-    data$dose_duration[data$dose_duration > 183] <- NA
-  }
-  else if (decision[5] == "5b_12") {
-    data$new_duration[data$new_duration > 365] <- NA
-    data$numdays[data$numdays > 365] <- NA
-    data$dose_duration[data$dose_duration > 365] <- NA
-  }
-  else if (decision[5] == "5b_24") {
-    data$new_duration[data$new_duration > 730] <- NA
-    data$numdays[data$numdays > 730] <- NA
-    data$dose_duration[data$dose_duration > 730] <- NA
-  }
-  else if (decision[5] == "5c_6") {
-    data$new_duration[data$new_duration > 183] <- 183
-    data$numdays[data$numdays > 183] <- 183
-    data$dose_duration[data$dose_duration > 183] <- 183
-  }
-  else if (decision[5] == "5c_12") {
-    data$new_duration[data$new_duration > 365] <- 365
-    data$numdays[data$numdays > 365] <- 365
-    data$dose_duration[data$dose_duration > 183] <- 183
-  }
-  else if (decision[5] == "5c_24") {
-    data$new_duration[data$new_duration > 730] <- 730
-    data$numdays[data$numdays > 730] <- 730
-    data$dose_duration[data$dose_duration > 730] <- 730
-  }
-  return(data)
+  if (!replacement_type %in% c('a', 'b', 'c'))
+    stop('Decision 5 must include a, b or c')
+
+  threshold <- round(365 * (12 / as.numeric(condition)))
+
+  if (is.na(threshold))
+    threshold <- +Inf
+
+  data %>%
+    dplyr::mutate(new_duration = round(qty / ndd)) %>%
+    dplyr::mutate(dplyr::across(c(new_duration, numdays, dose_duration),
+                                ~ ifelse(.x > threshold,
+                                         switch(replacement_type,
+                                                a = .x,
+                                                b = NA,
+                                                c = threshold,
+                                                stop('Not implemented')),
+                                         .x)))
+
 }
 
 #' Select stop date
