@@ -150,7 +150,7 @@ kable(min_max_dat, booktabs = TRUE, position = 'ht',
       caption = 'Example data frame to supply to \\texttt{min\\_max\\_dat}')
 ```
 
-Once we prepare our `min_max` data in a table format, we can use the function `implausible_values` to flag those prescriptions with values outside the plausible range as follows.
+Once we prepare our `min_max` data in a table format, we can use the function `check_implausible`^[name subject to change] to flag those prescriptions with values outside the plausible range as follows.
 
 ```{r implausible, echo = 1}
 data_plausible <- check_implausible(data_ndd, min_max_dat = min_max_dat)
@@ -160,15 +160,23 @@ data_plausible %>%
         position = 'ht')
 ```
 
-Running the function `implausible_values()` creates additional columns named `implausible_qty` and `implausible_ndd` with values equals to `TRUE` if the given quantity or ndd is outside the plausible range.
+Running the function `check_implausible()` creates additional columns named `implausible_qty` and `implausible_ndd` with values equals to `TRUE` if the given quantity or ndd is outside the plausible range.
 Example output is given in Table \ref{tab:implausible}.
 
 ## Processing the CPRD prescription data 
 
-Once this preliminary stages are completed, we can use the main function of `drugprepCPRD`, `run.drugPREP` to implement the 10 decision nodes described above. This can be done by executing the following r command. 
+Once these preliminary pre-processing steps are completed, we can use the main function of `drugprepCPRD`, `run.drugPREP`, to evaluate the 10 decision nodes described above.
+This can be done by executing an R command of the following form:
 
-```{r drugprep}
-result <- run.drugPREP(data_plausible, decisions = c("1b","2b1","3b","4b1","5b_6","6c","7a","8d","9a","10b") )
-result
+```{r drugprep, echo = 1}
+result <- run.drugPREP(data_plausible,
+                       decisions = c('1b', '2b1', '3b', '4b1', '5b_6',
+                                     '6c', '7a', '8d', '9a', '10b'))
+subset(result, select = -text) %>%
+  kable(booktabs = TRUE, position = 'ht',
+        caption = 'Result of \\texttt{run.drugPREP}') %>%
+  kable_styling(latex_options = 'scale_down')
 ```
-The result of running the function `run.drugPREP()` provides the start and stop date (real_stop) for each prescription. Note that the value 10000 in the gap to next is given for computational purpose and should not be considered as a value indicating the gap between sequential prescriptions. 
+
+The result of running the function `run.drugPREP()` provides the start and stop date (`real_stop`) for each prescription.
+Note: the value 10000 in the column `gap_to_next` is given for computational purposes and should not be considered as a value indicating the gap between sequential prescriptions. 
