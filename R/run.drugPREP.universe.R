@@ -327,14 +327,13 @@ dec5_clean_duration <- function(data = NULL, decision) {
 #' @export
 dec6_select_stop_date <- function(data = NULL, decision) {
   message("Started executing dec6:select stop date")
-  d6 <- substring(decision[6], 2)
   data %>%
-    dplyr::mutate(real_stop = start + switch(d6,
-                                      a = numdays,
-                                      b = dose_duration,
-                                      c = new_duration,
-                                      stop('Not implemented'))) %>%
-    dplyr::select(-event_date)
+    dplyr::rename(start = event_date) %>%
+    dplyr::mutate(real_stop = start + switch(substring(decision[6], 2),
+                                                  a = numdays,
+                                                  b = dose_duration,
+                                                  c = new_duration,
+                                                  stop('Not implemented')))
   # NB need to add other decisions later
 }
 
@@ -360,26 +359,22 @@ dec6_select_stop_date <- function(data = NULL, decision) {
 dec7_missing_stop_date <- function(data = NULL, decision) {
   message("Started executing dec7:dealing with missing stop date")
 
-  # patid<-prodcode<-real_stop<-start<-new_duration<-NULL
+  decision_group <- switch(
+      (d7 <- substring(decision[7], 2)),
+      a = NULL,
+      b = c('prodcode', 'patid'),
+      c = 'prodcode',
+      stop('Decision 7d is not yet implemented')
+    )
 
-  if (decision[7] == "7a") {
-    # do nothing
-    data <- data[!is.na(data$real_stop), ]
-  }
-  else if (decision[7] == "7b") {
-    data <- data %>%
-      dplyr::group_by(patid, prodcode) %>%
-      dplyr::mutate(real_stop = ifelse(is.na(real_stop), start + mean(new_duration, na.rm = T), real_stop))
-    data <- data[!is.na(data$real_stop), ]
-  }
-  else if (decision[7] == "7c") {
-    data <- data %>%
-      dplyr::group_by(prodcode) %>%
-      dplyr::mutate(real_stop = ifelse(is.na(real_stop), start + mean(new_duration, na.rm = T), real_stop))
-    data <- data[!is.na(data$real_stop), ]
-  }
-  return(data)
-  # i will add decison 7d latter
+  data %>%
+    dplyr::group_by(dplyr::across(dplyr::all_of(decision_group))) %>%
+    dplyr::mutate(real_stop = ifelse(is.na(real_stop) & d7 != 'a',
+                                     start + mean(new_duration, na.rm = TRUE),
+                                     real_stop),
+                  real_stop = as.Date(real_stop, origin = '1970-01-01')) %>%
+    dplyr::ungroup() %>%
+    dplyr::filter(!is.na(real_stop))
 }
 
 #' Handle multiple prescriptions for same product on same day
@@ -405,7 +400,7 @@ dec7_missing_stop_date <- function(data = NULL, decision) {
 dec8_multipleprescription_same_start_date <- function(data = NULL, decision) {
   message("Started executing dec8:idealing with multiple prescription")
 
-  max_ndd<-min_ndd<-min_stop<-max_stop<-mean_stop<-mean_ndd<-NULL
+  #max_ndd<-min_ndd<-min_stop<-max_stop<-mean_stop<-mean_ndd<-NULL
 
   if (decision[8] == "8a") {
     # do nothing
