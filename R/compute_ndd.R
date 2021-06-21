@@ -46,8 +46,8 @@ compute_ndd <- function(data = NULL, decision = NULL) {
     tidyr::separate(freq, c('freq1', 'freq2'),
                     sep = '-', convert = TRUE, fill = 'right') %>%
     dplyr::mutate(
-      dose2 = dplyr::coalesce(dose1, dose2),
-      freq2 = dplyr::coalesce(freq1, freq2),
+      dose2 = dplyr::coalesce(dose2, dose1),
+      freq2 = dplyr::coalesce(freq2, freq1),
       DF_mean = (freq1 + freq2) / 2,
       DN_mean = (dose1 + dose2) / 2,
       DF_min = freq1, DF_max = freq2,
