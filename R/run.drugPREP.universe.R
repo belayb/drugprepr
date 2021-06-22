@@ -400,61 +400,30 @@ dec7_missing_stop_date <- function(data = NULL, decision) {
 dec8_multipleprescription_same_start_date <- function(data = NULL, decision) {
   message("Started executing dec8:idealing with multiple prescription")
 
-  #max_ndd<-min_ndd<-min_stop<-max_stop<-mean_stop<-mean_ndd<-NULL
-
   if (decision[8] == "8a") {
-    # do nothing
-    data <- data
-  }
-  else if (decision[8] == "8b") {
-    data <- data %>%
-      dplyr::group_by(patid, prodcode, start) %>%
-      dplyr::mutate(
-        mean_stop = mean(as.numeric(real_stop - start), na.rm = T),
-        mean_ndd = mean(ndd, na.rm = T),
-        real_stop = start + mean_stop,
-        ndd = mean_ndd
-      )
-    data <- data[!(duplicated(data[, c("patid", "prodcode", "start")])), ]
-    data <- data %>% dplyr::select(-c(mean_stop, mean_ndd))
-  }
-  else if (decision[8] == "8c") {
-    data <- data %>%
-      dplyr::group_by(patid, prodcode, start) %>%
-      dplyr::mutate(
-        min_stop = min(as.numeric(real_stop - start), na.rm = T),
-        min_ndd = min(ndd, na.rm = T),
-        real_stop = start + min_stop,
-        ndd = min_ndd
-      )
-    data <- data[!(duplicated(data[, c("patid", "prodcode", "start")])), ]
-    data <- data %>% dplyr::select(-c(min_stop, min_ndd))
-  }
-  else if (decision[8] == "8d") {
-    data <- data %>%
-      dplyr::group_by(patid, prodcode, start) %>%
-      dplyr::mutate(
-        max_stop = max(as.numeric(real_stop - start), na.rm = T),
-        max_ndd = max(ndd, na.rm = T),
-        real_stop = start + max_stop,
-        ndd = max_ndd
-      )
-    data <- data[!(duplicated(data[, c("patid", "prodcode", "start")])), ]
-    data <- data %>% dplyr::select(-c(max_stop, max_ndd))
+    return(data)
   }
 
-  else if (decision[8] == "8e") {
-    data <- data %>%
-      dplyr::group_by(patid, prodcode, start) %>%
-      dplyr::mutate(
-        sum_duration = sum(new_duration, na.rm = T),
-        real_stop = start + sum_duration,
-        new_duration = sum_duration
-      )
-    data <- data[!(duplicated(data[, c("patid", "prodcode", "start")])), ]
-    data <- data %>% dplyr::select(-c(sum_duration))
-  }
-  return(data)
+  decision_fun <- switch(substring(decision[8], 2),
+                         b = mean,
+                         c = min,
+                         d = max,
+                         e = sum,
+                         stop('Not implemented'))
+
+
+  data %>%
+    dplyr::group_by(patid, prodcode, start) %>%
+    dplyr::mutate(
+      mean_stop = mean(as.numeric(real_stop - start), na.rm = T),
+      mean_ndd = mean(ndd, na.rm = T),
+      real_stop = start + decision_fun(
+        if (decision[8] == '8e') new_duration else as.numeric(real_stop - start),
+        na.rm = TRUE),
+      ndd = decision_fun(ndd, na.rm = TRUE)
+      ) %>%
+    # is the following justified?
+    dplyr::distinct(patid, prodcode, start, .keep_all = TRUE)
 }
 
 #' shift_interval
