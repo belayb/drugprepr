@@ -463,7 +463,7 @@ shift_interval <- function(x) {
       dplyr::select(-overlap)
     overlap <- nrow(overlaps)
   }
-  list(y)
+  list(y) # ?
   return(y)
 }
 #' Handle overlapping prescriptions
@@ -485,53 +485,43 @@ shift_interval <- function(x) {
 #' @return Dataframe with the same structure as the input.
 #'
 #' @export
-dec9_overlaping_prescription <- function(data = NULL, decision) {
-  message("Started executing dec9:dealing with overlaping prescription")
+dec9_overlapping_prescription <- function(data = NULL, decision) {
+  message("Started executing dec9:dealing with overlapping prescription")
 
   # patid<-start<-prodcode<-real_stop<-ndd<-id.x<-id.y<-start.x<-start.y<-end.x<-end.y<-end<-NULL
 
-  if (decision[9] == "9a") {
-    # This function uses an expermental date format
-    # becuse Isolate overlap accepts integer or date
-    # in an intger format. Care needed
-    data$start <- data.table::as.IDate(data$start)
-    data$real_stop <- data.table::as.IDate(data$real_stop)
-    # Isolateoverlap creates two new column named start and stop while resevring the orginal
-    # to aviod naming confilict with interval_vars_out we hold the new data under the name rstart and rreal_stop
-    data <- intervalaverage::isolateoverlaps(data.table::setDT(data),
-      interval_vars = c("start", "real_stop"),
-      group_vars = c("patid", "prodcode"),
-      interval_vars_out = c("rstart", "rreal_stop")
-    )
-    data <- as.data.frame(data)
-    # do nothing- sum overlaping doses and remove duplicate
-    data <- data %>%
+  if (decision[9] == '9a') {
+    # Identify overlaps and sum the doses in those periods
+    dplyr::ungroup(data) %>%
+      dplyr::mutate(start = data.table::as.IDate(start),
+                    real_stop = data.table::as.IDate(real_stop)) %>%
+      data.table::as.data.table() %>%
+      intervalaverage::isolateoverlaps(
+        .,
+        interval_vars = c('start', 'real_stop'),
+        group_vars = c('patid', 'prodcode'),
+        interval_vars_out = c('rstart', 'rreal_stop') # to disambiguate
+      ) %>%
+      as.data.frame %>%
       dplyr::group_by(patid, prodcode, rstart) %>%
-      dplyr::mutate(sum_ndd = sum(ndd, na.rm = T))
-    data$ndd <- data$sum_ndd # do we need to check for implusibility
-    data <- data[!(duplicated(data[, c("patid", "prodcode", "rstart")])), ]
-    #data$real_stop <- as.POSIXct(data$rreal_stop)
-    data <- data %>%
-     dplyr::ungroup() %>%
-     dplyr::select(-c(start, real_stop, sum_ndd))
-    data <- reshape::rename(data, c("rstart" = "start", "rreal_stop" = "real_stop"))
-  }
-  else if (decision[9] == "9b") {
-    data.table::setDT(data)
-    data$patid_prodcode <- paste0(data$patid, data$prodcode)
-    data <- reshape::rename(data, c("start" = "start", "real_stop" = "end"))
-    data <- data %>%
-      dplyr::group_by(patid_prodcode) %>%
-      dplyr::arrange(start)
-    data <- do.call(rbind, lapply(
-      1:length(unique(data$patid_prodcode)),
-      function(x) {
-        shift_interval(data[data$patid_prodcode == unique(data$patid_prodcode)[x], ])
-      }
-    ))
-    data <- reshape::rename(data, c("start" = "start", "end" = "real_stop"))
-  }
-  return(data)
+      dplyr::mutate(ndd = sum(ndd, na.rm = TRUE)) %>%
+      dplyr::distinct(patid, prodcode, rstart, .keep_all = TRUE) %>%
+      dplyr::ungroup() %>%
+      dplyr::select(-c(start, real_stop)) %>%
+      dplyr::rename(start = rstart, real_stop = rreal_stop) %>%
+      return()
+  } else if (decision[9] == '9b') {
+    warning('Decision 9b needs further testing')
+    # Move later prescriptions into the next available date slot.
+    data %>%
+      dplyr::rename(end = real_stop) %>%
+      dplyr::group_by(patid, prodcode) %>%
+      dplyr::arrange(start) %>%
+      dplyr::group_modify(~ shift_interval(.x) %>%
+                            select(-patid, -prodcode), .keep = TRUE) %>%
+      dplyr::rename(real_stop = end) %>%
+      return()
+  } else stop('Not implemented: ', decision[9])
 }
 
 #' Handle sequential prescriptions with short gaps
@@ -628,6 +618,6 @@ run.drugPREP <- function(data = NULL, decisions = NULL) {
     dec6_select_stop_date(decisions) %>%
     dec7_missing_stop_date(decisions) %>%
     dec8_multipleprescription_same_start_date(decisions) %>%
-    dec9_overlaping_prescription(decisions) %>%
+    dec9_overlapping_prescription(decisions) %>%
     dec10_gap_bn_prescription(decisions)
 }
