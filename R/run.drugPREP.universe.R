@@ -544,43 +544,32 @@ dec9_overlapping_prescription <- function(data = NULL, decision) {
 dec10_gap_bn_prescription <- function(data = NULL, decision) {
   message("Started executing dec10:dealing with short gaps between presecriptions")
 
-  # patid<-start<-prodcode<-gap_to_next<-real_stop<-NULL
-
   data <- data %>%
     dplyr::group_by(patid, prodcode) %>%
-    dplyr::arrange(start)
-
-  data <- data %>%
-    dplyr::group_by(patid, prodcode) %>%
+    dplyr::arrange(start) %>%
     dplyr::mutate(
       gap_to_next =
         dplyr::case_when(
-          dplyr::n_distinct(start) > 1 & start != dplyr::last(start) ~ as.numeric(dplyr::lead(start) - real_stop),
+          dplyr::n_distinct(start) > 1 & start != dplyr::last(start) ~
+            as.numeric(dplyr::lead(start) - real_stop),
           TRUE ~ 100000
         )
     )
 
-  if (decision[10] == "10a") {
-    # do nothing
-    data <- data
-  }
-  else if (decision[10] == "10b") {
-    data <- data %>%
-      dplyr::group_by(patid, prodcode) %>%
-      dplyr::mutate(real_stop = replace(real_stop, gap_to_next < 16 & gap_to_next>1, dplyr::lead(start)))
-  }
-  else if (decision[10] == "10c") {
-    data <- data %>%
-      dplyr::group_by(patid, prodcode) %>%
-      dplyr::mutate(real_stop = replace(real_stop, gap_to_next < 31 & gap_to_next>1, dplyr::lead(start)))
-  }
-  else if (decision[10] == "10d") {
-    data <- data %>%
-      dplyr::group_by(patid, prodcode) %>%
-      dplyr::mutate(real_stop = replace(real_stop, gap_to_next < 61 & gap_to_next>1, dplyr::lead(start)))
-  }
+  if (decision[10] == '10a')
+    return(data)
 
-  return(data)
+  threshold <- switch(substring(decision[10], 3),
+                      b = 16,
+                      c = 31,
+                      d = 61,
+                      stop('Not implemented'))
+
+  data %>%
+      dplyr::group_by(patid, prodcode) %>%
+      dplyr::mutate(real_stop = ifelse(gap_to_next < threshold & gap_to_next > 1,
+                                       dplyr::lead(start),
+                                       real_stop))
 }
 
 
