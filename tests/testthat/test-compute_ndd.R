@@ -1,7 +1,14 @@
-test_that("compute_ndd works", {
-  expect_equal(with(compute_ndd(dataset1,"min_min"), mean(ndd,na.rm=T)), 3.428571,tolerance=0.001)
-  expect_equal(with(compute_ndd(dataset1,"min_max"), mean(ndd,na.rm=T)), 3.428571,tolerance=0.001)
-  expect_equal(with(compute_ndd(dataset1,"max_max"), mean(ndd,na.rm=T)), 6.857143,tolerance=0.001)
-  expect_equal(with(compute_ndd(dataset1,"min_min"), sd(ndd,na.rm=T)), 0.5135526,tolerance=0.001)
-  expect_equal(nrow(compute_ndd(dataset1,"min_min")), 18,tolerance=0.001)
+test_that("compute_ndd produces expected output", {
+  output1 <- compute_ndd(dataset1, 'min_min')
+  mean <- mean(output1$ndd, na.rm = TRUE)
+  expect_equal(mean, 3.4285714286)
+  expect_equal(nrow(output1), 18L)
+
+  output2 <- compute_ndd(dataset1, 'min_max')
+  mean <- mean(output2$ndd, na.rm = TRUE)
+  expect_equal(mean, 3.4285714286)
+
+  output3 <- compute_ndd(dataset1, 'max_max')
+  mean <- mean(output3$ndd, na.rm = TRUE)
+  expect_equal(mean, 6.8571428571)
 })
