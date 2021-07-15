@@ -33,7 +33,7 @@ some_implausible <- within(all_plausible, {
   implausible_qty <- rep(0:1, 6)
 })
 
-test_that('Decision 1a leaves returns input unchanged', {
+test_that('Decision 1a returns input unchanged', {
   expect_equivalent(dec1_implausible_qty(some_implausible, '1a'),
                     some_implausible)
 })

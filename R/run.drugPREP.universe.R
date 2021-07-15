@@ -595,7 +595,9 @@ dec10_gap_bn_prescription <- function(data = NULL, decision) {
 #' @export
 run.drugPREP <- function(data = NULL, decisions = NULL) {
   # check if necessary columns are in the input data
-  must_names <- c("patid","pracid","implausible_qty","implausible_ndd", "event_date", "prodcode", "qty", "ndd", "numdays", "dose_duration") # u need pracid -remove it for now
+  must_names <- c("patid", "pracid", "implausible_qty", "implausible_ndd",
+                  "event_date", "prodcode", "qty", "ndd", "numdays",
+                  "dose_duration") # u need pracid -remove it for now
   stopifnot(must_names %in% names(data))
 
   data %>%
