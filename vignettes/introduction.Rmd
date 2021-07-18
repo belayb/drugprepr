@@ -44,7 +44,7 @@ The CPRD Gold data follows the [CPRD Gold specification](https://cprdcw.cprd.com
 It is made up of several tables containing information related to the patients.
 One of the CPRD tables, called 'Therapy', contains the prescription information for a patient.
 This table can be linked to the 'common dosages' lookup table to get the text instructions for the prescribed product (i.e. a drug).
-Table \ref{tab:dataset1}, based on the fictional dataset `dataset1` that is bundled with this package, presents hypothetical prescription data for two individuals.
+Table \ref{tab:dataset1}, based on the fictional dataset `dataset1` that is bundled with this package, presents hypothetical prescription data for two individuals.
 
 ```{r dataset1, echo=FALSE}
 library(drugprepCPRD)

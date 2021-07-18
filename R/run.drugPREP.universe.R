@@ -586,9 +586,11 @@ dec10_gap_bn_prescription <- function(data = NULL, decision) {
 #' for possible values to specify under the decisions argument.
 #'
 #' @examples
+#' \dontrun{
 #' dd1<-compute_ndd(data,"min_min")
 #' dd1<-Implausible_values(dd1,min_max_dat)
 #' dd1<-run.drugPREP(dd1,c("1b","2b1","3b","4b1","5b_6","6c","7a","8d","9a","10b"))
+#'}
 #'
 #' @return data.frame
 #'
