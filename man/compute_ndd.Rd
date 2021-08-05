@@ -36,6 +36,8 @@ can have a varible dose frequency or dose number such as '2-4 tablets'. In this 
 minimum or maximum or average of value of DN or DF.
 }
 \examples{
+\dontrun{
 compute_ndd(dataset1, "min_min")
+}
 
 }

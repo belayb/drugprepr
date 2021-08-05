@@ -26,7 +26,9 @@
 #' }
 #'
 #' @examples
+#' \dontrun{
 #' compute_ndd(dataset1, "min_min")
+#' }
 #'
 #' @return Dataframe with the same structure as the input with additional column named ndd
 #'
