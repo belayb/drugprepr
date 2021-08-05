@@ -600,15 +600,16 @@ run.drugPREP <- function(data = NULL, decisions = NULL) {
                   "dose_duration") # u need pracid -remove it for now
   stopifnot(must_names %in% names(data))
 
-  data %>%
-    dec1_implausible_qty(decisions) %>%
-    dec2_missing_qty(decisions) %>%
-    dec3_implausible_ndd(decisions) %>%
-    dec4_missing_ndd(decisions) %>%
-    dec5_clean_duration(decisions) %>%
-    dec6_select_stop_date(decisions) %>%
-    dec7_missing_stop_date(decisions) %>%
-    dec8_multipleprescription_same_start_date(decisions) %>%
-    dec9_overlapping_prescription(decisions) %>%
-    dec10_gap_bn_prescription(decisions)
+  data1 <- dec1_implausible_qty(data, decisions)
+  data2 <- dec2_missing_qty(data1, decisions)
+  data3 <- dec3_implausible_ndd(data2, decisions)
+  data4 <- dec4_missing_ndd(data3, decisions)
+  data5 <- dec5_clean_duration(data4, decisions)
+  data6 <- dec6_select_stop_date(data5, decisions)
+  data7 <- dec7_missing_stop_date(data6, decisions)
+  data8 <- dec8_multipleprescription_same_start_date(data7, decisions)
+  data9 <- dec9_overlapping_prescription(data8, decisions)
+  data10 <- dec10_gap_bn_prescription(data9, decisions)
+
+  return(data10)
 }
