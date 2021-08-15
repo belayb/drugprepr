@@ -7,7 +7,7 @@ author:
   - Goran Nenadic
   - Mark Lunt
   - William G. Dixon
-output: pdf_document
+output: rmarkdown::pdf_document
 papersize: a4
 date: June 2021
 vignette: >

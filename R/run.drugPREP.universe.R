@@ -251,7 +251,7 @@ dec4_missing_ndd <- function(data = NULL, decision) {
     dplyr::group_by(dplyr::across(dplyr::all_of(decision_group))) %>%
     dplyr::mutate(ndd = ifelse(is.na(ndd), decision_fun(ndd), ndd)) %>%
     dplyr::ungroup() %>%
-    dplyr::select(-implausible_qty, -implausible_ndd, -optional)
+    dplyr::select(-implausible_qty, -implausible_ndd)
 }
 
 #' Clean duration
