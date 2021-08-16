@@ -89,7 +89,7 @@ all_available <- data.frame(
 )
 
 some_missing <- within(all_available, {
-  qty[seq(1,12,2)]<-NA
+  qty[seq(1,12,4)]<-NA
 })
 
 
@@ -118,6 +118,23 @@ test_that('Decision 2a returns input unchanged', {
   expect_equivalent(dec2_missing_qty(some_missing, c('1a','2a')),
                     some_missing)
 })
+
+
+test_that('Decision 2b1 sets missing qty to mean qty of same prodcode and patid ', {
+  expect_equivalent(dec2_missing_qty(some_missing, c('1a', '2b1')),
+                                 some_missing)
+})
+
+test_that('Decision 2b2 sets missing qty to mean qty of same prodcode and pracid ', {
+  expect_error(expect_equivalent(dec2_missing_qty(some_missing, c('1a', '2b2')),
+                                 some_missing))
+})
+
+test_that('Decision 2b3 sets missing qty to mean qty of same prodcode', {
+  expect_error(expect_equivalent(dec2_missing_qty(some_missing, c('1a', '2b3')),
+                                 some_missing))
+})
+
 
 
 
@@ -374,3 +391,16 @@ test_that('Decision 6b sets real_stopdate to start+qty/ndd',{
   expect_equivalent(with(dec6_select_stop_date(start_stop,decision = c('1a', '2a','3a','4a','5a',"6c")), unique(real_stop-start)),c(15,10))
   expect_equivalent(with(dec6_select_stop_date(start_stop,decision = c('1a', '2a','3a','4a','5a',"6c")), unique(real_stop)),c(lubridate::dmy("2021-05-30" ,"2021-06-09" ,"2021-06-30" ,"2021-05-25", "2021-06-14", "2021-06-25")))
 })
+
+
+context('Decision 7: Missing stop date')
+
+
+context('Decision 8: Handle multiple prescriptions for same product on same day')
+
+
+context('Decision 9: Handle overlapping prescriptions')
+
+
+context('Decision 10: Handle sequential prescriptions with short gaps')
+
