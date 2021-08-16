@@ -116,10 +116,9 @@ dec2_missing_qty <- function(data = NULL, decision) {
   decision_fun <- switch(
     substring(decision[2], 1, 2),
     '2a' = identity,
-    '2b' = function(x) NA,
-    '2c' = function(x) mean(x, na.rm = TRUE),
-    '2d' = function(x) median(x, na.rm = TRUE),
-    '2e' = get_mode,
+    '2b' = function(x) mean(x, na.rm = TRUE),
+    '2c' = function(x) median(x, na.rm = TRUE),
+    '2d' = get_mode,
     stop(paste('Decision rule', decision, 'is not yet implemented'))
   )
 
@@ -240,10 +239,9 @@ dec4_missing_ndd <- function(data = NULL, decision) {
   decision_fun <- switch(
     substring(decision[4], 1, 2),
     '4a' = identity,
-    '4b' = function(x) NA,
-    '4c' = function(x) mean(x, na.rm = TRUE),
-    '4d' = function(x) median(x, na.rm = TRUE),
-    '4e' = get_mode,
+    '4b' = function(x) mean(x, na.rm = TRUE),
+    '4c' = function(x) median(x, na.rm = TRUE),
+    '4d' = get_mode,
     stop(paste('Decision rule', decision, 'is not yet implemented'))
   )
 
