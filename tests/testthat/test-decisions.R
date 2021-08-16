@@ -110,10 +110,7 @@ test_that("quantities are unchanged", {
     dec2_missing_qty(all_available, c("1a", "2d1")),
     all_available
   )
-  expect_equivalent(
-    dec2_missing_qty(all_available, c("1a", "2e1")),
-    all_available
-  )
+
 })
 
 test_that("Throw error if decision rule is missing or unrecognised", {
