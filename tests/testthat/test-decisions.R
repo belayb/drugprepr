@@ -123,17 +123,17 @@ test_that('Decision 2a returns input unchanged', {
 test_that('Decision 2b1 sets missing qty to mean qty of same prodcode and patid ', {
   expect_equivalent(dec2_missing_qty(some_missing, c('1a', '2b1')),
                                  some_missing)
-})
+})# For now this is ok, since the mean value is undefined
 
 test_that('Decision 2b2 sets missing qty to mean qty of same prodcode and pracid ', {
   expect_error(expect_equivalent(dec2_missing_qty(some_missing, c('1a', '2b2')),
                                  some_missing))
-})
+})#This should have thrown an error and missing qty replaced by mean values by prodcode and pracid
 
 test_that('Decision 2b3 sets missing qty to mean qty of same prodcode', {
   expect_error(expect_equivalent(dec2_missing_qty(some_missing, c('1a', '2b3')),
                                  some_missing))
-})
+})#This should have thrown an error and missing qty replaced by mean values by prodcode
 
 
 
@@ -278,17 +278,17 @@ test_that('Decision 4a returns input unchanged', {
 test_that('Decision 4b1 sets missing ndd to mean ndd of same prodcode and patid ', {
   expect_error(expect_equivalent(dec4_missing_ndd(some_missing, c('1a', '2a','3a','4b1')),
                     some_missing[-c(6:7)]))
-})
+})#This is ok as the mean ndd is undefind given the data
 
 test_that('Decision 4b2 sets missing ndd to mean ndd of same prodcode and pracid ', {
   expect_error(expect_equivalent(dec4_missing_ndd(some_missing, c('1a', '2a','3a','4b2')),
                                  some_missing[-c(6:7)]))
-})
+})#This should have thrown an error and missing ndd replaced by mean values by prodcode and pracid
 
 test_that('Decision 4b3 sets missing ndd to mean ndd of same prodcode', {
   expect_error(expect_equivalent(dec4_missing_ndd(some_missing, c('1a', '2a','3a','4b3')),
                                  some_missing[-c(6:7)]))
-})
+})#This should have thrown an error and missing ndd replaced by mean values by prodcode
 
 
 context('Decision 5: clean duration')
@@ -326,7 +326,7 @@ some_notacceptable <- within(all_acceptable, {
 
 test_that('Decision 5b_6 sets new duration to NA if it is greater than 6 month',{
   expect_equal(sum(is.na(dec5_clean_duration(some_notacceptable,decision = c('1a', '2a','3a','4a','5b_6'))$new_duration)),3)
-})
+})#3 of the new duration values should have been set to NA
 
 test_that('Decision 5b_12 sets new duration to NA if it is greater than 12 month',{
   expect_equal(sum(is.na(dec5_clean_duration(some_notacceptable,decision = c('1a', '2a','3a','4a','5b_12'))$new_duration)),3)
@@ -339,7 +339,7 @@ test_that('Decision 5b_24 sets new duration to NA if it is greater than 24 month
 
 test_that('Decision 5c_6 sets new duration to 6 month if it is greater than 6 month',{
   expect_equal(sum(dec5_clean_duration(some_notacceptable,decision = c('1a', '2a','3a','4a','5c_6'))$new_duration),645)
-})
+})#3 of the new duration values should have been replaced to 6 month
 
 test_that('Decision 5c_12 sets new duration to 12 month if it is greater than 12 month',{
   expect_equal(sum(dec5_clean_duration(some_notacceptable,decision = c('1a', '2a','3a','4a','5c_12'))$new_duration),1200)
@@ -347,7 +347,7 @@ test_that('Decision 5c_12 sets new duration to 12 month if it is greater than 12
 
 test_that('Decision 5c_24 sets new duration to 24 month if it is greater than 24 month',{
   expect_equal(sum(dec5_clean_duration(some_notacceptable,decision = c('1a', '2a','3a','4a','5c_24'))$new_duration),2295)
-})
+})#3 of the new duration values was supposed to be replaced by 24 months now they are set to 182 days
 
 
 context('Decision 6: Select stop date')
@@ -390,7 +390,7 @@ test_that('Decision 6b sets real_stopdate to start+dose_duration',{
 test_that('Decision 6b sets real_stopdate to start+qty/ndd',{
   expect_equivalent(with(dec6_select_stop_date(start_stop,decision = c('1a', '2a','3a','4a','5a',"6c")), unique(real_stop-start)),c(15,10))
   expect_equivalent(with(dec6_select_stop_date(start_stop,decision = c('1a', '2a','3a','4a','5a',"6c")), unique(real_stop)),c(lubridate::dmy("2021-05-30" ,"2021-06-09" ,"2021-06-30" ,"2021-05-25", "2021-06-14", "2021-06-25")))
-})
+})#unable to get new_duration column. It might because of the place where this column is defined in dec 5
 
 
 context('Decision 7: Missing stop date')
