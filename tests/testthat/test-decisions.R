@@ -331,3 +331,46 @@ test_that('Decision 5c_12 sets new duration to 12 month if it is greater than 12
 test_that('Decision 5c_24 sets new duration to 24 month if it is greater than 24 month',{
   expect_equal(sum(dec5_clean_duration(some_notacceptable,decision = c('1a', '2a','3a','4a','5c_24'))$new_duration),2295)
 })
+
+
+context('Decision 6: Select stop date')
+
+start_stop <- data.frame(
+  patid = rep(1:4, each = 3),
+  prodcode = rep(1:3, times = 4),
+  pracid = rep(1:2, each = 6),
+  qty = rep(30,12),
+  ndd = rep(2:3,6),
+  implausible_qty = FALSE,
+  implausible_ndd = FALSE,
+  numdays = rep(10,12),
+  dose_duration = rep(10,12),
+  event_date = rep(c(lubridate::dmy("15/05/2021","30/05/2021","15/06/2021")),4)
+)
+
+test_that('Throw error if decision rule is missing or unrecognised', {
+  expect_error(dec6_select_stop_date())
+  expect_error(dec6_select_stop_date(decision = NA))
+  expect_error(dec6_select_stop_date(decision = '1'))
+  expect_error(dec6_select_stop_date(decision = 'foo'))
+  expect_error(dec6_select_stop_date(decision = ''))
+  expect_error(dec6_select_stop_date(decision = c('1a', '2a','3a','4a' ,'5a',NA)))
+  expect_error(dec6_select_stop_date(decision = c('1a', '2a','3a','4a', '5a', NULL)))
+  expect_error(dec6_select_stop_date(decision = c('1a', '2a','3a','4a','5a')))
+  expect_error(dec6_select_stop_date(decision = c('1a', '2a','3a','4a','5a','1')))
+  expect_error(dec6_select_stop_date(decision = c('1a', '2a','3a','4a','5a','foo')))
+
+})
+
+test_that('Decision 6a sets real_stopdate to start+numdays',{
+  expect_equal(with(dec6_select_stop_date(start_stop,decision = c('1a', '2a','3a','4a','5a',"6a")), unique(real_stop-start)[1]),10)
+})
+
+test_that('Decision 6b sets real_stopdate to start+dose_duration',{
+  expect_equal(with(dec6_select_stop_date(start_stop,decision = c('1a', '2a','3a','4a','5a',"6b")), unique(real_stop-start)[1]),10)
+})
+
+test_that('Decision 6b sets real_stopdate to start+qty/ndd',{
+  expect_equivalent(with(dec6_select_stop_date(start_stop,decision = c('1a', '2a','3a','4a','5a',"6c")), unique(real_stop-start)),c(15,10))
+  expect_equivalent(with(dec6_select_stop_date(start_stop,decision = c('1a', '2a','3a','4a','5a',"6c")), unique(real_stop)),c(lubridate::dmy("2021-05-30" ,"2021-06-09" ,"2021-06-30" ,"2021-05-25", "2021-06-14", "2021-06-25")))
+})
