@@ -288,7 +288,7 @@ dec5_clean_duration <- function(data = NULL, decision) {
   if (!replacement_type %in% c('a', 'b', 'c'))
     stop('Decision 5 must include a, b or c')
 
-  threshold <- round(365 * (12 / as.numeric(condition)))
+  threshold <- round(365 * (as.numeric(condition) / 12))
 
   if (is.na(threshold))
     threshold <- +Inf
