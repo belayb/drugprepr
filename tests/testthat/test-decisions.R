@@ -220,21 +220,21 @@ all_available <- data.frame(
 )
 
 some_missing <- within(all_available, {
-  ndd[seq(1,12,2)]<-NA
+  ndd[seq(1,12,4)]<-NA
 })
 
 
 test_that('Missing ndd are unchanged', {
   expect_equivalent(dec4_missing_ndd(all_available, c('1a', '2a', '3a','4a')),
-                    all_available)
+                    all_available[,-c(6:7)])
   expect_equivalent(dec4_missing_ndd(all_available, c('1a', '2a', '3a','4b')),
-                    all_available)
+                    all_available[,-c(6:7)])
   expect_equivalent(dec4_missing_ndd(all_available, c('1a', '2a', '3a','4c')),
-                    all_available)
+                    all_available[,-c(6:7)])
   expect_equivalent(dec4_missing_ndd(all_available, c('1a', '2a', '3a','4d')),
-                    all_available)
+                    all_available[,-c(6:7)])
   expect_equivalent(dec4_missing_ndd(all_available, c('1a', '2a', '3a','4e')),
-                    all_available)
+                    all_available[,-c(6:7)])
 })
 
 test_that('Throw error if decision rule is missing or unrecognised', {
@@ -255,5 +255,79 @@ test_that('Throw error if decision rule is missing or unrecognised', {
 
 test_that('Decision 4a returns input unchanged', {
   expect_equivalent(dec4_missing_ndd(some_missing, c('1a', '2a','3a','4a')),
-                    some_missing)
+                    some_missing[-c(6:7)])
+})
+
+test_that('Decision 4b1 sets missing ndd to mean ndd of same prodcode and patid ', {
+  expect_error(expect_equivalent(dec4_missing_ndd(some_missing, c('1a', '2a','3a','4b1')),
+                    some_missing[-c(6:7)]))
+})
+
+test_that('Decision 4b2 sets missing ndd to mean ndd of same prodcode and pracid ', {
+  expect_error(expect_equivalent(dec4_missing_ndd(some_missing, c('1a', '2a','3a','4b2')),
+                                 some_missing[-c(6:7)]))
+})
+
+test_that('Decision 4b3 sets missing ndd to mean ndd of same prodcode', {
+  expect_error(expect_equivalent(dec4_missing_ndd(some_missing, c('1a', '2a','3a','4b3')),
+                                 some_missing[-c(6:7)]))
+})
+
+
+context('Decision 5: clean duration')
+
+all_acceptable <- data.frame(
+  patid = rep(1:4, each = 3),
+  prodcode = rep(1:3, times = 4),
+  pracid = rep(1:2, each = 6),
+  qty = rep(30,12),
+  ndd = rep(2:3,6),
+  implausible_qty = FALSE,
+  implausible_ndd = FALSE,
+  numdays = rep(10,12),
+  dose_duration = rep(10,12)
+
+)
+
+test_that('Throw error if decision rule is missing or unrecognised', {
+  expect_error(dec5_clean_duration())
+  expect_error(dec5_clean_duration(decision = NA))
+  expect_error(dec5_clean_duration(decision = '1'))
+  expect_error(dec5_clean_duration(decision = 'foo'))
+  expect_error(dec5_clean_duration(decision = ''))
+  expect_error(dec5_clean_duration(decision = c('1a', '2a','3a','4a' ,NA)))
+  expect_error(dec5_clean_duration(decision = c('1a', '2a','3a','4a', NULL)))
+  expect_error(dec5_clean_duration(decision = c('1a', '2a','3a','4a')))
+  expect_error(dec5_clean_duration(decision = c('1a', '2a','3a','4a','1')))
+  expect_error(dec5_clean_duration(decision = c('1a', '2a','3a','4a','foo')))
+
+})
+
+some_notacceptable <- within(all_acceptable, {
+  qty[seq(1,12,4)]<-1000
+})
+
+test_that('Decision 5b_6 sets new duration to NA if it is greater than 6 month',{
+  expect_equal(sum(is.na(dec5_clean_duration(some_notacceptable,decision = c('1a', '2a','3a','4a','5b_6'))$new_duration)),3)
+})
+
+test_that('Decision 5b_12 sets new duration to NA if it is greater than 12 month',{
+  expect_equal(sum(is.na(dec5_clean_duration(some_notacceptable,decision = c('1a', '2a','3a','4a','5b_12'))$new_duration)),3)
+})
+
+test_that('Decision 5b_24 sets new duration to NA if it is greater than 24 month',{
+  expect_equal(sum(is.na(dec5_clean_duration(some_notacceptable,decision = c('1a', '2a','3a','4a','5b_24'))$new_duration)),3)
+})
+
+
+test_that('Decision 5c_6 sets new duration to 6 month if it is greater than 6 month',{
+  expect_equal(sum(dec5_clean_duration(some_notacceptable,decision = c('1a', '2a','3a','4a','5c_6'))$new_duration),645)
+})
+
+test_that('Decision 5c_12 sets new duration to 12 month if it is greater than 12 month',{
+  expect_equal(sum(dec5_clean_duration(some_notacceptable,decision = c('1a', '2a','3a','4a','5c_12'))$new_duration),1200)
+})
+
+test_that('Decision 5c_24 sets new duration to 24 month if it is greater than 24 month',{
+  expect_equal(sum(dec5_clean_duration(some_notacceptable,decision = c('1a', '2a','3a','4a','5c_24'))$new_duration),2295)
 })
