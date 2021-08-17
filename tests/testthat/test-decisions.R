@@ -88,8 +88,10 @@ all_available <- data.frame(
   qty = 1:12
 )
 
+which_missing <- seq(1, 12, 4)
+
 some_missing <- within(all_available, {
-  qty[seq(1, 12, 4)] <- NA
+  qty[which_missing] <- NA
 })
 
 
@@ -130,20 +132,20 @@ test_that("Decision 2a returns input unchanged", {
 
 
 test_that("Decision 2b1 sets missing qty to mean qty of same prodcode and patid ", {
-  sum_qty_orginal = sum(some_missing$qty,na.rm=T)
-  sum_qty_dec_2b1 = sum(dec2_missing_qty(some_missing, c("1a", "2b1"))$qty,na.rm=T)
-  expect_equal(sum_qty_orginal,sum_qty_dec_2b1)
-}) # For now this is ok, since the mean value is undefined
+  qty_out = dec2_missing_qty(some_missing, c(NA, '2b1'))$qty
+  # In this particular example, each prodcode/patid combo only has one entry,
+  # so the mean value is undefined
+  expect_equal(qty_out[which_missing], c(NaN, NaN, NaN))
+})
 
 test_that("Decision 2b2 sets missing qty to mean qty of same prodcode and pracid ", {
-  sum_qty_dec_2b2 = sum(dec2_missing_qty(some_missing, c("1a", "2b2"))$qty,na.rm=T)
-  expect_equal(sum_qty_dec_2b2, 81)
+  qty_out <- dec2_missing_qty(some_missing, c(NA, '2b2'))$qty
+  expect_equal(sum(qty_out), 81)
 }) # This should have passed the test. Missing qty can be fully replaced by mean values by prodcode and pracid if it was working.
 
 test_that("Decision 2b3 sets missing qty to mean qty of same prodcode", {
-  sum_qty_dec_2b3 = sum(dec2_missing_qty(some_missing, c("1a", "2b2"))$qty,na.rm=T)
-  expect_equal(sum_qty_dec_2b3, 84)
-
+  qty_out <- dec2_missing_qty(some_missing, c(NA, '2b3'))$qty
+  expect_equal(qty_out[which_missing], c(7, 7, 7))
 }) # This should have passed the test and all missing qty replaced by 7
 
 
