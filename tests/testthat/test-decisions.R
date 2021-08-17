@@ -141,12 +141,12 @@ test_that("Decision 2b1 sets missing qty to mean qty of same prodcode and patid 
 test_that("Decision 2b2 sets missing qty to mean qty of same prodcode and pracid ", {
   qty_out <- dec2_missing_qty(some_missing, c(NA, '2b2'))$qty
   expect_equal(sum(qty_out), 81)
-}) # This should have passed the test. Missing qty can be fully replaced by mean values by prodcode and pracid if it was working.
+})
 
 test_that("Decision 2b3 sets missing qty to mean qty of same prodcode", {
   qty_out <- dec2_missing_qty(some_missing, c(NA, '2b3'))$qty
   expect_equal(qty_out[which_missing], c(7, 7, 7))
-}) # This should have passed the test and all missing qty replaced by 7
+})
 
 
 
@@ -380,7 +380,7 @@ start_stop <- data.frame(
   implausible_ndd = FALSE,
   numdays = rep(10, 12),
   dose_duration = rep(10, 12),
-  event_date = rep(c(lubridate::dmy("15/05/2021", "30/05/2021", "15/06/2021")), 4)
+  event_date = as.Date(c('2021-05-15', '2021-05-30', '2021-06-15'))
 )
 
 test_that("Throw error if decision rule is missing or unrecognised", {
@@ -405,20 +405,21 @@ test_that("Decision 6b sets real_stopdate to start+dose_duration", {
 })
 
 test_that("Decision 6b sets real_stopdate to start+qty/ndd", {
-  unique_duration <- with(
-    dec6_select_stop_date(start_stop, decision = c("1a", "2a", "3a", "4a", "5a", "6c")),
-    unique(real_stop - start))
+  decisions <- c("1a", "2a", "3a", "4a", "5a", "6c")
 
-  unique_real_stop <- with(
-    dec6_select_stop_date(start_stop, decision = c("1a", "2a", "3a", "4a", "5a", "6c")),
-    unique(real_stop))
+  # the column 'new_duration' is created during decision 5
+  dec6_out <- dec5_clean_duration(start_stop, decisions) %>%
+    dec6_select_stop_date(decisions)
 
-  expected_real_stop <- c(lubridate::dmy("2021-05-30", "2021-06-09", "2021-06-30", "2021-05-25", "2021-06-14", "2021-06-25"))
+  unique_duration <- with(dec6_out, unique(real_stop - start))
+  unique_real_stop <- with(dec6_out, unique(real_stop))
+
+  expected_real_stop <- as.Date(c("2021-05-30", "2021-06-09", "2021-06-30", "2021-05-25", "2021-06-14", "2021-06-25"))
 
   expect_equivalent(unique_duration, c(15, 10))
   expect_equivalent(unique_real_stop, expected_real_stop)
 
-}) # unable to get new_duration column. It might because of the place where this column is defined in dec 5
+})
 
 
 context("Decision 7: Missing stop date")
