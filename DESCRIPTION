@@ -1,6 +1,6 @@
-Package: drugprepCPRD
+Package: drugprepr
 Title: CPRD Drug Preparation
-Version: 0.0.0.9010
+Version: 0.0.0.9011
 Authors@R: 
     c(person(given = "Belay Birlie",
            family = "Yimer",
@@ -30,7 +30,7 @@ Authors@R:
            email = "will.dixon@manchester.ac.uk")
            )
 Maintainer: Belay Birlie Yimer <belaybirlie.yimer@manchester.ac.uk>
-Description: The R package drugprepCPRD prepares the prescription data from CPRD in to analysis ready format with start and stop date for each prescription per individual. Based on Pye et al. (2018) <https://doi.org/10.1002/pds.4440>
+Description: Prepare electronic prescription data (such as from CPRD) into an analysis-ready format, with start and stop dates for each patient's prescriptions. Based on Pye et al. (2018) <https://doi.org/10.1002/pds.4440>
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

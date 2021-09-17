@@ -382,8 +382,8 @@ dec7_missing_stop_date <- function(data = NULL, decision) {
 #' following options. The input data must have the following columns: patid,prodcode,start, real_stop,
 #' and ndd. It's adviced that this function is called after dec6_select_stop_date is executed.
 #'
-#' @param data a data frame containg prescription information
-#' @param decision a character specifying the decison to consider for processing
+#' @param data a data frame containing prescription information
+#' @param decision a character specifying the decision to consider for processing
 ##' \itemize{
 ##' \item{"8a"}{do nothing}
 ##'  \item{"8b"}{use mean ndd and mean length}
