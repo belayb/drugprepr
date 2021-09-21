@@ -22,7 +22,7 @@ The purpose of this document is to plan out the design of the package.
 We start with a dataset that looks a little bit like this.
 
 ```{r setup}
-library(drugprepCPRD)
+library(drugprepr)
 knitr::kable(dataset1)
 ```
 

@@ -1,5 +1,5 @@
 ---
-title: "Introduction to `drugprepCPRD`"
+title: "Introduction to `drugprepr`"
 author:
   - Belay B. Yimer
   - David A. Selby
@@ -32,9 +32,9 @@ In pharmacoepidemiology studies, the data preparation steps used to determine dr
 We have previously developed a framework^[is a citation needed here?] for dealing with missing information on stop dates and other issues such as overlapping prescription periods.
 The framework was implemented using \textsc{Stata} software.
 Besides being only available for \textsc{Stata} users, the earlier algorithm did not deal with the problem of free-text prescriptions.
-The current R package, `drugprepCPRD`, builds upon the earlier algorithm and aims to make the framework available to a wider audience through its implementation as free, open-source software.
+The current R package, `drugprepr` (formerly `drugprepCPRD`), builds upon the earlier algorithm and aims to make the framework available to a wider audience through its implementation as free, open-source software.
 
-This vignette describes how to use the `drugprepCPRD` package to transform CPRD drug data contained in a typical `therapy.txt` file into information on individuals’ drug use over time.
+This vignette describes how to use the `drugprepr` package to transform CPRD drug data contained in a typical `therapy.txt` file into information on individuals’ drug use over time.
 We will walk through all the steps needed to perform the transformation.
 We assume the user is already familiar with CPRD data and has basic knowledge of R software.
 
@@ -47,7 +47,7 @@ This table can be linked to the 'common dosages' lookup table to get the text in
 Table \ref{tab:dataset1}, based on the fictional dataset `dataset1` that is bundled with this package, presents hypothetical prescription data for two individuals.
 
 ```{r dataset1, echo=FALSE}
-library(drugprepCPRD)
+library(drugprepr)
 library(kableExtra)
 kable(dataset1, booktabs = TRUE,
       caption = 'Prescription data for two fictional individuals. Stored in \\texttt{dataset1}') %>%
@@ -58,12 +58,12 @@ The `event_date` in the table is often used as the start date of exposure, but t
 CPRD provides two options, namely `numdays` (number of days) and `dose_duration`, which can be used to determine the prescription stop date.
 However, these values are often missing, and even when present do not offer flexibility for the researcher in computing the stop dates in the case of prescriptions with a variable dose frequency (number of times the prescription is taken per day) and dose number (e.g. the number of tablets to take at a time). 
 
-As described below, the `drugprepCPRD` package extracts the dose frequency and dose number from the text instructions and provide a series of data processing steps with multiple options to define start and stop dates of a given prescription.
+As described below, the `drugprepr` package extracts the dose frequency and dose number from the text instructions and provide a series of data processing steps with multiple options to define start and stop dates of a given prescription.
 The package works at the `prodcode` level to give granularity for each medication.
 
 # The algorithm 
 
-The `drugprepCPRD` is made up of the following functions that must be executed sequentially. 
+The `drugprepr` is made up of the following functions that must be executed sequentially. 
 
 Compute numerical daily dose (ndd)
 : Extract dose frequency (number of times the prescription is to be taken per day) and dose number (number of units of drug to take at a time) from the free text, in order to compute the numerical daily dose.
@@ -101,7 +101,7 @@ Decision 9: Handle overlapping prescriptions
 Decision 10: Handle short gaps between prescriptions
 : handles small gaps between consecutive prescriptions by either allowing these gaps to remain classified as unexposed or reclassifying the gaps as exposed when the gap is less than a  specified number of days. options include [10a] do nothing – the gap remains classified as unexposed; [10b(X)] move the stop date of the preceding prescription to “fill in” the gap, reclassifying the time as exposed, if the gap between consecutive prescriptions is less than X days. X is 15, 30, or 60
 
-# R package drugprepCPRD
+# R package drugprepr
 
 You can install the latest development version from `GitHub` with these `R` commands:
 
@@ -110,10 +110,10 @@ install.packages("devtools")
 devtools::install_github("belayb/drugprepCPRD")
 ```
 
-Once the package is installed, we load the `drugprepCPRD` package into the working environment as follows. 
+Once the package is installed, we load the `drugprepr` package into the working environment as follows. 
 
 ```{r setup}
-library(drugprepCPRD)
+library(drugprepr)
 ```
 
 ## Computation of ndd from free text 
@@ -165,7 +165,7 @@ Example output is given in Table \ref{tab:implausible}.
 
 ## Processing the CPRD prescription data 
 
-Once these preliminary pre-processing steps are completed, we can use the main function of `drugprepCPRD`, `run.drugPREP`, to evaluate the 10 decision nodes described above.
+Once these preliminary pre-processing steps are completed, we can use the main function of `drugprepr`, `run.drugPREP`, to evaluate the 10 decision nodes described above.
 This can be done by executing an R command of the following form:
 
 ```{r drugprep, echo = 1}
