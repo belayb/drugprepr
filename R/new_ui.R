@@ -14,7 +14,7 @@
 #' @import dplyr
 #' @param dataset A data frame containing columns \code{prodcode}, \code{pracid}, \code{patid}
 #' @param variable Unquoted name of the column in \code{dataset} to be imputed
-#' @param which_fun Function applied to \code{variable} that returns a logical vector indicating which elements to impute. Defaults to \code{\link[base]{is.na}}
+#' @param which_fun Function applied to \code{variable} that returns a logical vector indicating which elements to impute. Defaults to \code{\link[base:NA]{is.na}}
 #' @param fun Method for imputing the values. See details.
 #' @param group Level of structure for imputation. Defaults to whole study population.
 #' @param ... Not used
