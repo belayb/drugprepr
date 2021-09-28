@@ -7,9 +7,9 @@
 dec8_multipleprescription_same_start_date(data = NULL, decision)
 }
 \arguments{
-\item{data}{a data frame containg prescription information}
+\item{data}{a data frame containing prescription information}
 
-\item{decision}{a character specifying the decison to consider for processing
+\item{decision}{a character specifying the decision to consider for processing
 \itemize{
 \item{"8a"}{do nothing}
 \item{"8b"}{use mean ndd and mean length}
