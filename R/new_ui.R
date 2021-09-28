@@ -12,12 +12,22 @@
 
 #' Impute missing or implausible values
 #' @import dplyr
-#' @param dataset A data frame containing columns \code{prodcode}, \code{pracid}, \code{patid}
+#' @param data A data frame containing columns \code{prodcode}, \code{pracid}, \code{patid}
 #' @param variable Unquoted name of the column in \code{dataset} to be imputed
 #' @param which_fun Function applied to \code{variable} that returns a logical vector indicating which elements to impute. Defaults to \code{\link[base:NA]{is.na}}
 #' @param fun Method for imputing the values. See details.
 #' @param group Level of structure for imputation. Defaults to whole study population.
 #' @param ... Not used
+#'
+#' @details
+#' Possible values for \code{fun} are
+#' \itemize{
+#' \item \code{ignore}. Do nothing, leaving input unchanged.
+#' \item \code{mean}. Replace values with the mean by \code{group}
+#' \item \code{median}. Replace values with the median by \code{group}
+#' \item \code{mode}. Replace values with the most common value by \code{group}
+#' \item \code{missing}. Replace values with \code{NA}, to mark as missing.
+#' }
 #'
 #' @examples
 #' iris2 <- iris
@@ -28,7 +38,7 @@
 #' impute(iris2, Petal.Length, fun = 'mean', group = 'population')
 #' impute(iris2, Petal.Length, fun = 'mean', group = 'pracid')
 #'
-#' @return A data frame of the same structure as \code{dataset}, with values imputed
+#' @return A data frame of the same structure as \code{data}, with values imputed
 impute <- function(data,
                    variable,
                    which_fun = is.na,
@@ -42,7 +52,7 @@ impute <- function(data,
 
   impute_fun <- switch(fun,
                        'ignore' = identity, # slightly confusing because 'ignore' might imply deleting these outliers, but the function actually leaves them as-is
-                       'missing' = function(x) NA, # rather than 'missing', should be a verb maybe
+                       'missing' = function(x) replace(x, TRUE, NA), # rather than 'missing', should be a verb maybe
                        'mean' = function(x) mean(x, na.rm = TRUE),
                        'median' = function(x) median(x, na.rm = TRUE),
                        'mode' = get_mode)
@@ -50,9 +60,9 @@ impute <- function(data,
 
   data %>%
     dplyr::group_by(dplyr::across(dplyr::all_of(group_vars))) %>%
-    dplyr::mutate("{{variable}}" := ifelse(which_fun({{ variable }}),
-                                           impute_fun({{ variable }}),
-                                           {{ variable }}))
+    dplyr::mutate("{{variable}}" := dplyr::if_else(which_fun({{ variable }}),
+                                                   impute_fun({{ variable }}),
+                                                   {{ variable }}))
 }
 
 #' Find implausible entries
