@@ -19,5 +19,5 @@ outside_range(x, lower, upper, open = TRUE)
 A utility function for indicating if elements of a vector are implausible.
 }
 \details{
-Though the function \code{\%within\%} already exists, it is not vectorised.
+Though the function \code{\link[dplyr]{between}} already exists, it is not vectorised over the bounds.
 }

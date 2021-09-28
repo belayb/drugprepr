@@ -7,15 +7,20 @@ test_that('Example dataset loads correctly', {
 })
 
 test_that('Replacing missing quantities with NA is equivalent to identity', {
-  expect_equivalent(impute_qty(example_therapy, is.na, 'ignore'),
+  expect_equivalent(impute_qty(example_therapy, 'ignore'),
                     identity(example_therapy))
-  expect_equivalent(impute_qty(example_therapy, is.na, 'missing'),
-                    identity(example_therapy)) ##
-  expect_equivalent(impute_qty(example_therapy, function(x) rep(TRUE, length(x)), 'ignore'),
+  expect_equivalent(impute_qty(example_therapy, 'missing'),
+                    identity(example_therapy))
+  expect_equivalent(impute_qty(example_therapy, 'ignore', function(x) TRUE),
+                    identity(example_therapy))
+  expect_equivalent(impute_qty(example_therapy, 'ignore', function(x) rep(TRUE, length(x))),
                     identity(example_therapy))
 })
 
-test_that('Do not permit which_fun to return vector with wrong length', {
-  expect_error(impute_qty(example_therapy, function(x) TRUE, 'ignore'))
-  expect_error(impute_qty(example_therapy, function(x) FALSE))
+test_that('Impute function does what it says on the tin', {
+  library(dplyr)
+  expect_equivalent(impute_qty(example_therapy, 'mean'),
+                    example_therapy %>%
+                      group_by(prodcode) %>%
+                      mutate(qty = ifelse(is.na(qty), mean(qty, na.rm = TRUE), qty)))
 })

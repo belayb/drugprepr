@@ -7,8 +7,8 @@
 impute(
   data,
   variable,
-  which_fun = is.na,
-  fun = c("ignore", "mean", "median", "mode", "missing"),
+  method = c("ignore", "mean", "median", "mode", "missing"),
+  where = is.na,
   group = c("population", "patid", "pracid"),
   ...
 )
@@ -18,13 +18,13 @@ impute(
 
 \item{variable}{Unquoted name of the column in \code{dataset} to be imputed}
 
-\item{which_fun}{Function applied to \code{variable} that returns a logical vector indicating which elements to impute. Defaults to \code{\link[base:NA]{is.na}}}
+\item{method}{Method for imputing the values. See details.}
 
-\item{fun}{Method for imputing the values. See details.}
+\item{where}{Function applied to \code{variable} that returns a logical vector indicating which elements to impute. Defaults to \code{\link[base:NA]{is.na}}}
 
 \item{group}{Level of structure for imputation. Defaults to whole study population.}
 
-\item{...}{Not used}
+\item{...}{Extra arguments, currently ignored}
 }
 \value{
 A data frame of the same structure as \code{data}, with values imputed
@@ -41,14 +41,4 @@ Possible values for \code{fun} are
 \item \code{mode}. Replace values with the most common value by \code{group}
 \item \code{missing}. Replace values with \code{NA}, to mark as missing.
 }
-}
-\examples{
-iris2 <- iris
-iris2[sample(nrow(iris), 50), 'Petal.Length'] <- NA
-colnames(iris2)[colnames(iris2) == 'Species'] <- 'prodcode'
-iris2$pracid <- as.numeric(as.numeric(iris2$prodcode) < 2)
-impute(iris2, Petal.Length, fun = 'median')
-impute(iris2, Petal.Length, fun = 'mean', group = 'population')
-impute(iris2, Petal.Length, fun = 'mean', group = 'pracid')
-
 }

@@ -7,8 +7,8 @@ Replace implausible or missing prescription quantities}
 \usage{
 impute_qty(
   data,
-  which_fun,
-  fun = c("ignore", "mean", "median", "mode", "missing"),
+  method = c("ignore", "mean", "median", "mode", "missing"),
+  where = is.na,
   group = c("population", "patid", "pracid"),
   ...
 )
@@ -16,15 +16,19 @@ impute_qty(
 \arguments{
 \item{data}{A data frame containing columns \code{prodcode}, \code{pracid}, \code{patid}}
 
-\item{which_fun}{Function applied to \code{variable} that returns a logical vector indicating which elements to impute. Defaults to \code{\link[base:NA]{is.na}}}
+\item{method}{Method for imputing the values. See details.}
 
-\item{fun}{Method for imputing the values. See details.}
+\item{where}{Function applied to \code{variable} that returns a logical vector indicating which elements to impute. Defaults to \code{\link[base:NA]{is.na}}}
 
 \item{group}{Level of structure for imputation. Defaults to whole study population.}
 
-\item{...}{Not used}
+\item{...}{Extra arguments, currently ignored}
 }
 \description{
 Find implausible entries
 Replace implausible or missing prescription quantities
+}
+\examples{
+impute_qty(example_therapy, 'mean')
+
 }

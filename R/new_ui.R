@@ -14,10 +14,10 @@
 #' @import dplyr
 #' @param data A data frame containing columns \code{prodcode}, \code{pracid}, \code{patid}
 #' @param variable Unquoted name of the column in \code{dataset} to be imputed
-#' @param which_fun Function applied to \code{variable} that returns a logical vector indicating which elements to impute. Defaults to \code{\link[base:NA]{is.na}}
-#' @param fun Method for imputing the values. See details.
+#' @param method Method for imputing the values. See details.
+#' @param where Function applied to \code{variable} that returns a logical vector indicating which elements to impute. Defaults to \code{\link[base:NA]{is.na}}
 #' @param group Level of structure for imputation. Defaults to whole study population.
-#' @param ... Not used
+#' @param ... Extra arguments, currently ignored
 #'
 #' @details
 #' Possible values for \code{fun} are
@@ -29,28 +29,19 @@
 #' \item \code{missing}. Replace values with \code{NA}, to mark as missing.
 #' }
 #'
-#' @examples
-#' iris2 <- iris
-#' iris2[sample(nrow(iris), 50), 'Petal.Length'] <- NA
-#' colnames(iris2)[colnames(iris2) == 'Species'] <- 'prodcode'
-#' iris2$pracid <- as.numeric(as.numeric(iris2$prodcode) < 2)
-#' impute(iris2, Petal.Length, fun = 'median')
-#' impute(iris2, Petal.Length, fun = 'mean', group = 'population')
-#' impute(iris2, Petal.Length, fun = 'mean', group = 'pracid')
-#'
 #' @return A data frame of the same structure as \code{data}, with values imputed
 impute <- function(data,
                    variable,
-                   which_fun = is.na,
-                   fun = c('ignore', 'mean', 'median', 'mode', 'missing'),
+                   method = c('ignore', 'mean', 'median', 'mode', 'missing'),
+                   where = is.na,
                    group = c('population', 'patid', 'pracid'),
                    ...) {
 
-  which_fun <- match.fun(which_fun)
-  fun <- match.arg(fun)
+  where <- match.fun(where)
+  method <- match.arg(method)
   group <- match.arg(group)
 
-  impute_fun <- switch(fun,
+  impute_fun <- switch(method,
                        'ignore' = identity, # slightly confusing because 'ignore' might imply deleting these outliers, but the function actually leaves them as-is
                        'missing' = function(x) replace(x, TRUE, NA), # rather than 'missing', should be a verb maybe
                        'mean' = function(x) mean(x, na.rm = TRUE),
@@ -60,9 +51,9 @@ impute <- function(data,
 
   data %>%
     dplyr::group_by(dplyr::across(dplyr::all_of(group_vars))) %>%
-    dplyr::mutate("{{variable}}" := dplyr::if_else(which_fun({{ variable }}),
-                                                   impute_fun({{ variable }}),
-                                                   {{ variable }}))
+    dplyr::mutate("{{variable}}" := ifelse(no   = {{ variable }},
+                                           test = rep_len(where({{ variable }}), length({{ variable }})),
+                                           yes  = impute_fun({{ variable }})))
 }
 
 #' Find implausible entries
@@ -71,26 +62,32 @@ impute <- function(data,
 #'
 #' @inheritParams impute
 #'
+#' @examples
+#' impute_qty(example_therapy, 'mean')
+#'
 #' @export
 impute_qty <- function(data,
-                       which_fun,
-                       fun = c('ignore', 'mean', 'median', 'mode', 'missing'),
+                       method = c('ignore', 'mean', 'median', 'mode', 'missing'),
+                       where = is.na,
                        group = c('population', 'patid', 'pracid'),
                        ...) {
-  impute(data, qty, which_fun, fun, group, ...)
+  impute(data, qty, method, where, group, ...)
 }
 
 #' Replace implausible or missing numerical daily doses (NDD)
 #'
 #' @inheritParams impute_ndd
 #'
+#' @examples
+#' impute_ndd(example_therapy, 'mean')
+#'
 #' @export
 impute_ndd <- function(data,
-                       which_fun,
-                       fun = c('ignore', 'mean', 'median', 'mode', 'missing'),
+                       method = c('ignore', 'mean', 'median', 'mode', 'missing'),
+                       where = is.na,
                        group = c('population', 'patid', 'pracid'),
                        ...) {
-  impute(data, ndd, which_fun, fun, group, ...)
+  impute(data, ndd, method, where, group, ...)
 }
 
 ############ Utilities ############
@@ -117,7 +114,7 @@ example_therapy <- data.frame(
 #'
 #' A utility function for indicating if elements of a vector are implausible.
 #'
-#' Though the function \code{%within%} already exists, it is not vectorised.
+#' Though the function \code{\link[dplyr]{between}} already exists, it is not vectorised over the bounds.
 #'
 #' @param x numeric vector
 #' @param lower minimum plausible value

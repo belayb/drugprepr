@@ -6,12 +6,16 @@
 \usage{
 impute_ndd(
   data,
-  which_fun,
-  fun = c("ignore", "mean", "median", "mode", "missing"),
+  method = c("ignore", "mean", "median", "mode", "missing"),
+  where = is.na,
   group = c("population", "patid", "pracid"),
   ...
 )
 }
 \description{
 Replace implausible or missing numerical daily doses (NDD)
+}
+\examples{
+impute_ndd(example_therapy, 'mean')
+
 }
