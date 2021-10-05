@@ -9,6 +9,9 @@ test_that('get_mode finds the most common value, ignoring NAs', {
   expect_equal(get_mode(c(2, 2, 2, NaN)), 2)
   expect_equal(get_mode(c(-Inf, Inf, Inf, NaN)), Inf)
   expect_equal(get_mode(c('a', 'a', 'b')), 'a')
+  expect_equal(get_mode(c(NA, NA), na.rm = FALSE), NA)
+  expect_equal(get_mode(c(NA, NA), na.rm = TRUE), NA) # bit of an edge case
+  expect_null(get_mode(NULL))
 })
 
 test_that('If there are two most common values, return the first to appear', {

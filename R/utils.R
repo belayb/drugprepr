@@ -15,6 +15,9 @@ outside_range <- function(x, lower, upper, open = TRUE) {
 }
 
 #' Get the mode (most common value) of a vector
+#'
+#' @param v a vector
+#' @param na.rm Logical. If \code{TRUE} (the default), find mode of non-\code{NA} values
 get_mode <- function(v, na.rm = TRUE) {
   # Returns the most common value. If multiple: whichever appears first.
   if (na.rm) v <- v[!is.na(v)]

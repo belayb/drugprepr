@@ -15,7 +15,7 @@ Based on a hypothetical 'therapy' file from the Clinical Practical Research
 Datalink (CPRD), a UK database of primary care records.
 }
 \note{
-This dataset is generated nondeterministically, so it may vary between
-builds (or maybe even sessions?) of the \code{drugprepr} package.
+This dataset is now generated deterministically, so it will not vary
+between sessions.
 }
 \keyword{datasets}

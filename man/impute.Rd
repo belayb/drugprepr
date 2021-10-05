@@ -7,10 +7,11 @@
 impute(
   data,
   variable,
-  method = c("ignore", "mean", "median", "mode", "missing"),
+  method = c("ignore", "mean", "median", "mode", "replace"),
   where = is.na,
   group = c("population", "patid", "pracid"),
-  ...
+  ...,
+  replace_with = NA_real_
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ impute(
 \item{group}{Level of structure for imputation. Defaults to whole study population.}
 
 \item{...}{Extra arguments, currently ignored}
+
+\item{replace_with}{if the method 'replace' is selected, which value should be inserted?}
 }
 \value{
 A data frame of the same structure as \code{data}, with values imputed
@@ -39,6 +42,6 @@ Possible values for \code{fun} are
 \item \code{mean}. Replace values with the mean by \code{group}
 \item \code{median}. Replace values with the median by \code{group}
 \item \code{mode}. Replace values with the most common value by \code{group}
-\item \code{missing}. Replace values with \code{NA}, to mark as missing.
+\item \code{replace}. Replace values with \code{replace_with}, which defaults to \code{NA} (i.e. mark as missing)
 }
 }

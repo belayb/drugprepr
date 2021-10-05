@@ -9,7 +9,7 @@ test_that('Example dataset loads correctly', {
 test_that('Replacing missing quantities with NA is equivalent to identity', {
   expect_equivalent(impute_qty(example_therapy, 'ignore'),
                     identity(example_therapy))
-  expect_equivalent(impute_qty(example_therapy, 'missing'),
+  expect_equivalent(impute_qty(example_therapy, 'replace'),
                     identity(example_therapy))
   expect_equivalent(impute_qty(example_therapy, 'ignore', function(x) TRUE),
                     identity(example_therapy))
@@ -20,7 +20,7 @@ test_that('Replacing missing quantities with NA is equivalent to identity', {
 test_that('Replacing missing numerical daily doses with NA is equivalent to identity', {
   expect_equivalent(impute_ndd(example_therapy, 'ignore'),
                     identity(example_therapy))
-  expect_equivalent(impute_ndd(example_therapy, 'missing'),
+  expect_equivalent(impute_ndd(example_therapy, 'replace'),
                     identity(example_therapy))
   expect_equivalent(impute_ndd(example_therapy, 'ignore', function(x) TRUE),
                     identity(example_therapy))
@@ -56,4 +56,13 @@ test_that('Impute function does what it says on the tin', {
                     example_therapy %>%
                       group_by(prodcode) %>%
                       mutate(qty = ifelse(is.na(qty), drugprepr:::get_mode(qty), qty)))
+})
+
+test_that('Clean overlong prescription durations', {
+  long_presc <- tibble::tibble(duration = c(100, 300, 400, 800))
+  expect_equal(clean_duration(long_presc), long_presc)
+  expect_equal(clean_duration(long_presc, 6),
+               tibble::tibble(duration = c(100, 182, 182, 182)))
+  expect_equal(clean_duration(long_presc, 12, 'remove'),
+               tibble::tibble(duration = c(100, 300, NA, NA)))
 })

@@ -6,22 +6,11 @@
 \usage{
 impute_ndd(
   data,
-  method = c("ignore", "mean", "median", "mode", "missing"),
+  method = c("ignore", "mean", "median", "mode", "replace"),
   where = is.na,
   group = c("population", "patid", "pracid"),
   ...
 )
-}
-\arguments{
-\item{data}{A data frame containing columns \code{prodcode}, \code{pracid}, \code{patid}}
-
-\item{method}{Method for imputing the values. See details.}
-
-\item{where}{Function applied to \code{variable} that returns a logical vector indicating which elements to impute. Defaults to \code{\link[base:NA]{is.na}}}
-
-\item{group}{Level of structure for imputation. Defaults to whole study population.}
-
-\item{...}{Extra arguments, currently ignored}
 }
 \description{
 Replace implausible or missing numerical daily doses (NDD)

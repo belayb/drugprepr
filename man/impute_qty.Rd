@@ -7,7 +7,7 @@ Replace implausible or missing prescription quantities}
 \usage{
 impute_qty(
   data,
-  method = c("ignore", "mean", "median", "mode", "missing"),
+  method = c("ignore", "mean", "median", "mode", "replace"),
   where = is.na,
   group = c("population", "patid", "pracid"),
   ...

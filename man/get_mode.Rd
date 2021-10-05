@@ -6,6 +6,11 @@
 \usage{
 get_mode(v, na.rm = TRUE)
 }
+\arguments{
+\item{v}{a vector}
+
+\item{na.rm}{Logical. If \code{TRUE} (the default), find mode of non-\code{NA} values}
+}
 \description{
 Get the mode (most common value) of a vector
 }
