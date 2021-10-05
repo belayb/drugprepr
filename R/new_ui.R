@@ -76,7 +76,7 @@ impute_qty <- function(data,
 
 #' Replace implausible or missing numerical daily doses (NDD)
 #'
-#' @inheritParams impute_ndd
+#' @inheritParams impute
 #'
 #' @examples
 #' impute_ndd(example_therapy, 'mean')
@@ -110,19 +110,4 @@ example_therapy <- data.frame(
   stringsAsFactors = FALSE
 )
 
-#' Do values fall outside a specified 'plausible' range?
-#'
-#' A utility function for indicating if elements of a vector are implausible.
-#'
-#' Though the function \code{\link[dplyr]{between}} already exists, it is not vectorised over the bounds.
-#'
-#' @param x numeric vector
-#' @param lower minimum plausible value
-#' @param upper maximum plausible value
-#' @param closed logical. If \code{TRUE}, values exactly equal to \code{lower} or \code{upper} are also considered implausible
-outside_range <- function(x, lower, upper, open = TRUE) {
-  if (closed) {
-    x < lower | x > upper
-  } else x <= lower | x >= upper
-}
 

@@ -1,8 +1,4 @@
-get_mode <- function(v) {
-  # Returns the most common value. If multiple: whichever appears first.
-  uniqv <- unique(v)
-  uniqv[which.max(tabulate(match(v, uniqv)))]
-}
+
 
 #' Implausible  quantity
 #'
