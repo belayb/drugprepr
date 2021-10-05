@@ -26,6 +26,8 @@ test_that('Replacing missing numerical daily doses with NA is equivalent to iden
                     identity(example_therapy))
   expect_equivalent(impute_ndd(example_therapy, 'ignore', function(x) rep(TRUE, length(x))),
                     identity(example_therapy))
+  expect_equivalent(impute_ndd(example_therapy, 'ignore', function(x) runif(length(x)) > .3),
+                    identity(example_therapy))
 })
 
 test_that('Impute function does what it says on the tin', {
@@ -38,4 +40,20 @@ test_that('Impute function does what it says on the tin', {
                     example_therapy %>%
                       group_by(prodcode) %>%
                       mutate(ndd = ifelse(is.na(ndd), mean(ndd, na.rm = TRUE), ndd)))
+  expect_equivalent(impute_qty(example_therapy, 'median'),
+                    example_therapy %>%
+                      group_by(prodcode) %>%
+                      mutate(qty = ifelse(is.na(qty), median(qty, na.rm = TRUE), qty)))
+  expect_equivalent(impute_ndd(example_therapy, 'median'),
+                    example_therapy %>%
+                      group_by(prodcode) %>%
+                      mutate(ndd = ifelse(is.na(ndd), median(ndd, na.rm = TRUE), ndd)))
+  expect_equivalent(impute_ndd(example_therapy, 'mode'),
+                    example_therapy %>%
+                      group_by(prodcode) %>%
+                      mutate(ndd = ifelse(is.na(ndd), drugprepr:::get_mode(ndd), ndd)))
+  expect_equivalent(impute_qty(example_therapy, 'mode'),
+                    example_therapy %>%
+                      group_by(prodcode) %>%
+                      mutate(qty = ifelse(is.na(qty), drugprepr:::get_mode(qty), qty)))
 })

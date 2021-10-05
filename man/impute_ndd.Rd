@@ -12,6 +12,17 @@ impute_ndd(
   ...
 )
 }
+\arguments{
+\item{data}{A data frame containing columns \code{prodcode}, \code{pracid}, \code{patid}}
+
+\item{method}{Method for imputing the values. See details.}
+
+\item{where}{Function applied to \code{variable} that returns a logical vector indicating which elements to impute. Defaults to \code{\link[base:NA]{is.na}}}
+
+\item{group}{Level of structure for imputation. Defaults to whole study population.}
+
+\item{...}{Extra arguments, currently ignored}
+}
 \description{
 Replace implausible or missing numerical daily doses (NDD)
 }
