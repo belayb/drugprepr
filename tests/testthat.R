@@ -1,4 +1,4 @@
 library(testthat)
-library(drugprepCPRD)
+library(drugprepr)
 
-test_check("drugprepCPRD")
+test_check("drugprepr")
