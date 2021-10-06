@@ -66,3 +66,18 @@ test_that('Clean overlong prescription durations', {
   expect_equal(clean_duration(long_presc, 12, 'remove'),
                tibble::tibble(duration = c(100, 300, NA, NA)))
 })
+
+test_that('Imputing missing prescription durations', {
+  library(dplyr)
+  example_duration <- transform(example_therapy, duration = qty / ndd)
+  expect_equal(impute_duration(example_duration, method = 'ignore'),
+               as_tibble(example_duration))
+  expect_equal(impute_duration(example_duration, method = 'replace'),
+               as_tibble(example_duration))
+  expect_equal(impute_duration(example_duration, method = 'mean'),
+               as_tibble(example_duration) %>%
+                 group_by(prodcode) %>%
+                 mutate(duration = ifelse(is.na(duration),
+                                          mean(duration, na.rm = T),
+                                          duration)))
+})

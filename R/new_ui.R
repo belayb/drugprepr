@@ -86,7 +86,7 @@ impute_qty <- function(data,
 
 #' Replace implausible or missing numerical daily doses (NDD)
 #'
-#' @inheritParams impute_ndd
+#' @inheritParams impute
 #'
 #' @examples
 #' impute_ndd(example_therapy, 'mean')
@@ -98,6 +98,26 @@ impute_ndd <- function(data,
                        group = c('population', 'patid', 'pracid'),
                        ...) {
   impute(data, ndd, method, where, group, ...)
+}
+
+
+#' Replace missing durations
+#'
+#' Instead of replacing missing stop dates, we impute the durations and then
+#' infer the stop dates from there.
+#'
+#' @inheritParams impute
+#'
+#' @examples
+#' example_duration <- transform(example_therapy, duration = qty / ndd)
+#' impute_duration(example_duration, method = 'mean', group = 'patid')
+#'
+#' @export
+impute_duration <- function(data,
+                            method = c('ignore', 'mean', 'median', 'mode', 'replace'),
+                            group = c('population', 'patid', 'pracid'),
+                            ...) {
+  impute(data, duration, method, is.na, group, ...)
 }
 
 #' Example electronic prescription dataset
@@ -128,15 +148,21 @@ example_therapy <- data.frame(
 #' Given a prescription length limit, truncate any prescriptions that appear to
 #' be longer than this, or mark them as missing.
 #'
-#' If you want to 'do nothing', simply set \code{max_months} to an arbitrarily
-#' high number. By default, the maximum is infinite, so nothing should happen.
+#' The method 'truncate' causes any duration longer than \code{max_months} to
+#' be replaced with the value of \code{max_months} (albeit converted to days).
+#' The method 'remove' causes such durations to be replaced with \code{NA}.
+#' There is no explicit 'ignore' method, but if you want to 'do nothing', simply
+#' set \code{max_months} to an arbitrarily high number.
+#' By default, the maximum is infinite, so nothing should happen.
+#' (Of course, you could also just \emph{not} run the function...)
 #'
 #' @note Currently the variable name is hard-coded as 'duration', but in
-#' principle this could be parametrised.
+#' principle this could be parametrised for datasets where the column has a
+#' different name.
 #'
 #' @param data A data frame containing a column called \code{duration}
 #' @param max_months The maximum plausible prescription length in months
-#' @param method Either 'truncate' or 'remove'.
+#' @param method Either 'truncate' or 'remove'. See details
 #'
 #' @examples
 #' long_presc <- data.frame(duration = c(100, 300, 400, 800))

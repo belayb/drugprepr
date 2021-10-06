@@ -11,15 +11,25 @@ clean_duration(data, max_months = Inf, method = c("truncate", "remove"))
 
 \item{max_months}{The maximum plausible prescription length in months}
 
-\item{method}{Either 'truncate' or 'remove'.}
+\item{method}{Either 'truncate' or 'remove'. See details}
 }
 \description{
 Given a prescription length limit, truncate any prescriptions that appear to
 be longer than this, or mark them as missing.
 }
 \details{
-If you want to 'do nothing', simply set \code{max_months} to an arbitrarily
-high number. By default, the maximum is infinite, so nothing should happen.
+The method 'truncate' causes any duration longer than \code{max_months} to
+be replaced with the value of \code{max_months} (albeit converted to days).
+The method 'remove' causes such durations to be replaced with \code{NA}.
+There is no explicit 'ignore' method, but if you want to 'do nothing', simply
+set \code{max_months} to an arbitrarily high number.
+By default, the maximum is infinite, so nothing should happen.
+(Of course, you could also just \emph{not} run the function...)
+}
+\note{
+Currently the variable name is hard-coded as 'duration', but in
+principle this could be parametrised for datasets where the column has a
+different name.
 }
 \examples{
 long_presc <- data.frame(duration = c(100, 300, 400, 800))
