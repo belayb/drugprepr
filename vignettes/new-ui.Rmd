@@ -1,0 +1,87 @@
+---
+title: "Using the new drugprepr user interface"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Using the new drugprepr user interface}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(drugprepr)
+example_therapy
+```
+
+Recall the original user interface is implemented as follows.
+
+```{r}
+run.drugPREP
+```
+
+That is, we perform the following steps in series:
+
+1. Implausible total quantity
+2. Missing total quantity
+3. Implausible daily dose
+4. Missing daily dose
+5. Clean duration
+6. Select stop date type
+7. Missing stop date (i.e. impute missing durations)
+8. Multiple prescriptions with same start date
+9. Overlapping prescriptions
+10. Gaps between prescriptions
+
+With the new user interface:
+
+```{r}
+plausible_values <- data.frame(
+  prodcode = c('a', 'b', 'c'),
+  min_qty = 0,
+  max_qty = c(50, 100, 200),
+  min_ndd = 0,
+  max_ndd = c(10, 20, 30)
+)
+```
+
+```{r pipeline}
+library(dplyr)
+example_therapy %>%
+  # Merge with data about plausible doses and total quantities for each drug.
+  left_join(plausible_values, by = 'prodcode') %>%
+  # Delete implausible total quantity.
+  impute_qty(method = 'replace', where = function(q) q < .$min_qty | q > .$max_qty) %>%
+  # Impute missing total quantity.
+  impute_qty(method = 'median', where = is.na, group = 'pracid') %>%
+  # Delete implausible daily doses.
+  impute_ndd(method = 'replace', where = function(d) d < .$min_ndd | d > .$max_ndd) %>%
+  impute_ndd(method = 'mean', where = is.na, group = 'patid') %>%
+  # Remove auxiliary range variables.
+  select(-starts_with('max_'), -starts_with('min_')) %>%
+  # Compute prescription duration from ndd and total qty.
+  mutate(duration = qty / ndd) %>%
+  # Clean overly-long durations
+  clean_duration(max_months = 6, 'truncate') %>%
+  # Select stop date type (this is a weird one because it could make all previous steps redundant?)
+  identity ##### to be continued
+```
+OK, so that handles one run of drug preparation.
+
+## Multiverse
+
+How can we parametrise it for multiple sets of decisions?
+
+With a tidy decision set, of course!
+
+That is, we define a data frame containing vectors of values, functions and decision rules (one row per decision set) and pass it as input to a wrapper function that runs all of the above, and spits out a list of data frames of length equal to the number of rows in the decision table.
+
+Practically speaking, this might consume all available memory, so it might make sense to write each table to disk rather than store them all in one list in RAM.
+However, perhaps we could give the user the option, depending on data size.
+
+
