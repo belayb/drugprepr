@@ -59,23 +59,23 @@ test_that('Impute function does what it says on the tin', {
 })
 
 test_that('Clean overlong prescription durations', {
-  long_presc <- tibble::tibble(duration = c(100, 300, 400, 800))
+  long_presc <- dplyr::tibble(duration = c(100, 300, 400, 800))
   expect_equal(clean_duration(long_presc), long_presc)
   expect_equal(clean_duration(long_presc, 6),
-               tibble::tibble(duration = c(100, 182, 182, 182)))
+               dplyr::tibble(duration = c(100, 182, 182, 182)))
   expect_equal(clean_duration(long_presc, 12, 'remove'),
-               tibble::tibble(duration = c(100, 300, NA, NA)))
+               dplyr::tibble(duration = c(100, 300, NA, NA)))
 })
 
 test_that('Imputing missing prescription durations', {
   library(dplyr)
   example_duration <- transform(example_therapy, duration = qty / ndd)
   expect_equal(impute_duration(example_duration, method = 'ignore'),
-               as_tibble(example_duration))
+               dplyr::as_tibble(example_duration))
   expect_equal(impute_duration(example_duration, method = 'replace'),
-               as_tibble(example_duration))
+               dplyr::as_tibble(example_duration))
   expect_equal(impute_duration(example_duration, method = 'mean'),
-               as_tibble(example_duration) %>%
+               dplyr::as_tibble(example_duration) %>%
                  group_by(prodcode) %>%
                  mutate(duration = ifelse(is.na(duration),
                                           mean(duration, na.rm = T),
