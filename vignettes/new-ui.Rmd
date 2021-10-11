@@ -1,11 +1,16 @@
 ---
 title: "Using the new drugprepr user interface"
+author: David Selby
+date: October 2021
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Using the new drugprepr user interface}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+
+This is a development document and may be removed or hidden when the package is
+released.
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
@@ -18,6 +23,8 @@ knitr::opts_chunk$set(
 library(drugprepr)
 example_therapy
 ```
+
+## Universe
 
 Recall the original user interface is implemented as follows.
 
@@ -69,7 +76,12 @@ example_therapy %>%
   # Clean overly-long durations
   clean_duration(max_months = 6, 'truncate') %>%
   # Select stop date type (this is a weird one because it could make all previous steps redundant?)
-  identity ##### to be continued
+  mutate(stop_date = start_date + duration) %>% # vs numdays vs dose_duration(?)
+  # Clashing stop date (maybe this step should go before the previous one?)
+  impute_duration(method = 'mean', where = function(x) length(x) > 1, group = c('patid', 'start_date')) %>%
+  distinct(patid, prodcode, start_date, .keep_all = TRUE) %>% # this is the only time up to this point that nrow varies
+  # Overlapping prescription
+  
 ```
 OK, so that handles one run of drug preparation.
 
@@ -80,6 +92,75 @@ How can we parametrise it for multiple sets of decisions?
 With a tidy decision set, of course!
 
 That is, we define a data frame containing vectors of values, functions and decision rules (one row per decision set) and pass it as input to a wrapper function that runs all of the above, and spits out a list of data frames of length equal to the number of rows in the decision table.
+
+```{r}
+decision_set <- list(
+  implausible_qty = 'a',
+  missing_qty = 'a',
+  implausible_ndd = 'a',
+  missing_ndd = 'a',
+  clean_duration = 'a',
+  select_stop_date = 'a',
+  missing_stop_date = 'a',
+  clash_prescription = 'a',
+  overlap_prescription = 'a',
+  short_gap = 'a'
+)
+as.data.frame(decision_set)
+```
+
+Then define a function that populates the various arguments according to these coded decision rules:
+
+```{r}
+make_decision_set <- function(decisions = c(
+  # almost like a DSL
+  implausible_qty = 'median pracid',
+  missing_qty = 'mode population',
+  implausible_ndd = 'replace',
+  missing_ndd = 'mean patid',
+  clean_duration = 'truncate 6',
+  select_stop_date = 'stop1',
+  missing_stop_date = 'mean population',
+  clash_start = 'shortest',
+  overlapping = 'nothing',
+  short_gaps = 'nothing' ## stringr::str_split() # -> pass to function that takes list arguments
+)) {
+  decisions <- c
+}
+
+make_decision_set()
+
+dp_universe <- function(data, decision, plausible_ranges) {
+  data <- left_join(data, plausible_values, by = 'prodcode')
+  # Decision 1
+  data <- impute_qty(data, method = , where = function(q) q < .$min_qty | q > .$max_qty)
+  # Decision 2
+  data <- impute_qty(data, method = 'median', where = is.na, group = 'pracid')
+  # Decision 3
+  data <- impute_ndd(data, method = 'replace', where = function(d) d < .$min_ndd | d > .$max_ndd)
+  # Decision 4
+  data <- impute_ndd(data, method = 'mean', where = is.na, group = 'patid') %>%
+    select(-starts_with('max_'), -starts_with('min_'))
+  # Decision 5
+  data <- mutate(data, duration = qty / ndd) %>%
+    clean_duration(max_months = 6, 'truncate')
+  # Decision 6
+  data <- mutate(data, stop_date = start_date + duration)
+  # Decision 7
+  data <- impute_stop_date(data)
+  # Decision 8
+  ## Clashing start dates: not implemented yet
+  # Decision 9
+  ## Overlapping prescriptions: not implemented yet
+  # Decision 10
+  ## Gaps between prescriptions: not implemented yet
+  data
+}
+
+do.call(mean, list(x = 1:2, na.rm = TRUE))
+
+
+```
 
 Practically speaking, this might consume all available memory, so it might make sense to write each table to disk rather than store them all in one list in RAM.
 However, perhaps we could give the user the option, depending on data size.

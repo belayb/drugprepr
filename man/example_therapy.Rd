@@ -5,7 +5,7 @@
 \alias{example_therapy}
 \title{Example electronic prescription dataset}
 \format{
-An object of class \code{data.frame} with 30 rows and 5 columns.
+An object of class \code{data.frame} with 30 rows and 6 columns.
 }
 \usage{
 example_therapy

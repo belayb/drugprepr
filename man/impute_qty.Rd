@@ -18,7 +18,7 @@ impute_qty(
 
 \item{method}{Method for imputing the values. See details.}
 
-\item{where}{Function applied to \code{variable} that returns a logical vector indicating which elements to impute. Defaults to \code{\link[base:NA]{is.na}}}
+\item{where}{Logical vector, or function applied to \code{variable} returning such a vector, indicating which elements to impute. Defaults to \code{\link[base:NA]{is.na}}}
 
 \item{group}{Level of structure for imputation. Defaults to whole study population.}
 

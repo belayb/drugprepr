@@ -3,7 +3,7 @@ context('Test features of the proposed new user interface')
 test_that('Example dataset loads correctly', {
   expect_equal(nrow(example_therapy), 30L)
   expect_equal(colnames(example_therapy),
-               c('patid', 'pracid', 'prodcode', 'qty', 'ndd'))
+               c('patid', 'pracid', 'prodcode', 'start_date', 'qty', 'ndd'))
 })
 
 test_that('Replacing missing quantities with NA is equivalent to identity', {
