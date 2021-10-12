@@ -9,7 +9,7 @@ impute(
   variable,
   method = c("ignore", "mean", "median", "mode", "replace"),
   where = is.na,
-  group = c("population", "patid", "pracid"),
+  group,
   ...,
   replace_with = NA_real_
 )

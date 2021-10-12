@@ -2,12 +2,13 @@
 % Please edit documentation in R/new_ui.R
 \name{impute_duration}
 \alias{impute_duration}
-\title{Replace missing durations}
+\title{Replace missing or implausible prescription durations}
 \usage{
 impute_duration(
   data,
   method = c("ignore", "mean", "median", "mode", "replace"),
-  group = c("population", "patid", "pracid"),
+  where = is.na,
+  group = c("patid", "start_date"),
   ...
 )
 }
@@ -16,6 +17,8 @@ impute_duration(
 
 \item{method}{Method for imputing the values. See details.}
 
+\item{where}{Logical vector, or function applied to \code{variable} returning such a vector, indicating which elements to impute. Defaults to \code{\link[base:NA]{is.na}}}
+
 \item{group}{Level of structure for imputation. Defaults to whole study population.}
 
 \item{...}{Extra arguments, currently ignored}
@@ -23,6 +26,11 @@ impute_duration(
 \description{
 Instead of replacing missing stop dates, we impute the durations and then
 infer the stop dates from there.
+}
+\details{
+We can fix clashing start dates by setting \code{group} to \code{start_date}
+and \code{patid}, i.e. average over groups with more than one member;
+any metric should return the original values if the group size is one.
 }
 \examples{
 example_duration <- transform(example_therapy, duration = qty / ndd)

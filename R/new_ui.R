@@ -207,3 +207,29 @@ clean_duration <- function(data,
 fix_start_clash <- function(data) {
 
 }
+
+#' New way of separating overlapping prescriptions
+#'
+#' The older implementation used \code{isolateoverlaps} from the
+#' \code{intervalaverage} package and \code{Overlap} from the \code{DescTools}
+#' package. Here we refactor it using functions from \code{lubridate} instead.
+#'
+#' @param data A data frame including variables \code{patid}, \code{start_date},
+#' \code{stop_date} and \code{prodcode}
+#'
+#' @examples
+#' set.seed(1)
+#' overlapping_data <- data.frame(
+#'   rowid = 1:20,
+#'   patid = 1:2,
+#'   prodcode = 'a',
+#'   start_date = Sys.Date() + round(rexp(20, 1/7)),
+#'   qty = rpois(20, 64),
+#'   ndd = sample(seq(.5, 12, by = .5), 20, replace = TRUE),
+#'   stringsAsFactors = FALSE
+#' )
+#'
+#' @import lubridate
+overlapping_prescriptions <- function(data) {
+
+}
