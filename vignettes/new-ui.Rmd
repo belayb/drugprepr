@@ -124,6 +124,7 @@ This is based on code in `intervalaverageL::isolateoverlaps`.
 ```{r isolate overlaps, fig.width=5, fig.height = 3}
 # library(lubridate)
 library(tidyr)
+# Divide timeline into intervals (including gaps!)
 overlap_therapy %>%
   mutate(stop_date = start_date + qty / ndd) %>%
   pivot_longer(c(start_date, stop_date)) %>% # melt
@@ -143,6 +144,7 @@ x <- overlap_therapy %>%
   mutate(stop_date = start_date + qty / ndd)
 
 # should yield dataset where intervals exactly overlap or else mutually don't overlap:
+# (essentially: takes 'temp' and then deletes intervals that correspond to gaps)
 out <- sqldf::sqldf(
     'SELECT x.patid, x.prodcode, x.rowid,
             y.rowid yrowid, y.start_date, y.stop_date
@@ -153,7 +155,7 @@ out <- sqldf::sqldf(
         (x.start_date < y.start_date AND x.stop_date > y.stop_date) OR
         (x.start_date > y.start_date AND x.stop_date < y.stop_date)
      WHERE x.patid = y.patid AND x.prodcode = y.prodcode'
-  )
+)
 
 ggplot(out) +
   aes(y = as.factor(rowid)) +
@@ -164,6 +166,8 @@ ggplot(out) +
 ggplot(out %>%
          mutate(new_id = forcats::fct_reorder(as.factor(row_number()), start_date)) %>%
          distinct(patid, prodcode, start_date, .keep_all = TRUE)) +
+  # ^ this works because intervals either overlap completely or not at all,
+  # so you it is enough to take one interval for each unique start date
   aes(y = new_id) +
   geom_errorbarh(aes(xmin = start_date, xmax = stop_date), position = 'dodge2') +
   facet_wrap(~ patid, labeller = label_both, scales = 'free_y') +

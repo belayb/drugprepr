@@ -210,12 +210,20 @@ fix_start_clash <- function(data) {
 
 #' New way of separating overlapping prescriptions
 #'
+#' Run this function and then you can either simply discard overlapping
+#' intervals or shift them around using an appropriate algorithm.
+#'
 #' The older implementation used \code{isolateoverlaps} from the
 #' \code{intervalaverage} package and \code{Overlap} from the \code{DescTools}
-#' package. Here we refactor it using functions from \code{lubridate} instead.
+#' package. Here we refactor it using functions from \code{tidyverse} instead.
 #'
 #' @param data A data frame including variables \code{patid}, \code{start_date},
 #' \code{stop_date} and \code{prodcode}
+#'
+#' @return A data frame of \code{patid}, \code{prodcode}, \code{start_date} and
+#' \code{stop_date}, where intervals are either exactly overlapping or mutually
+#' non-overlapping (but not partially overlapping), such that the union of such
+#' intervals is equivalent to those originally provided in \code{data}
 #'
 #' @examples
 #' set.seed(1)
@@ -228,8 +236,54 @@ fix_start_clash <- function(data) {
 #'   ndd = sample(seq(.5, 12, by = .5), 20, replace = TRUE),
 #'   stringsAsFactors = FALSE
 #' )
+#' overlapping_data <- transform(overlapping_data,
+#'   stop_date = start_date + qty / ndd
+#' )
+#' isolate_overlaps(overlapping_data)
 #'
-#' @import lubridate
-overlapping_prescriptions <- function(data) {
+#' @seealso
+#' \code{\link[intervalaverage]{isolateoverlaps}},
+#' \code{\link[data.table]{foverlaps}}
+#'
+#' @import dplyr tidyr
+#' @importFrom sqldf sqldf
+#' @export
+isolate_overlaps <- function(data) {
+  data %>%
+    # melt
+    tidyr::pivot_longer(c(start_date, stop_date),
+                        names_to = 'date_name',
+                        values_to = 'date_value') %>%
+    # setorderv
+    dplyr::arrange(patid, prodcode, date_value, date_name) %>%
+    dplyr::group_by(patid, prodcode) %>%
+    # shift
+    dplyr::transmute(date_value,
+                     is_end_var = date_name == 'stop_date',
+                     end_next_var = dplyr::lead(is_end_var),
+                     value_next_var = dplyr::lead(date_value)) %>%
+    dplyr::filter(!is.na(end_next_var)) %>%
+    # temp
+    dplyr::transmute(start_date = dplyr::if_else(!is_end_var,
+                                                 date_value,
+                                                 date_value + 1L),
+                     stop_date = dplyr::if_else(!end_next_var,
+                                                value_next_var - 1L,
+                                                value_next_var)) %>%
+    dplyr::filter(stop_date >= start_date) -> temp
 
+  # foverlaps
+  out <- sqldf::sqldf(
+    'SELECT x.patid, x.prodcode, --x.rowid, y.rowid yrowid,
+            y.start_date, y.stop_date
+     FROM data x
+     JOIN temp y
+     ON (x.start_date BETWEEN y.start_date AND y.stop_date) OR
+        (x.stop_date BETWEEN y.start_date AND y.stop_date) OR
+        (x.start_date < y.start_date AND x.stop_date > y.stop_date) OR
+        (x.start_date > y.start_date AND x.stop_date < y.stop_date)
+     WHERE x.patid = y.patid AND x.prodcode = y.prodcode'
+  )
+
+   return(out)
 }
