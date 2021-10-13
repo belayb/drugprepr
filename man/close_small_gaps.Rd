@@ -23,6 +23,13 @@ after the previous one finishes, we extend the length of the previous
 prescription to cover the gap.
 }
 \examples{
-
+gappy_data <- data.frame(
+  patid = 1,
+  prodcode = 'a',
+  start_date = Sys.Date() + (0:6) * 7,
+  stop_date = Sys.Date() + (0:6) * 7 + 4
+)
+close_small_gaps(gappy_data)
+close_small_gaps(gappy_data, 7)
 
 }

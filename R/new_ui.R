@@ -1,15 +1,3 @@
-
-# 1. Implausible total quantity
-# 2. Missing total quantity
-# 3. Implausible daily dose
-# 4. Missing daily dose
-# 5. Clean duration
-# 6. Select stop date type
-# 7. Missing stop date
-# 8. Multiple prescriptions with same start date
-# 9. Overlapping prescriptions
-# 10. Gaps between prescriptions
-
 #' Impute missing or implausible values
 #'
 #' This is a workhorse function used by \code{\link{impute_ndd}},
@@ -42,6 +30,7 @@
 #' }
 #'
 #' @return A data frame of the same structure as \code{data}, with values imputed
+#' @export
 impute <- function(data,
                    variable,
                    method = c('ignore', 'mean', 'median', 'mode', 'replace'),
@@ -58,7 +47,6 @@ impute <- function(data,
 
   where_fn <- if (is.function(where)) where else function(x) where
   method <- match.arg(method)
-  # group <- match.arg(group)
 
   impute_fun <- switch(method,
                        'ignore' = identity,
@@ -284,7 +272,14 @@ isolate_overlaps <- function(data) {
 #' @import dplyr
 #'
 #' @examples
-#'
+#' gappy_data <- data.frame(
+#'   patid = 1,
+#'   prodcode = 'a',
+#'   start_date = Sys.Date() + (0:6) * 7,
+#'   stop_date = Sys.Date() + (0:6) * 7 + 4
+#' )
+#' close_small_gaps(gappy_data)
+#' close_small_gaps(gappy_data, 7)
 #'
 #' @export
 close_small_gaps <- function(data, min_gap = 0L) {

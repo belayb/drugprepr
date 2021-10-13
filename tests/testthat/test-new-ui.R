@@ -87,3 +87,8 @@ test_that('Closing zero-width gaps is same as doing nothing', {
   example_gaps <- transform(example_therapy, stop_date = start_date + qty / ndd)
   expect_equivalent(close_small_gaps(example_gaps), example_gaps)
 })
+
+test_that('Negative-width small gap throws an error', {
+  example_gaps <- transform(example_therapy, stop_date = start_date + qty / ndd)
+  expect_error(close_small_gaps(example_gaps, -1))
+})
