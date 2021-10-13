@@ -1,6 +1,6 @@
 Package: drugprepr
 Title: CPRD Drug Preparation
-Version: 0.0.1.9001
+Version: 0.0.1.9002
 Authors@R: 
     c(person(given = "Belay Birlie",
            family = "Yimer",
@@ -46,7 +46,8 @@ Imports:
 	splitstackshape,
 	rlang,
 	magrittr,
-	tidyr
+	tidyr,
+	sqldf
 Depends: 
     R (>= 2.10)
 Suggests: 

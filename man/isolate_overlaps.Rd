@@ -25,13 +25,19 @@ The older implementation used \code{isolateoverlaps} from the
 \code{intervalaverage} package and \code{Overlap} from the \code{DescTools}
 package. Here we refactor it using functions from \code{tidyverse} instead.
 }
+\note{
+This function currently doesn't use any keys except \code{patid} and
+\code{prodcode}. It may be desirable to add a row ID, for matching each
+partial interval back to the original interval from which it was derived.
+This may be relevant to models using weighted dosages.
+}
 \examples{
 set.seed(1)
 overlapping_data <- data.frame(
   rowid = 1:20,
   patid = 1:2,
   prodcode = 'a',
-  start_date = Sys.Date() + round(rexp(20, 1/7)),
+  start_date = Sys.Date() + c(round(rexp(19, 1/7)), -20),
   qty = rpois(20, 64),
   ndd = sample(seq(.5, 12, by = .5), 20, replace = TRUE),
   stringsAsFactors = FALSE

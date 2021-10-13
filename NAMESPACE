@@ -2,6 +2,7 @@
 
 export(check_implausible)
 export(clean_duration)
+export(close_small_gaps)
 export(compute_ndd)
 export(dec10_gap_bn_prescription)
 export(dec1_implausible_qty)

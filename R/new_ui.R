@@ -137,33 +137,6 @@ impute_duration <- function(data,
   impute(data, duration, method, where, group, ...)
 }
 
-#' Example electronic prescription dataset
-#'
-#' Based on a hypothetical 'therapy' file from the Clinical Practical Research
-#' Datalink (CPRD), a UK database of primary care records.
-#'
-#' @note This dataset is now generated deterministically, so it will not vary
-#' between sessions.
-#'
-#' @export
-example_therapy <- data.frame(
-  patid = rep(1:10, each = 3),
-  pracid = rep(c('x', 'y'), each = 3),
-  prodcode = c("a", "b", "b", "a", "a", "a", "a", "a", "b", "a", "b", "a",
-               "a", "a", "b", "b", "b", "a", "a", "a", "b", "b", "b", "a", "a",
-               "b", "b", "a", "a", "a"),
-  start_date = as.Date('2021-10-01') +
-    c(310L, 118L, 49L, 34L, 153L, 166L, 179L, 328L, 262L, 271L, 25L,
-      154L, 114L, 212L, 329L, 263L, 156L, 66L, 317L, 279L, 47L, 29L,
-      235L, 309L, 159L, 92L, 42L, 253L, 127L, 312L),
-  qty = c(50L, 49L, 56L, 37L, NA, 56L, 51L, 39L, 51L, 55L, 41L, 47L,
-          46L, 43L, NA, 44L, 50L, 50L, NA, 47L, 46L, 62L, 52L, 40L, 49L,
-          NA, 38L, 57L, 49L, NA),
-  ndd = c(6, 7.5, 2, 7, 1.5, 7, 8, 4.5, 6.5, 3, 2, 3, 8, 5.5, 1.5, 6,
-          NA, 5, 6.5, 6.5, 6, 7, 6.5, 3.5, 5.5, 5, 3.5, 0.5, 3, 2),
-  stringsAsFactors = FALSE
-)
-
 #' Clean implausibly-long prescription durations
 #'
 #' Given a prescription length limit, truncate any prescriptions that appear to
@@ -231,7 +204,7 @@ fix_start_clash <- function(data) {
 #'   rowid = 1:20,
 #'   patid = 1:2,
 #'   prodcode = 'a',
-#'   start_date = Sys.Date() + round(rexp(20, 1/7)),
+#'   start_date = Sys.Date() + c(round(rexp(19, 1/7)), -20),
 #'   qty = rpois(20, 64),
 #'   ndd = sample(seq(.5, 12, by = .5), 20, replace = TRUE),
 #'   stringsAsFactors = FALSE
@@ -240,6 +213,12 @@ fix_start_clash <- function(data) {
 #'   stop_date = start_date + qty / ndd
 #' )
 #' isolate_overlaps(overlapping_data)
+#'
+#' @note
+#' This function currently doesn't use any keys except \code{patid} and
+#' \code{prodcode}. It may be desirable to add a row ID, for matching each
+#' partial interval back to the original interval from which it was derived.
+#' This may be relevant to models using weighted dosages.
 #'
 #' @seealso
 #' \code{\link[intervalaverage]{isolateoverlaps}},
@@ -272,7 +251,7 @@ isolate_overlaps <- function(data) {
                                                 value_next_var)) %>%
     dplyr::filter(stop_date >= start_date) -> temp
 
-  # foverlaps
+  # foverlaps / overlap join
   out <- sqldf::sqldf(
     'SELECT x.patid, x.prodcode, --x.rowid, y.rowid yrowid,
             y.start_date, y.stop_date
@@ -286,4 +265,46 @@ isolate_overlaps <- function(data) {
   )
 
    return(out)
+}
+
+#' Close small gaps between successive prescriptions
+#'
+#' Given a series of prescriptions in \code{data}, if one prescription
+#' (for the same patient and drug) starts \eqn{\leq} \code{min_gap} days
+#' after the previous one finishes, we extend the length of the previous
+#' prescription to cover the gap.
+#'
+#' @param data A data frame containing columns \code{prodcode}, \code{patid},
+#' \code{start_date} and \code{stop_date}
+#' @param min_gap Size of largest gaps to close. Default is zero, i.e. do nothing
+#'
+#' @return The input data frame \code{data}, possibly with some of the
+#' \code{stop_date}s changed.
+#'
+#' @import dplyr
+#'
+#' @examples
+#'
+#'
+#' @export
+close_small_gaps <- function(data, min_gap = 0L) {
+  if ((min_gap <- round(min_gap)) < 0)
+    stop('min_gap must non-negative')
+  if (length(min_gap) != 1)
+    stop('min_gap must be a single value')
+  if ('next_start_date' %in% colnames(data))
+    warning('`next_start_date` is a reserved variable name but already exists')
+
+  data %>%
+    dplyr::group_by(patid, prodcode) %>%
+    dplyr::mutate(
+      next_start_date = dplyr::lead(start_date, order_by = start_date),
+      gap = difftime(next_start_date, stop_date, units = 'days'),
+      stop_date = dplyr::if_else(gap < min_gap & gap >= 0,
+                                 next_start_date,
+                                 stop_date,
+                                 missing = stop_date)
+    ) %>%
+    dplyr::select(-next_start_date, -gap) %>%
+    dplyr::ungroup()
 }

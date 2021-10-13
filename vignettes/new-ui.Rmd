@@ -81,9 +81,12 @@ example_therapy %>%
   # 8.  Clashing stop date (maybe this step should go before the previous one?)
   impute_duration(method = 'mean', where = function(x) length(x) > 1, group = c('patid', 'start_date')) %>%
   distinct(patid, prodcode, start_date, .keep_all = TRUE) %>% # this is the only time up to this point that nrow varies
-  # 9.  Overlapping prescription
-  identity
+  # 9.  Overlapping prescription - first split into overlapping and non-overlapping intervals
+  isolate_overlaps() %>%
+  # then disambiguate (or shift overlaps)
+  distinct(patid, prodcode, start_date) %>%
   # 10. Gaps between prescriptions
+  close_small_gaps()
 ```
 OK, so that handles one run of drug preparation.
 
@@ -172,6 +175,12 @@ ggplot(out %>%
   geom_errorbarh(aes(xmin = start_date, xmax = stop_date), position = 'dodge2') +
   facet_wrap(~ patid, labeller = label_both, scales = 'free_y') +
   ylab(NULL)
+```
+
+Now implemented as a function in the package:
+
+```{r}
+isolate_overlaps(x)
 ```
 
 ## Multiverse

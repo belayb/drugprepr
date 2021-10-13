@@ -75,9 +75,15 @@ test_that('Imputing missing prescription durations', {
   expect_equal(impute_duration(example_duration, method = 'replace'),
                dplyr::as_tibble(example_duration))
   expect_equal(impute_duration(example_duration, method = 'mean'),
-               dplyr::as_tibble(example_duration) %>%
-                 group_by(prodcode) %>%
+               example_duration %>%
+                 group_by(prodcode, patid, start_date) %>%
                  mutate(duration = ifelse(is.na(duration),
                                           mean(duration, na.rm = T),
-                                          duration)))
+                                          duration)) %>%
+                 ungroup())
+})
+
+test_that('Closing zero-width gaps is same as doing nothing', {
+  example_gaps <- transform(example_therapy, stop_date = start_date + qty / ndd)
+  expect_equivalent(close_small_gaps(example_gaps), example_gaps)
 })
