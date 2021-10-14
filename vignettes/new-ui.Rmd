@@ -84,7 +84,7 @@ example_therapy %>%
   # 9.  Overlapping prescription - first split into overlapping and non-overlapping intervals
   isolate_overlaps() %>%
   # then disambiguate (or shift overlaps)
-  distinct(patid, prodcode, start_date) %>%
+  distinct(patid, prodcode, start_date, .keep_all = TRUE) %>%
   # 10. Gaps between prescriptions
   close_small_gaps()
 ```
