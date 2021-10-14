@@ -6,7 +6,7 @@
 \usage{
 impute_duration(
   data,
-  method = c("ignore", "mean", "median", "mode", "replace"),
+  method = "ignore",
   where = is.na,
   group = c("patid", "start_date"),
   ...

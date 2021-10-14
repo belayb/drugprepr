@@ -5,13 +5,7 @@
 \title{Find implausible entries
 Replace implausible or missing prescription quantities}
 \usage{
-impute_qty(
-  data,
-  method = c("ignore", "mean", "median", "mode", "replace"),
-  where = is.na,
-  group = c("population", "patid", "pracid"),
-  ...
-)
+impute_qty(data, method = "ignore", where = is.na, group = "population", ...)
 }
 \arguments{
 \item{data}{A data frame containing columns \code{prodcode}, \code{pracid}, \code{patid}}

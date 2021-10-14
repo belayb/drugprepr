@@ -4,13 +4,7 @@
 \alias{impute_ndd}
 \title{Replace implausible or missing numerical daily doses (NDD)}
 \usage{
-impute_ndd(
-  data,
-  method = c("ignore", "mean", "median", "mode", "replace"),
-  where = is.na,
-  group = c("population", "patid", "pracid"),
-  ...
-)
+impute_ndd(data, method = "ignore", where = is.na, group = "population", ...)
 }
 \arguments{
 \item{data}{A data frame containing columns \code{prodcode}, \code{pracid}, \code{patid}}

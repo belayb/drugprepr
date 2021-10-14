@@ -27,13 +27,17 @@
 #' \item \code{median}. Replace values with the median by \code{group}
 #' \item \code{mode}. Replace values with the most common value by \code{group}
 #' \item \code{replace}. Replace values with \code{replace_with}, which defaults to \code{NA} (i.e. mark as missing)
+#' \item \code{min}. Replace with minimum value.
+#' \item \code{max}. Replace with maximum value.
+#' \item \code{sum}. Replace with sum of values.
 #' }
 #'
 #' @return A data frame of the same structure as \code{data}, with values imputed
 #' @export
 impute <- function(data,
                    variable,
-                   method = c('ignore', 'mean', 'median', 'mode', 'replace'),
+                   method = c('ignore', 'mean', 'median', 'mode', 'replace',
+                              'min', 'max', 'sum'),
                    where = is.na,
                    group,
                    ...,
@@ -53,7 +57,10 @@ impute <- function(data,
                        'replace' = function(x) replace(x, TRUE, replace_with),
                        'mean' = function(x) mean(x, na.rm = TRUE),
                        'median' = function(x) median(x, na.rm = TRUE),
-                       'mode' = get_mode)
+                       'mode' = get_mode,
+                       'min' = function(x) min(x, na.rm = TRUE),
+                       'max' = function(x) max(x, na.rm = TRUE),
+                       'sum' = function(x) sum(x, na.rm = TRUE))
 
   group_vars <- if (method %in% c('ignore', 'replace')) NULL else
     c('prodcode', if (group[1] == 'population') NULL else
@@ -78,9 +85,9 @@ impute <- function(data,
 #'
 #' @export
 impute_qty <- function(data,
-                       method = c('ignore', 'mean', 'median', 'mode', 'replace'),
+                       method = 'ignore',
                        where = is.na,
-                       group = c('population', 'patid', 'pracid'),
+                       group = 'population',
                        ...) {
   impute(data, qty, method, where, match.arg(group), ...)
 }
@@ -94,9 +101,9 @@ impute_qty <- function(data,
 #'
 #' @export
 impute_ndd <- function(data,
-                       method = c('ignore', 'mean', 'median', 'mode', 'replace'),
+                       method = 'ignore',
                        where = is.na,
-                       group = c('population', 'patid', 'pracid'),
+                       group = 'population',
                        ...) {
   impute(data, ndd, method, where, match.arg(group), ...)
 }
@@ -119,7 +126,7 @@ impute_ndd <- function(data,
 #'
 #' @export
 impute_duration <- function(data,
-                            method = c('ignore', 'mean', 'median', 'mode', 'replace'),
+                            method = 'ignore',
                             where = is.na,
                             group = c('patid', 'start_date'),
                             ...) {
@@ -320,13 +327,21 @@ drug_prep <- function(data,
   data <- decision_3(data, decisions[3]) %>% dplyr::select(-min_ndd, -max_ndd)
   # Missing numerical daily doses
   data <- decision_4(data, decision[4])
-  # NB: in the paper, 'clean duration' comes before 'select stop date'
-  # Here, we choose the type of stop date first, so we know which 'duration'
-  # variable to clean.
+  # Choose method for calculating prescription duration (note switched order)
   data <- decision_6(data, decision[6])
-  # Clean duration (which will always be called 'duration' now)
+  # Truncate/delete overly long prescription durations
   data <- decision_5(data, decision[5])
-  return(data5)
+  # Impute missing prescription durations
+  data <- decision_7(data, decision[7])
+  # Disambiguate prescriptions with the same start_date
+  data <- decision_8(data, decision[8])
+  # Compute stop_date from duration
+  data <- transform(data, stop_date = start_date + duration)
+  # Disambiguate overlapping prescription intervals
+  data <- decision_9(data, decision[9])
+  # Close short gaps between successive prescriptions
+  data <- decision_10(data, decision[10])
+  return(data)
 }
 
 decision_1 <- function(data, decision = 'a') {
@@ -404,6 +419,42 @@ decision_7 <- function(data, decision = 'a') {
   impute_duration(out, method = 'mean', group = 'population')
 }
 
+#' @import dplyr
+decision_8 <- function(data, decision = 'a') {
+  decision <- match.arg(decision, letters[1:5])
+  if (decision == 'a') return(data)
+  impute_duration(data,
+                  method = switch(decision,
+                                  b = 'mean',
+                                  c = 'min',
+                                  d = 'max',
+                                  e = 'sum'),
+                  where = function(x) length(x) > 1,
+                  group = c('patid', 'start_date')) %>%
+    dplyr::group_by(prodcode, patid, start_date) %>%
+    dplyr::slice(1L) %>% # remove duplicates
+    dplyr::ungroup()
+}
+
+#' @import dplyr
+decision_9 <- function(data, decision = 'a') {
+  decision <- match.arg(decision, c('a', 'b'))
+  if (decision == 'a') return(data)
+  # else:
+  isolate_overlaps(data) %>%
+    dplyr::group_by(patid, prodcode) %>%
+    dplyr::arrange(start_date) %>%
+    dplyr::group_modify(~ shift_interval(.x) %>%
+                          dplyr::select(-patid, -prodcode),
+                        .keep = TRUE) %>%
+    dplyr::ungroup()
+}
+
+decision_10 <- function(data, decision = 'a') {
+  decision <- match.arg(decision, c('a', 'b_15', 'b_30', 'b_60'))
+  min_gap <- if (decision == 'a') 0 else as.integer(substring(decision, 3))
+  close_small_gaps(data, min_gap)
+}
 
 get_decision_group <- function(decision_string) {
   switch(substring(decision_string, 2, 2),

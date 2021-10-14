@@ -7,7 +7,7 @@
 impute(
   data,
   variable,
-  method = c("ignore", "mean", "median", "mode", "replace"),
+  method = c("ignore", "mean", "median", "mode", "replace", "min", "max", "sum"),
   where = is.na,
   group,
   ...,
@@ -35,6 +35,9 @@ impute(
 \item \code{median}. Replace values with the median by \code{group}
 \item \code{mode}. Replace values with the most common value by \code{group}
 \item \code{replace}. Replace values with \code{replace_with}, which defaults to \code{NA} (i.e. mark as missing)
+\item \code{min}. Replace with minimum value.
+\item \code{max}. Replace with maximum value.
+\item \code{sum}. Replace with sum of values.
 }}
 }
 \value{
