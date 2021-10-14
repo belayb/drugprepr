@@ -4,8 +4,22 @@
 \alias{drug_prep}
 \title{Run drug preparation algorithm}
 \usage{
-drug_prep(data, implausible_values, decisions = rep("a", 10))
+drug_prep(data, plausible_values, decisions = rep("a", 10))
 }
 \description{
 Run drug preparation algorithm
+}
+\examples{
+plausible_values <- data.frame(
+  prodcode = c('a', 'b', 'c'),
+  min_qty = 0,
+  max_qty = c(50, 100, 200),
+  min_ndd = 0,
+  max_ndd = c(10, 20, 30)
+)
+drug_prep(example_therapy,
+          plausible_values,
+          decisions = c('a', 'a', 'a', 'a', 'a',
+                        'c', 'a', 'a', 'a', 'a'))
+
 }

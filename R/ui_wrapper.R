@@ -1,32 +1,46 @@
 #' Run drug preparation algorithm
+#'
+#' @examples
+#' plausible_values <- data.frame(
+#'   prodcode = c('a', 'b', 'c'),
+#'   min_qty = 0,
+#'   max_qty = c(50, 100, 200),
+#'   min_ndd = 0,
+#'   max_ndd = c(10, 20, 30)
+#' )
+#' drug_prep(example_therapy,
+#'           plausible_values,
+#'           decisions = c('a', 'a', 'a', 'a', 'a',
+#'                         'c', 'a', 'a', 'a', 'a'))
+#'
 #' @import dplyr
 #' @export
 drug_prep <- function(data,
-                      implausible_values,
+                      plausible_values,
                       decisions = rep('a', 10)) {
-  data <- dplyr::left_join(data, implausible_values, by = 'prodcode')
+  data <- dplyr::left_join(data, plausible_values, by = 'prodcode')
   # Implausible quantities
   data <- decision_1(data, decisions[1]) %>% dplyr::select(-min_qty, -max_qty)
   # Missing quantities
-  data <- decision_1(data, decisions[2])
+  data <- decision_2(data, decisions[2])
   # Implausible numerical daily doses
   data <- decision_3(data, decisions[3]) %>% dplyr::select(-min_ndd, -max_ndd)
   # Missing numerical daily doses
-  data <- decision_4(data, decision[4])
+  data <- decision_4(data, decisions[4])
   # Choose method for calculating prescription duration (note switched order)
-  data <- decision_6(data, decision[6])
+  data <- decision_6(data, decisions[6])
   # Truncate/delete overly long prescription durations
-  data <- decision_5(data, decision[5])
+  data <- decision_5(data, decisions[5])
   # Impute missing prescription durations
-  data <- decision_7(data, decision[7])
+  data <- decision_7(data, decisions[7])
   # Disambiguate prescriptions with the same start_date
-  data <- decision_8(data, decision[8])
+  data <- decision_8(data, decisions[8])
   # Compute stop_date from duration
   data <- transform(data, stop_date = start_date + duration)
   # Disambiguate overlapping prescription intervals
-  data <- decision_9(data, decision[9])
+  data <- decision_9(data, decisions[9])
   # Close short gaps between successive prescriptions
-  data <- decision_10(data, decision[10])
+  data <- decision_10(data, decisions[10])
   return(data)
 }
 
@@ -72,6 +86,7 @@ decision_5 <- function(data, decision = 'a') {
   decision <- match.arg(decision, c('a',
                                     paste(rep(c('b', 'c'), each = 3),
                                           c(6, 12, 24), sep = '_')))
+  if (decision == 'a') return(data)
   clean_duration(data,
                  max_months = as.integer(substring(decision, 4)),
                  method = switch(substring(decision, 2, 2),
