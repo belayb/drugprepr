@@ -56,7 +56,8 @@ impute <- function(data,
                        'mode' = get_mode)
 
   group_vars <- if (method %in% c('ignore', 'replace')) NULL else
-    c('prodcode', if (all(group == 'population')) NULL else group)
+    c('prodcode', if (group[1] == 'population') NULL else
+      match.arg(group, colnames(data), several.ok = TRUE))
 
   data %>%
     dplyr::group_by(dplyr::across(dplyr::all_of(group_vars))) %>%
@@ -303,3 +304,133 @@ close_small_gaps <- function(data, min_gap = 0L) {
     dplyr::select(-next_start_date, -gap) %>%
     dplyr::ungroup()
 }
+
+#' Run drug preparation algorithm
+#' @import dplyr
+#' @export
+drug_prep <- function(data,
+                      implausible_values,
+                      decisions = rep('a', 10)) {
+  data <- dplyr::left_join(data, implausible_values, by = 'prodcode')
+  # Implausible quantities
+  data <- decision_1(data, decisions[1]) %>% dplyr::select(-min_qty, -max_qty)
+  # Missing quantities
+  data <- decision_1(data, decisions[2])
+  # Implausible numerical daily doses
+  data <- decision_3(data, decisions[3]) %>% dplyr::select(-min_ndd, -max_ndd)
+  # Missing numerical daily doses
+  data <- decision_4(data, decision[4])
+  # NB: in the paper, 'clean duration' comes before 'select stop date'
+  # Here, we choose the type of stop date first, so we know which 'duration'
+  # variable to clean.
+  data <- decision_6(data, decision[6])
+  # Clean duration (which will always be called 'duration' now)
+  data <- decision_5(data, decision[5])
+  return(data5)
+}
+
+decision_1 <- function(data, decision = 'a') {
+  decision <- match.arg(decision,
+                        c('a', 'b', paste0(rep(letters[3:7], each = 3), 1:3)))
+  impute_qty(data,
+             method = get_implausible_method(decision),
+             where = function(q) q < data[['min_qty']] | q > data[['max_qty']],
+             group = get_decision_group(decision),
+             replace_with = NA_real_)
+}
+
+decision_2 <- function(data, decision = 'a') {
+  decision <- match.arg(decision,
+                        c('a', paste0(rep(letters[2:6], each = 3), 1:3)))
+  impute_qty(data,
+             method = get_missing_method(decision),
+             where = is.na,
+             group = get_decision_group(decision))
+}
+
+decision_3 <- function(data, decision = 'a') {
+  decision <- match.arg(decision,
+                        c('a', 'b', paste0(rep(letters[3:7], each = 3), 1:3)))
+  impute_ndd(data,
+             method = get_implausible_method(decision),
+             where = function(n) n < data[['min_ndd']] | n > data[['max_ndd']],
+             group = get_decision_group(decision),
+             replace_with = NA_real_)
+}
+
+decision_4 <- function(data, decision = 'a') {
+  decision <- match.arg(decision,
+                        c('a', paste0(rep(letters[2:6], each = 3), 1:3)))
+  impute_ndd(data,
+             method = get_missing_method(decision),
+             where = is.na,
+             group = get_decision_group(decision))
+}
+
+decision_5 <- function(data, decision = 'a') {
+  decision <- match.arg(decision, c('a',
+                                    paste(rep(c('b', 'c'), each = 3),
+                                          c(6, 12, 24), sep = '_')))
+  clean_duration(data,
+                 max_months = as.integer(substring(decision, 4)),
+                 method = switch(substring(decision, 2, 2),
+                                 b = 'remove',
+                                 c = 'truncate'))
+}
+
+decision_6 <- function(data, decision = 'c') {
+  decision <- match.arg(decision, letters[1:3])
+  transform(data, duration = switch(decision,
+                                    a = numdays,
+                                    b = dose_duration,
+                                    c = qty / ndd))
+}
+
+decision_7 <- function(data, decision = 'a') {
+  decision <- match.arg(decision, letters[1:4])
+  out <- impute_duration(data,
+                         method = switch(decision,
+                                         a = 'replace',
+                                         b = 'mean',
+                                         c = 'mean',
+                                         d = 'mean'),
+                         group = switch(decision,
+                                        b = 'patid',
+                                        c = 'population',
+                                        d = 'patid'))
+  if (decision != 'd') return(out)
+  # If any individuals have no non-missing values, the previous
+  # step will return duration of NaN. Run one more iteration to fill in those:
+  impute_duration(out, method = 'mean', group = 'population')
+}
+
+
+get_decision_group <- function(decision_string) {
+  switch(substring(decision_string, 2, 2),
+         'population',
+         '1' = 'patid',
+         '2' = 'pracid',
+         '3' = 'population')
+}
+
+get_implausible_method <- function(decision_string) {
+  switch(substring(decision_string, 1, 1),
+         a = 'ignore',
+         b = 'replace',
+         c = 'mean',
+         d = 'median',
+         e = 'mode',
+         stop('Decision not yet implemented'))
+}
+
+get_missing_method <- function(decision_string) {
+  switch(substring(decision_string, 1, 1),
+         a = 'ignore',
+         b = 'mean',
+         c = 'median',
+         d = 'mode',
+         stop('Decision not yet implemented'))
+}
+
+
+
