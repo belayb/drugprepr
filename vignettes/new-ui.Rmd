@@ -194,7 +194,12 @@ That is, we define a data frame containing vectors of values, functions and deci
 Then define a function that populates the various arguments according to these coded decision rules:
 
 ```{r}
-out <- drug_prep(example_therapy, plausible_values)
+out <- drug_prep(example_therapy, plausible_values,
+                 decisions = c('a', 'a', 'a',
+                               'a', 'a', 'c',
+                               'a', 'a', 'b',
+                               'a'))
+out
 ```
 
 Practically speaking, this might consume all available memory, so it might make sense to write each table to disk rather than store them all in one list in RAM.

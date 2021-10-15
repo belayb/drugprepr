@@ -441,8 +441,8 @@ shift_interval <- function(x) {
       dplyr::full_join(., ., by = "dummy") %>%
       dplyr::filter(id.x < id.y) %>%
       dplyr::mutate(overlap = DescTools::Overlap(
-        cbind(start.x, end.x),
-        cbind(start.y, end.y)
+        cbind(start_date.x, stop_date.x),
+        cbind(start_date.y, stop_date.y)
       )) %>%
       dplyr::filter(overlap > 0)
     y <- overlaps %>%
@@ -451,8 +451,8 @@ shift_interval <- function(x) {
       dplyr::right_join(y, by = "id") %>%
       dplyr::mutate(
         overlap = replace(overlap, is.na(overlap), 0),
-        start = start + overlap,
-        end = end + overlap
+        start_date = start_date + overlap,
+        stop_date = stop_date + overlap
       ) %>%
       dplyr::select(-overlap)
     overlap <- nrow(overlaps)
@@ -460,6 +460,7 @@ shift_interval <- function(x) {
   list(y) # ?
   return(y)
 }
+
 #' Handle overlapping prescriptions
 #'
 #' In situations where one prescription start before the end date of previous prescription

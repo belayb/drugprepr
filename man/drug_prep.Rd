@@ -6,6 +6,15 @@
 \usage{
 drug_prep(data, plausible_values, decisions = rep("a", 10))
 }
+\arguments{
+\item{data}{data frame containing prescription data}
+
+\item{plausible_values}{data frame containing variables \code{prodcode},
+\code{min_qty}, \code{max_qty}, \code{min_ndd}, \code{max_ndd} describing
+plausible ranges for values for each drug}
+
+\item{decisions}{character vector of length 10}
+}
 \description{
 Run drug preparation algorithm
 }

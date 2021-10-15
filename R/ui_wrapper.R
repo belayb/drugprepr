@@ -1,5 +1,11 @@
 #' Run drug preparation algorithm
 #'
+#' @param data data frame containing prescription data
+#' @param plausible_values data frame containing variables \code{prodcode},
+#' \code{min_qty}, \code{max_qty}, \code{min_ndd}, \code{max_ndd} describing
+#' plausible ranges for values for each drug
+#' @param decisions character vector of length 10
+#'
 #' @examples
 #' plausible_values <- data.frame(
 #'   prodcode = c('a', 'b', 'c'),
