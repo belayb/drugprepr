@@ -25,11 +25,12 @@ knitr::opts_chunk$set(
 
 # Motivation 
 
-The Clinical Practice Research Datalink (CPRD) is a UK database of anonymised primary care electronic health records, and is widely used to study the effectiveness and safety of medications.
-However, prescription data from CPRD are often messy, with inherent issues such as missing information on stop dates and medication quantities, as well as prescribing instructions provided as unstructured free-text.
-In pharmacoepidemiology studies, the data preparation steps used to determine drug exposure are rarely fully reported, yet assumptions made during this stage can have considerable implications for risk attribution of possible adverse events.
+The Clinical Practice Research Datalink (CPRD) is a UK database of anonymised primary care electronic health records.
+It is widely used to study the effectiveness and safety of medications.
+However, prescription data from CPRD are often messy, with systemic issues such as missing information on prescription end dates and medication quantities, and prescribing instructions are typically provided as unstructured free text.
+In pharmaco-epidemiology studies, the data preparation steps used to determine drug exposure are rarely fully reported, yet assumptions made during this stage can have considerable implications for risk attribution of possible adverse events.
 
-We have previously developed a framework^[is a citation needed here?] for dealing with missing information on stop dates and other issues such as overlapping prescription periods.
+We have previously developed a framework^[is a citation needed here?] for dealing with missing information on prescription end dates and other issues such as overlapping prescription periods.
 The framework was implemented using \textsc{Stata} software.
 Besides being only available for \textsc{Stata} users, the earlier algorithm did not deal with the problem of free-text prescriptions.
 The current R package, `drugprepr` (formerly `drugprepCPRD`), builds upon the earlier algorithm and aims to make the framework available to a wider audience through its implementation as free, open-source software.
@@ -103,11 +104,11 @@ Decision 10: Handle short gaps between prescriptions
 
 # R package drugprepr
 
-You can install the latest development version from `GitHub` with these `R` commands:
+You can install the latest development version from `GitHub` with the following R commands:
 
 ```{r install, eval=FALSE}
-install.packages("devtools")
-devtools::install_github("belayb/drugprepCPRD")
+install.packages('remotes')
+remotes::install_github("belayb/drugprepCPRD")
 ```
 
 Once the package is installed, we load the `drugprepr` package into the working environment as follows. 
@@ -150,33 +151,22 @@ kable(min_max_dat, booktabs = TRUE, position = 'ht',
       caption = 'Example data frame to supply to \\texttt{min\\_max\\_dat}')
 ```
 
-Once we prepare our `min_max` data in a table format, we can use the function `check_implausible`^[name subject to change] to flag those prescriptions with values outside the plausible range as follows.
-
-```{r implausible, echo = 1}
-data_plausible <- check_implausible(data_ndd, min_max_dat = min_max_dat)
-data_plausible %>%
-  dplyr::distinct(ndd, qty, implausible_ndd, implausible_qty) %>%
-  kable(booktabs = TRUE, caption = 'Flags for implausible values', linesep = '',
-        position = 'ht')
-```
-
-Running the function `check_implausible()` creates additional columns named `implausible_qty` and `implausible_ndd` with values equals to `TRUE` if the given quantity or ndd is outside the plausible range.
-Example output is given in Table \ref{tab:implausible}.
+Once we prepare our `min_max` data in a table format, we can pass it to the second argument of `drug_prep()`.
+Internally, the function will join the plausible ranges to the different drugs and mark respective quantities and doses as plausible or implausible.
 
 ## Processing the CPRD prescription data 
 
-Once these preliminary pre-processing steps are completed, we can use the main function of `drugprepr`, `run.drugPREP`, to evaluate the 10 decision nodes described above.
+Once these preliminary pre-processing steps are completed, we can use the main function of `drugprepr`, `drug_prep()`, to evaluate the 10 decision nodes described above.
 This can be done by executing an R command of the following form:
 
 ```{r drugprep, echo = 1}
-result <- run.drugPREP(data_plausible,
-                       decisions = c('1b', '2b1', '3b', '4b1', '5b_6',
-                                     '6c', '7a', '8d', '9a', '10b'))
-subset(result, select = -text) %>%
-  kable(booktabs = TRUE, position = 'ht',
-        caption = 'Result of \\texttt{run.drugPREP}') %>%
+result <- drug_prep(data_ndd,
+                    min_max_dat,
+                    decisions = c('b', 'b1', 'b', 'b1', 'b_6',
+                                  'c', 'a', 'd', 'a', 'b_15'))
+kable(result[, -1], booktabs = TRUE, position = 'ht',
+      caption = 'Result of \\texttt{drug\\_prep()}') %>%
   kable_styling(latex_options = 'scale_down')
 ```
 
-The result of running the function `run.drugPREP()` provides the start and stop date (`real_stop`) for each prescription.
-Note: the value 10000 in the column `gap_to_next` is given for computational purposes and should not be considered as a value indicating the gap between sequential prescriptions. 
+The result of running the function `drug_prep()` provides the start and stop date (`stop_date`) for each prescription.
