@@ -108,7 +108,7 @@ You can install the latest development version from `GitHub` with the following 
 
 ```{r install, eval=FALSE}
 install.packages('remotes')
-remotes::install_github("belayb/drugprepCPRD")
+remotes::install_github("belayb/drugprepr")
 ```
 
 Once the package is installed, we load the `drugprepr` package into the working environment as follows. 
