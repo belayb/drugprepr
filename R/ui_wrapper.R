@@ -19,6 +19,8 @@
 #'           decisions = c('a', 'a', 'a', 'a', 'a',
 #'                         'c', 'a', 'a', 'a', 'a'))
 #'
+#' @family \code{\link{drug_prep}} decision functions
+#'
 #' @import dplyr
 #' @export
 drug_prep <- function(data,
@@ -50,6 +52,36 @@ drug_prep <- function(data,
   return(data)
 }
 
+#' Decision 1: impute implausible total quantities
+#'
+#' A light wrapper around \code{\link{impute_qty}}.
+
+#' @param data a data frame
+#' @param decision one of the following strings:
+#' \describe{
+#' \item{"a"}{do nothing; leave implausible values as-is}
+#' \item{"b"}{set implausible values to missing}
+#' \item{"c1"}{set to mean for individual's prescriptions for that drug}
+#' \item{"c2"}{set to mean for practice's prescriptions for that drug}
+#' \item{"c3"}{set to mean for populations's prescriptions for that drug}
+#' \item{"d1"}{set to median for individual's prescriptions for that drug}
+#' \item{"d2"}{set to median for practice's prescriptions for that drug}
+#' \item{"d3"}{set to median for population's prescriptions for that drug}
+#' \item{"e1"}{set to mode for individual's prescriptions for that drug}
+#' \item{"e2"}{set to mode for practice's prescriptions for that drug}
+#' \item{"e3"}{set to mode for population's prescriptions for that drug}
+#' \item{"f1"}{use value of individual's next prescription}
+#' \item{"f2"}{use value of practice's next prescription}
+#' \item{"f3"}{use value of population's next prescription}
+#' \item{"g1"}{use value of individual's previous prescription}
+#' \item{"g2"}{use value of practice's previous prescription}
+#' \item{"g3"}{use value of population's previous prescription}
+#' }
+#'
+#' @note Decisions \code{f} and \code{g} are not yet implemented.
+#'
+#' @family \code{\link{drug_prep}} decision functions
+#'
 decision_1 <- function(data, decision = 'a') {
   decision <- match.arg(decision,
                         c('a', 'b', paste0(rep(letters[3:7], each = 3), 1:3)))
@@ -60,6 +92,35 @@ decision_1 <- function(data, decision = 'a') {
              replace_with = NA_real_)
 }
 
+#' Decision 2: impute missing total quantities
+#'
+#' A light wrapper around \code{\link{impute_qty}}.
+#'
+#' @param data a data frame
+#' @param decision one of the following strings:
+#' \describe{
+#' \item{"a"}{Leave as missing (implicitly drop this prescription)}
+#' \item{"b1"}{set to mean for individual's prescriptions for that drug}
+#' \item{"b2"}{set to mean for practice's prescriptions for that drug}
+#' \item{"b3"}{set to mean for populations's prescriptions for that drug}
+#' \item{"c1"}{set to median for individual's prescriptions for that drug}
+#' \item{"c2"}{set to median for practice's prescriptions for that drug}
+#' \item{"c3"}{set to median for population's prescriptions for that drug}
+#' \item{"d1"}{set to mode for individual's prescriptions for that drug}
+#' \item{"d2"}{set to mode for practice's prescriptions for that drug}
+#' \item{"d3"}{set to mode for population's prescriptions for that drug}
+#' \item{"e1"}{use value of individual's next prescription}
+#' \item{"e2"}{use value of practice's next prescription}
+#' \item{"e3"}{use value of population's next prescription}
+#' \item{"f1"}{use value of individual's previous prescription}
+#' \item{"f2"}{use value of practice's previous prescription}
+#' \item{"f3"}{use value of population's previous prescription}
+#' }
+#'
+#' @note Decisions \code{e} and \code{f} are not yet implemented.
+#'
+#' @family \code{\link{drug_prep}} decision functions
+#'
 decision_2 <- function(data, decision = 'a') {
   decision <- match.arg(decision,
                         c('a', paste0(rep(letters[2:6], each = 3), 1:3)))
@@ -69,6 +130,16 @@ decision_2 <- function(data, decision = 'a') {
              group = get_decision_group(decision))
 }
 
+#' Decision 3: impute implausible daily doses
+#'
+#' A light wrapper around \code{\link{impute_ndd}}.
+#'
+#' @inheritParams decision_1
+#'
+#' @note Decisions \code{f} and \code{g} are not yet implemented.
+#'
+#' @family \code{\link{drug_prep}} decision functions
+#'
 decision_3 <- function(data, decision = 'a') {
   decision <- match.arg(decision,
                         c('a', 'b', paste0(rep(letters[3:7], each = 3), 1:3)))
@@ -79,6 +150,16 @@ decision_3 <- function(data, decision = 'a') {
              replace_with = NA_real_)
 }
 
+#' Decision 4: impute missing daily doses
+#'
+#' A light wrapper around \code{\link{impute_ndd}}.
+#'
+#' @inheritParams decision_2
+#'
+#' @note Decisions \code{e} and \code{f} are not yet implemented.
+#'
+#' @family \code{\link{drug_prep}} decision functions
+#'
 decision_4 <- function(data, decision = 'a') {
   decision <- match.arg(decision,
                         c('a', paste0(rep(letters[2:6], each = 3), 1:3)))
@@ -88,6 +169,24 @@ decision_4 <- function(data, decision = 'a') {
              group = get_decision_group(decision))
 }
 
+#' Decision 5: impute implausible prescription durations
+#'
+#' A light wrapper around \code{\link{clean_duration}}.
+#'
+#' @param data a data frame
+#' @param decision one of the following strings:
+#' \describe{
+#'   \item{"a"}{leave duration as-is}
+#' 		\item{"b_6"}{set to missing if > 6 months}
+#' 		\item{"b_12"}{set to missing if > 12 months}
+#' 		\item{"b_24"}{set to missing if > 24 months}
+#' 		\item{"c_6"}{set to 6 months if > 6 months}
+#' 		\item{"c_12"}{set to 12 months if > 12 months}
+#' 		\item{"c_24"}{set to 24 months if > 24 months}
+#' }
+#'
+#' @family \code{\link{drug_prep}} decision functions
+#'
 decision_5 <- function(data, decision = 'a') {
   decision <- match.arg(decision, c('a',
                                     paste(rep(c('b', 'c'), each = 3),
@@ -100,6 +199,26 @@ decision_5 <- function(data, decision = 'a') {
                                  c = 'truncate'))
 }
 
+#' Decision 6: choose method of calculating prescription duration
+#'
+#' This is just shorthand for defining a column equal to one of the specified
+#' formulae. If the column(s) corresponding to \code{decision} are missing, an
+#' error will be thrown.
+#' If you have already calculated or obtained the column \code{duration} from
+#' elsewhere, this step is not necessary.
+#'
+#' @note This step actually takes place \emph{before} \code{\link{decision_5}}.
+#'
+#' @param data a data frame
+#' @param decision one of the following strings:
+#' \describe{
+#' \item{"a"}{\code{numdays}}
+#' 	 \item{"b"}{\code{dose_duration}}
+#' 	 \item{"c"}{\code{qty / ndd}}
+#' }
+#'
+#' @family \code{\link{drug_prep}} decision functions
+#'
 decision_6 <- function(data, decision = 'c') {
   decision <- match.arg(decision, letters[1:3])
   transform(data, duration = switch(decision,
@@ -108,6 +227,21 @@ decision_6 <- function(data, decision = 'c') {
                                     c = qty / ndd))
 }
 
+#' Decision 7: impute missing prescription durations
+#'
+#' A light wrapper around \code{\link{impute_duration}}.
+#'
+#' @param data a data frame
+#' @param decision one  of the following strings:
+#' \describe{
+#' \item{"a"}{Leave missing durations as-is (implicitly drop the prescription)}
+#' \item{"b"}{Use mean prescription duration for that drug, for that individual}
+#' \item{"c"}{Use mean prescription duration for that drug, for the population}
+#' \item{"d"}{Use individual mean duration; if not available use population mean}
+#' }
+#'
+#' @family \code{\link{drug_prep}} decision functions
+#'
 decision_7 <- function(data, decision = 'a') {
   decision <- match.arg(decision, letters[1:4])
   out <- impute_duration(data,
@@ -126,6 +260,24 @@ decision_7 <- function(data, decision = 'a') {
   impute_duration(out, method = 'mean', group = 'population')
 }
 
+#' Decision 8: disambiguate prescriptions with the same start date
+#'
+#' A light wrapper around \code{\link{impute_duration}}, followed by removing
+#' duplicate rows with the same combination of \code{prodcode}, \code{patid}
+#' and \code{start_date}.
+#'
+#' @param data a data frame
+#' @param decision one of the following strings
+#' \describe{
+#' \item{"a"}{do nothing}
+#'  \item{"b"}{replace with a prescription of duration equal to the mean}
+#'  \item{"c"}{choose the shortest prescription}
+#'  \item{"d"}{choose longest prescription}
+#'  \item{"e"}{replace with a prescription of duration equal to the sum}
+#' }
+#'
+#' @family \code{\link{drug_prep}} decision functions
+#'
 #' @import dplyr
 decision_8 <- function(data, decision = 'a') {
   decision <- match.arg(decision, letters[1:5])
@@ -143,12 +295,32 @@ decision_8 <- function(data, decision = 'a') {
     dplyr::ungroup()
 }
 
+#' Decision 9: handle overlapping prescription periods
+#'
+#' In situations where one prescription starts before another (for the same
+#' patient and drug) finishes, this function will either implicitly sum the
+#' doses (i.e. do nothing) or it will divide the intervals into non-overlapping
+#' subsets, shifting these sub-intervals forward in time until there is no
+#' overlap.
+#'
+#' The underlying algorithm for shifting overlapping intervals is implemented
+#' by the internal function \code{shift_interval}.
+#'
+#' @param data a data frame
+#' @param decision one of the following strings:
+##' \describe{
+##'  \item{"a"}{allow overlapping prescriptions (implicitly sum doses)}
+##'  \item{"b"}{move later prescription to next available time that this product is not prescribed}
+##' }
+#'
+#' @family \code{\link{drug_prep}} decision functions
+#'
 #' @import dplyr
 decision_9 <- function(data, decision = 'a') {
   decision <- match.arg(decision, c('a', 'b'))
-  if (decision == 'a') return(data)
-  # else:
-  isolate_overlaps(data) %>%
+  if (decision == 'a') {
+    return(data)
+  } else isolate_overlaps(data) %>%
     dplyr::group_by(patid, prodcode) %>%
     dplyr::arrange(start_date) %>%
     dplyr::group_modify(~ shift_interval(.x) %>%
@@ -157,6 +329,25 @@ decision_9 <- function(data, decision = 'a') {
     dplyr::ungroup()
 }
 
+#' Decision 10: close small gaps between successive prescriptions
+#'
+#' Where one prescription (for the same drug and patient) starts only a short
+#' time after the previous finishes, this function can close the gap, as if
+#' the prescription was continuous over the entire period.
+#'
+#' The underlying function is called \code{close_small_gaps}
+#'
+#' @param data a data frame
+#' @param decision one of the following strings:
+#' \describe{
+#'  \item{"a"}{do nothing}
+#'  \item{"b"}{change stop date of first prescription to start date of next if gap is \eqn{\leq 15} days}
+#'  \item{"c"}{change stop date of first prescription to start date of next if gap is \eqn{\leq 30} days}
+#'  \item{"d"}{change stop date of first prescription to start date of next if gap is \eqn{\leq 60} days}
+#' }
+#'
+#' @family \code{\link{drug_prep}} decision functions
+#'
 decision_10 <- function(data, decision = 'a') {
   decision <- match.arg(decision, c('a', 'b_15', 'b_30', 'b_60'))
   min_gap <- if (decision == 'a') 0 else as.integer(substring(decision, 3))

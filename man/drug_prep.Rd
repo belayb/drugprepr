@@ -32,3 +32,17 @@ drug_prep(example_therapy,
                         'c', 'a', 'a', 'a', 'a'))
 
 }
+\seealso{
+Other \code{\link{drug_prep}} decision functions: 
+\code{\link{decision_10}()},
+\code{\link{decision_1}()},
+\code{\link{decision_2}()},
+\code{\link{decision_3}()},
+\code{\link{decision_4}()},
+\code{\link{decision_5}()},
+\code{\link{decision_6}()},
+\code{\link{decision_7}()},
+\code{\link{decision_8}()},
+\code{\link{decision_9}()}
+}
+\concept{\code{\link{drug_prep}} decision functions}

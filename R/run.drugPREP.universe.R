@@ -524,16 +524,16 @@ dec9_overlapping_prescription <- function(data = NULL, decision) {
 #' This function provides option for filling gaps between prescription of the same type
 #' for an individual depending on the choosen decison.
 #'
-#' @param data a data frame containg prescription information
-#' @param decision a character specifying the decison to consider for processing
+#' @param data a data frame containing prescription information
+#' @param decision a character specifying the decision to consider for processing
 ##' \itemize{
 ##'  \item{"10a"}{do nothing}
-##'  \item{"10b_15"}{change stop date of first prescription to start date of next if gap is <= 15 days}
-##'  \item{"10b_30"}{change stop date of first prescription to start date of next if gap is <= 30 days}
-##'  \item{"10b_60"}{change stop date of first prescription to start date of next if gap is <= 60 days}
+##'  \item{"10b"}{change stop date of first prescription to start date of next if gap is <= 15 days}
+##'  \item{"10c"}{change stop date of first prescription to start date of next if gap is <= 30 days}
+##'  \item{"10d"}{change stop date of first prescription to start date of next if gap is <= 60 days}
 ##' }
 ##'
-#' @return Dataframe with the same structure as the input
+#' @return A data frame with the same structure as the input
 #'
 #' @export
 dec10_gap_bn_prescription <- function(data = NULL, decision) {

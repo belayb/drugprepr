@@ -87,7 +87,7 @@ impute <- function(data,
 impute_qty <- function(data,
                        method,
                        where = is.na,
-                       group,
+                       group = 'population',
                        ...) {
   impute(data, qty, method, where, group, ...)
 }
@@ -103,7 +103,7 @@ impute_qty <- function(data,
 impute_ndd <- function(data,
                        method,
                        where = is.na,
-                       group,
+                       group = 'population',
                        ...) {
   impute(data, ndd, method, where, group, ...)
 }

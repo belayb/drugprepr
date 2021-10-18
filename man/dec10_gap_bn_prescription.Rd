@@ -7,18 +7,18 @@
 dec10_gap_bn_prescription(data = NULL, decision)
 }
 \arguments{
-\item{data}{a data frame containg prescription information}
+\item{data}{a data frame containing prescription information}
 
-\item{decision}{a character specifying the decison to consider for processing
+\item{decision}{a character specifying the decision to consider for processing
 \itemize{
 \item{"10a"}{do nothing}
-\item{"10b_15"}{change stop date of first prescription to start date of next if gap is <= 15 days}
-\item{"10b_30"}{change stop date of first prescription to start date of next if gap is <= 30 days}
-\item{"10b_60"}{change stop date of first prescription to start date of next if gap is <= 60 days}
+\item{"10b"}{change stop date of first prescription to start date of next if gap is <= 15 days}
+\item{"10c"}{change stop date of first prescription to start date of next if gap is <= 30 days}
+\item{"10d"}{change stop date of first prescription to start date of next if gap is <= 60 days}
 }}
 }
 \value{
-Dataframe with the same structure as the input
+A data frame with the same structure as the input
 }
 \description{
 This function provides option for filling gaps between prescription of the same type
