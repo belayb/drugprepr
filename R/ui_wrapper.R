@@ -94,7 +94,7 @@ decision_5 <- function(data, decision = 'a') {
                                           c(6, 12, 24), sep = '_')))
   if (decision == 'a') return(data)
   clean_duration(data,
-                 max_months = as.integer(substring(decision, 4)),
+                 max_months = as.integer(substring(decision, 3)),
                  method = switch(substring(decision, 2, 2),
                                  b = 'remove',
                                  c = 'truncate'))
