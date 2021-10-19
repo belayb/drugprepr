@@ -25,7 +25,8 @@
 #' @export
 drug_prep <- function(data,
                       plausible_values,
-                      decisions = rep('a', 10)) {
+                      decisions = rep('a', 10),
+                      ...) {
   data <- dplyr::left_join(data, plausible_values, by = 'prodcode')
   # Implausible quantities
   data <- decision_1(data, decisions[1]) %>% dplyr::select(-min_qty, -max_qty)
@@ -50,6 +51,154 @@ drug_prep <- function(data,
   # Close short gaps between successive prescriptions
   data <- decision_10(data, decisions[10])
   return(data)
+}
+
+#' Human-friendly interface to the drug prep algorithm
+#'
+#' A helper function that allows specifying decision rules using English
+#' words rather than alphanumeric codes. Translates the rules into the
+#' corresponding codes and then passes them to \code{\link{drug_prep}} functions.
+#'
+#' @param decision_codes Character vector of length 10 of default codes
+#' @param decision_phrases Named character vector of \emph{up to} length 10. See details
+#'
+#' The argument \code{decision_phrases} may contain the following terms (without brackets, separated with spaces).
+#' Additional or incorrectly-named elements will be ignored.
+#' \describe{
+#' \item{implausible_qty}{(ignore|missing|mean|median|mode|next|previous) (individual|practice|population)}
+#' \item{implausible_ndd}{(ignore|missing|mean|median|mode|next|previous) (individual|practice|population)}
+#' \item{implausible_duration}{(ignore|missing|truncate) (6|12|24)}
+#' \item{missing_qty}{(ignore|mean|median|mode|next|previous) (individual|practice|population)}
+#' \item{missing_ndd}{(ignore|mean|median|mode|next|previous) (individual|practice|population)}
+#' \item{missing_duration}{(ignore|mean) (individual|population|both)}
+#' \item{calculate_duration}{(numdays|dose_duration|qty/ndd)}
+#' \item{clash_start}{(ignore|mean|shortest|longest|sum)}
+#' \item{overlapping}{(allow|shift)}
+#' \item{small_gaps}{(ignore|close) (15|30|60)}
+#' }
+#'
+#' @examples
+#' make_decisions('ignore',
+#'                'mean population',
+#'                'missing',
+#'                'mean practice',
+#'                'truncate 6',
+#'                'qty / ndd',
+#'                'mean individual',
+#'                'mean',
+#'                'allow',
+#'                'close 15')
+#'
+#' @return
+#' A character vector suitable for passing to the \code{decisions} argument of
+#' the \code{\link{drug_prep}} function.
+#'
+#' @import stringr
+#' @export
+make_decisions <- function(implausible_qty,
+                           missing_qty,
+                           implausible_ndd,
+                           missing_ndd,
+                           implausible_duration,
+                           calculate_duration,
+                           missing_duration,
+                           clash_start,
+                           overlapping,
+                           small_gaps) {
+  parse1or3 <- function(x) {
+    if (stringr::str_detect(x, 'ignore'))
+      return('a')
+    if (stringr::str_detect(x, 'missing'))
+      return('b')
+    words <- stringr::str_split(x, ' ')[[1]]
+    if (length(words) < 2)
+      stop(paste('Too few terms in string:', x))
+    paste0(c(mean = 'c',
+             median = 'd',
+             mode = 'e',
+             'next' = 'f',
+             previous = 'g')[words[1]],
+           c(individual = '1',
+             practice = '2',
+             population = '3')[words[2]])
+  }
+
+  parse2or4 <- function(x) {
+    if (stringr::str_detect(x, 'ignore'))
+      return('a')
+    words <- stringr::str_split(x, ' ')[[1]]
+    if (length(words) < 2)
+      stop(paste('Too few terms in string:', x))
+    paste0(c(mean = 'b',
+             median = 'c',
+             mode = 'd',
+             'next' = 'e',
+             previous = 'f')[words[1]],
+           c(individual = '1',
+             practice = '2',
+             population = '3')[words[2]])
+  }
+
+  parse5 <- function(x) {
+    if (stringr::str_detect(x, 'ignore'))
+      return('a')
+    words <- stringr::str_split(x, ' ')[[1]]
+    if (length(words) < 2)
+      stop(paste('Too few terms in string:', x))
+    paste(c(missing = 'b',
+            truncate = 'c')[words[1]],
+          words[2],
+          sep = '_')
+  }
+
+  parse6 <- function(x) {
+    switch(stringr::str_remove_all(x, '\\s'),
+           numdays = 'a',
+           dose_duration = 'b',
+           'qty/ndd' = 'c')
+  }
+
+  parse7 <- function(x) {
+    switch(x,
+           ignore = 'a',
+           'mean individual' = 'b',
+           'mean population' = 'c',
+           'mean both' = 'd')
+  }
+
+  parse8 <- function(x) {
+    switch(x,
+           ignore = 'a',
+           mean = 'b',
+           shortest = 'c',
+           longest = 'd',
+           sum = 'e')
+  }
+
+  parse9 <- function(x) {
+    switch(x,
+           allow = 'a',
+           shift = 'b')
+  }
+
+  parse10 <- function(x) {
+    if (stringr::str_detect(x, 'ignore'))
+      return('a')
+    words <- stringr::str_split(x, ' ')[[1]]
+    paste('b', words[2], sep = '_')
+  }
+
+  c(implausible_qty = parse1or3(implausible_qty),
+    missing_qty     = parse2or4(missing_qty),
+    implausible_ndd = parse1or3(implausible_ndd),
+    missing_ndd     = parse2or4(missing_ndd),
+    implausible_duration = parse5(implausible_duration),
+    calculate_duration   = parse6(calculate_duration),
+    missing_duration     = parse7(missing_duration),
+    clash_start = parse8(clash_start),
+    overlapping = parse9(overlapping),
+    small_gaps  = parse10(small_gaps)
+  )
 }
 
 #' Decision 1: impute implausible total quantities
@@ -341,9 +490,9 @@ decision_9 <- function(data, decision = 'a') {
 #' @param decision one of the following strings:
 #' \describe{
 #'  \item{"a"}{do nothing}
-#'  \item{"b"}{change stop date of first prescription to start date of next if gap is \eqn{\leq 15} days}
-#'  \item{"c"}{change stop date of first prescription to start date of next if gap is \eqn{\leq 30} days}
-#'  \item{"d"}{change stop date of first prescription to start date of next if gap is \eqn{\leq 60} days}
+#'  \item{"b_15"}{change stop date of first prescription to start date of next if gap is \eqn{\leq 15} days}
+#'  \item{"b_30"}{change stop date of first prescription to start date of next if gap is \eqn{\leq 30} days}
+#'  \item{"b_60"}{change stop date of first prescription to start date of next if gap is \eqn{\leq 60} days}
 #' }
 #'
 #' @family \code{\link{drug_prep}} decision functions

@@ -4,7 +4,7 @@
 \alias{drug_prep}
 \title{Run drug preparation algorithm}
 \usage{
-drug_prep(data, plausible_values, decisions = rep("a", 10))
+drug_prep(data, plausible_values, decisions = rep("a", 10), ...)
 }
 \arguments{
 \item{data}{data frame containing prescription data}

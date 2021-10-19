@@ -12,9 +12,9 @@ decision_10(data, decision = "a")
 \item{decision}{one of the following strings:
 \describe{
 \item{"a"}{do nothing}
-\item{"b"}{change stop date of first prescription to start date of next if gap is \eqn{\leq 15} days}
-\item{"c"}{change stop date of first prescription to start date of next if gap is \eqn{\leq 30} days}
-\item{"d"}{change stop date of first prescription to start date of next if gap is \eqn{\leq 60} days}
+\item{"b_15"}{change stop date of first prescription to start date of next if gap is \eqn{\leq 15} days}
+\item{"b_30"}{change stop date of first prescription to start date of next if gap is \eqn{\leq 30} days}
+\item{"b_60"}{change stop date of first prescription to start date of next if gap is \eqn{\leq 60} days}
 }}
 }
 \description{

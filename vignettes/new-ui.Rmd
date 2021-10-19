@@ -26,13 +26,7 @@ example_therapy
 
 ## Universe
 
-Recall the original user interface is implemented as follows.
-
-```{r}
-run.drugPREP
-```
-
-That is, we perform the following steps in series:
+We perform the following steps in series:
 
 1. Implausible total quantity
 2. Missing total quantity
@@ -183,15 +177,9 @@ Now implemented as a function in the package:
 isolate_overlaps(x)
 ```
 
-## Multiverse
+# Wrapper
 
-How can we parametrise it for multiple sets of decisions?
-
-With a tidy decision set, of course!
-
-That is, we define a data frame containing vectors of values, functions and decision rules (one row per decision set) and pass it as input to a wrapper function that runs all of the above, and spits out a list of data frames of length equal to the number of rows in the decision table.
-
-Then define a function that populates the various arguments according to these coded decision rules:
+This is the algorithm from the paper:
 
 ```{r}
 out <- drug_prep(example_therapy, plausible_values,
@@ -202,7 +190,21 @@ out <- drug_prep(example_therapy, plausible_values,
 out
 ```
 
-Practically speaking, this might consume all available memory, so it might make sense to write each table to disk rather than store them all in one list in RAM.
-However, perhaps we could give the user the option, depending on data size.
+To save remembering lots of alphanumeric codes, a helper function can generate them for you from more human-readable parameters:
+
+```{r}
+dec <- make_decisions('ignore',
+                      'mean population',
+                      'missing',
+                      'mean practice',
+                      'truncate 6',
+                      'qty / ndd',
+                      'mean individual',
+                      'mean',
+                      'allow',
+                      'close 15')
+dec
+drug_prep(example_therapy, plausible_values, decisions = dec)
+```
 
 
