@@ -170,3 +170,20 @@ kable(result[, -1], booktabs = TRUE, position = 'ht',
 ```
 
 The result of running the function `drug_prep()` provides the start and stop date (`stop_date`) for each prescription.
+
+To save remembering lots of alphanumeric codes, a helper function can generate them for you from more human-readable parameters:
+
+```{r}
+decisions <- make_decisions('ignore',
+                            'mean population',
+                            'missing',
+                            'mean practice',
+                            'truncate 6',
+                            'qty / ndd',
+                            'mean individual',
+                            'mean',
+                            'allow',
+                            'close 15')
+decisions
+# drug_prep(example_therapy, plausible_values, decisions)
+```
