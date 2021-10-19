@@ -161,7 +161,7 @@ ggplot(out) +
   ylab(NULL)
 
 ggplot(out %>%
-         mutate(new_id = forcats::fct_reorder(as.factor(row_number()), start_date)) %>%
+         mutate(new_id = reorder(as.factor(row_number()), start_date)) %>%
          distinct(patid, prodcode, start_date, .keep_all = TRUE)) +
   # ^ this works because intervals either overlap completely or not at all,
   # so you it is enough to take one interval for each unique start date

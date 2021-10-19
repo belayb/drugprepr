@@ -22,18 +22,20 @@
 #' @family \code{\link{drug_prep}} decision functions
 #'
 #' @import dplyr
+#' @importFrom rlang .data
 #' @export
 drug_prep <- function(data,
                       plausible_values,
-                      decisions = rep('a', 10),
-                      ...) {
+                      decisions = rep('a', 10)) {
   data <- dplyr::left_join(data, plausible_values, by = 'prodcode')
   # Implausible quantities
-  data <- decision_1(data, decisions[1]) %>% dplyr::select(-min_qty, -max_qty)
+  data <- decision_1(data, decisions[1]) %>%
+    dplyr::select(-.data$min_qty, -.data$max_qty)
   # Missing quantities
   data <- decision_2(data, decisions[2])
   # Implausible numerical daily doses
-  data <- decision_3(data, decisions[3]) %>% dplyr::select(-min_ndd, -max_ndd)
+  data <- decision_3(data, decisions[3]) %>%
+    dplyr::select(-.data$min_ndd, -.data$max_ndd)
   # Missing numerical daily doses
   data <- decision_4(data, decisions[4])
   # Choose method for calculating prescription duration (note switched order)
@@ -45,7 +47,7 @@ drug_prep <- function(data,
   # Disambiguate prescriptions with the same start_date
   data <- decision_8(data, decisions[8])
   # Compute stop_date from duration
-  data <- transform(data, stop_date = start_date + duration)
+  data <- dplyr::mutate(data, stop_date = .data$start_date + .data$duration)
   # Disambiguate overlapping prescription intervals
   data <- decision_9(data, decisions[9])
   # Close short gaps between successive prescriptions
@@ -59,8 +61,16 @@ drug_prep <- function(data,
 #' words rather than alphanumeric codes. Translates the rules into the
 #' corresponding codes and then passes them to \code{\link{drug_prep}} functions.
 #'
-#' @param decision_codes Character vector of length 10 of default codes
-#' @param decision_phrases Named character vector of \emph{up to} length 10. See details
+#' @param implausible_qty implausible total drug quantities
+#' @param implausible_ndd implausible daily dosage
+#' @param implausible_duration overly-long prescription durations
+#' @param missing_qty missing total drug quantities
+#' @param missing_ndd missing daily dosage
+#' @param missing_duration missing prescription duration
+#' @param calculate_duration formula or variable to compute prescription duration
+#' @param clash_start how to disambiguate prescriptions that start on the same date
+#' @param overlapping how to handle prescription periods that overlap with one another
+#' @param small_gaps how to handle short gaps between successive prescriptions
 #'
 #' The argument \code{decision_phrases} may contain the following terms (without brackets, separated with spaces).
 #' Additional or incorrectly-named elements will be ignored.
@@ -368,12 +378,14 @@ decision_5 <- function(data, decision = 'a') {
 #'
 #' @family \code{\link{drug_prep}} decision functions
 #'
+#' @importFrom dplyr mutate
+#' @importFrom rlang .data
 decision_6 <- function(data, decision = 'c') {
   decision <- match.arg(decision, letters[1:3])
-  transform(data, duration = switch(decision,
-                                    a = numdays,
-                                    b = dose_duration,
-                                    c = qty / ndd))
+  dplyr::mutate(data, duration = switch(decision,
+                                        a = .data$numdays,
+                                        b = .data$dose_duration,
+                                        c = .data$qty / .data$ndd))
 }
 
 #' Decision 7: impute missing prescription durations
@@ -428,6 +440,7 @@ decision_7 <- function(data, decision = 'a') {
 #' @family \code{\link{drug_prep}} decision functions
 #'
 #' @import dplyr
+#' @importFrom rlang .data
 decision_8 <- function(data, decision = 'a') {
   decision <- match.arg(decision, letters[1:5])
   if (decision == 'a') return(data)
@@ -439,7 +452,7 @@ decision_8 <- function(data, decision = 'a') {
                                   e = 'sum'),
                   where = function(x) length(x) > 1,
                   group = c('patid', 'start_date')) %>%
-    dplyr::group_by(prodcode, patid, start_date) %>%
+    dplyr::group_by(.data$prodcode, .data$patid, .data$start_date) %>%
     dplyr::slice(1L) %>% # remove duplicates
     dplyr::ungroup()
 }
@@ -465,15 +478,16 @@ decision_8 <- function(data, decision = 'a') {
 #' @family \code{\link{drug_prep}} decision functions
 #'
 #' @import dplyr
+#' @importFrom rlang .data
 decision_9 <- function(data, decision = 'a') {
   decision <- match.arg(decision, c('a', 'b'))
   if (decision == 'a') {
     return(data)
   } else isolate_overlaps(data) %>%
-    dplyr::group_by(patid, prodcode) %>%
-    dplyr::arrange(start_date) %>%
+    dplyr::group_by(.data$patid, .data$prodcode) %>%
+    dplyr::arrange(.data$start_date) %>%
     dplyr::group_modify(~ shift_interval(.x) %>%
-                          dplyr::select(-patid, -prodcode),
+                          dplyr::select(-.data$patid, -.data$prodcode),
                         .keep = TRUE) %>%
     dplyr::ungroup()
 }

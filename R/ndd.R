@@ -39,6 +39,7 @@
 #' A data frame mapping the raw \code{text} to structured dosage information.
 #'
 #' @import dplyr
+#' @importFrom rlang .data
 #' @export
 compute_ndd <- function(data, decision) {
   decision <- match.arg(decision, c('min_min', 'min_mean', 'min_max',
@@ -47,34 +48,34 @@ compute_ndd <- function(data, decision) {
 
   # Extract dose and frequency from free text.
   temp_presc <- data %>%
-    dplyr::distinct(text) %>%
-    dplyr::pull(text) %>%
-    doseminer::extract_from_prescription(.) %>%
-    tidyr::separate(dose, c('dose1', 'dose2'),
+    dplyr::distinct(.data$text) %>%
+    dplyr::pull(.data$text) %>%
+    doseminer::extract_from_prescription() %>%
+    tidyr::separate(.data$dose, c('dose1', 'dose2'),
                     sep = '-', convert = TRUE, fill = 'right') %>%
-    tidyr::separate(freq, c('freq1', 'freq2'),
+    tidyr::separate(.data$freq, c('freq1', 'freq2'),
                     sep = '-', convert = TRUE, fill = 'right') %>%
     dplyr::mutate(
-      dose2 = dplyr::coalesce(dose2, dose1),
-      freq2 = dplyr::coalesce(freq2, freq1),
-      DF_mean = (freq1 + freq2) / 2,
-      DN_mean = (dose1 + dose2) / 2,
-      DF_min = freq1, DF_max = freq2,
-      DN_min = dose1, DN_max = dose2) %>%
-    dplyr::select(text = raw, optional, DF_mean:DN_max) %>%
+      dose2 = dplyr::coalesce(.data$dose2, .data$dose1),
+      freq2 = dplyr::coalesce(.data$freq2, .data$freq1),
+      DF_mean = (.data$freq1 + .data$freq2) / 2,
+      DN_mean = (.data$dose1 + .data$dose2) / 2,
+      DF_min = .data$freq1, DF_max = .data$freq2,
+      DN_min = .data$dose1, DN_max = .data$dose2) %>%
+    dplyr::select(text = .data$raw, .data$optional, .data$DF_mean:.data$DN_max) %>%
     dplyr::right_join(data, by = 'text')
 
   # Decide how to compute numeric daily dose.
   temp_presc %>%
     dplyr::mutate(ndd = switch(decision,
-                               min_min  = DN_min * DF_min,
-                               min_mean = DN_min * DF_max,
-                               min_max  = DN_min * DF_max,
-                               mean_min = DN_mean * DF_min,
-                               mean_mean = DN_mean * DF_mean,
-                               mean_max = DN_mean * DF_max,
-                               max_min  = DN_max * DF_min,
-                               max_mean = DN_max * DF_mean,
-                               max_max  = DN_max * DF_max)) %>%
+                               min_min  = .data$DN_min * .data$DF_min,
+                               min_mean = .data$DN_min * .data$DF_max,
+                               min_max  = .data$DN_min * .data$DF_max,
+                               mean_min = .data$DN_mean * .data$DF_min,
+                               mean_mean = .data$DN_mean * .data$DF_mean,
+                               mean_max = .data$DN_mean * .data$DF_max,
+                               max_min  = .data$DN_max * .data$DF_min,
+                               max_mean = .data$DN_max * .data$DF_mean,
+                               max_max  = .data$DN_max * .data$DF_max)) %>%
     dplyr::select(-matches('ndd\\d|^DN|^DF'))
 }

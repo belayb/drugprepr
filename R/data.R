@@ -7,7 +7,7 @@
 #' \describe{
 #'   \item{patid}{unique identifier given to a patient in CPRD GOLD}
 #'   \item{pracid}{unique identifier given to a practice in CPRD GOLD}
-#'   \item{event_date}{Date associated with the event, as entered by the GP}
+#'   \item{start_date}{Beginning of the prescription period}
 #'   \item{prodcode}{CPRD unique code for the treatment selected by the GP}
 #'   \item{dossageid}{Identifier that allows dosage information on the event to be retrieved from Common Dosages Lookup table}
 #'   \item{text}{Prescription instraction for the prescribed product, as entered by the GP}
@@ -28,10 +28,10 @@
 #' @format A data frame with 2 rows and 5 variables:
 #' \describe{
 #'   \item{prodcode}{CPRD unique code for the treatment selected by the GP}
-#'   \item{qty_max}{maximum possible quantity to be prescribed for the product}
-#'   \item{qty_min}{minimum possible quantity to be prescribed for the product}
-#'   \item{max_rec_ndd}{maximum possible number of daily dose to be prescribed for the product}
-#'   \item{min_rec_ndd}{minimum possible number of daily dose  to be prescribed for the product}
+#'   \item{max_qty}{maximum possible quantity to be prescribed for the product}
+#'   \item{min_qty}{minimum possible quantity to be prescribed for the product}
+#'   \item{max_ndd}{maximum possible number of daily dose to be prescribed for the product}
+#'   \item{min_ndd}{minimum possible number of daily dose  to be prescribed for the product}
 #'   ...
 #' }
 "min_max_dat"

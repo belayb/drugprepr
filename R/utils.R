@@ -9,7 +9,7 @@
 #' @param upper maximum plausible value
 #' @param open logical. If \code{TRUE}, values exactly equal to \code{lower} or \code{upper} are also considered implausible
 outside_range <- function(x, lower, upper, open = TRUE) {
-  if (closed) {
+  if (!open) {
     x < lower | x > upper
   } else x <= lower | x >= upper
 }
@@ -25,4 +25,4 @@ get_mode <- function(v, na.rm = TRUE) {
   uniqv[which.max(tabulate(match(v, uniqv)))]
 }
 
-
+globalVariables('.')

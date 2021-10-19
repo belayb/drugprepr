@@ -9,7 +9,7 @@ A data frame with 18 rows and 9 variables:
 \describe{
 \item{patid}{unique identifier given to a patient in CPRD GOLD}
 \item{pracid}{unique identifier given to a practice in CPRD GOLD}
-\item{event_date}{Date associated with the event, as entered by the GP}
+\item{start_date}{Beginning of the prescription period}
 \item{prodcode}{CPRD unique code for the treatment selected by the GP}
 \item{dossageid}{Identifier that allows dosage information on the event to be retrieved from Common Dosages Lookup table}
 \item{text}{Prescription instraction for the prescribed product, as entered by the GP}

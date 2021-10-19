@@ -43,30 +43,32 @@
 #'
 #' @import dplyr tidyr
 #' @importFrom sqldf sqldf
+#' @importFrom rlang .data
 #' @export
 isolate_overlaps <- function(data) {
   data %>%
     # melt
-    tidyr::pivot_longer(c(start_date, stop_date),
+    tidyr::pivot_longer(c(.data$start_date, .data$stop_date),
                         names_to = 'date_name',
                         values_to = 'date_value') %>%
     # setorderv
-    dplyr::arrange(patid, prodcode, date_value, date_name) %>%
-    dplyr::group_by(patid, prodcode) %>%
+    dplyr::arrange(.data$patid, .data$prodcode,
+                   .data$date_value, .data$date_name) %>%
+    dplyr::group_by(.data$patid, .data$prodcode) %>%
     # shift
-    dplyr::transmute(date_value,
-                     is_end_var = date_name == 'stop_date',
-                     end_next_var = dplyr::lead(is_end_var),
-                     value_next_var = dplyr::lead(date_value)) %>%
-    dplyr::filter(!is.na(end_next_var)) %>%
+    dplyr::transmute(.data$date_value,
+                     is_end_var = .data$date_name == 'stop_date',
+                     end_next_var = dplyr::lead(.data$is_end_var),
+                     value_next_var = dplyr::lead(.data$date_value)) %>%
+    dplyr::filter(!is.na(.data$end_next_var)) %>%
     # temp
-    dplyr::transmute(start_date = dplyr::if_else(!is_end_var,
-                                                 date_value,
-                                                 date_value + 1L),
-                     stop_date = dplyr::if_else(!end_next_var,
-                                                value_next_var - 1L,
-                                                value_next_var)) %>%
-    dplyr::filter(stop_date >= start_date) -> temp
+    dplyr::transmute(start_date = dplyr::if_else(!.data$is_end_var,
+                                                 .data$date_value,
+                                                 .data$date_value + 1L),
+                     stop_date = dplyr::if_else(!.data$end_next_var,
+                                                .data$value_next_var - 1L,
+                                                .data$value_next_var)) %>%
+    dplyr::filter(.data$stop_date >= .data$start_date) -> temp
 
   # foverlaps / overlap join
   out <- sqldf::sqldf(
@@ -98,8 +100,6 @@ isolate_overlaps <- function(data) {
 #' @return The input data frame \code{data}, possibly with some of the
 #' \code{stop_date}s changed.
 #'
-#' @import dplyr
-#'
 #' @examples
 #' gappy_data <- data.frame(
 #'   patid = 1,
@@ -110,6 +110,8 @@ isolate_overlaps <- function(data) {
 #' close_small_gaps(gappy_data)
 #' close_small_gaps(gappy_data, 7)
 #'
+#' @import dplyr
+#' @importFrom rlang .data
 #' @export
 close_small_gaps <- function(data, min_gap = 0L) {
   if ((min_gap <- round(min_gap)) < 0)
@@ -120,16 +122,16 @@ close_small_gaps <- function(data, min_gap = 0L) {
     warning('`next_start_date` is a reserved variable name but already exists')
 
   data %>%
-    dplyr::group_by(patid, prodcode) %>%
+    dplyr::group_by(.data$patid, .data$prodcode) %>%
     dplyr::mutate(
-      next_start_date = dplyr::lead(start_date, order_by = start_date),
-      gap = difftime(next_start_date, stop_date, units = 'days'),
-      stop_date = dplyr::if_else(gap < min_gap & gap >= 0,
-                                 next_start_date,
-                                 stop_date,
-                                 missing = stop_date)
+      next_start_date = dplyr::lead(.data$start_date, order_by = .data$start_date),
+      gap = difftime(.data$next_start_date, .data$stop_date, units = 'days'),
+      stop_date = dplyr::if_else(.data$gap < min_gap & .data$gap >= 0,
+                                 .data$next_start_date,
+                                 .data$stop_date,
+                                 missing = .data$stop_date)
     ) %>%
-    dplyr::select(-next_start_date, -gap) %>%
+    dplyr::select(-.data$next_start_date, -.data$gap) %>%
     dplyr::ungroup()
 }
 
@@ -141,6 +143,7 @@ close_small_gaps <- function(data, min_gap = 0L) {
 #' \code{stop_date} and \code{patid}
 #'
 #' @import dplyr
+#' @importFrom rlang .data
 #' @export
 shift_interval <- function(x) {
   x$id <- seq_along(x$patid)
@@ -152,22 +155,22 @@ shift_interval <- function(x) {
     overlaps <- y %>%
       dplyr::mutate(dummy = 1) %>%
       dplyr::full_join(., ., by = "dummy") %>%
-      dplyr::filter(id.x < id.y) %>%
+      dplyr::filter(.data$id.x < .data$id.y) %>%
       dplyr::mutate(overlap = DescTools::Overlap(
-        cbind(start_date.x, stop_date.x),
-        cbind(start_date.y, stop_date.y)
+        cbind(.data$start_date.x, .data$stop_date.x),
+        cbind(.data$start_date.y, .data$stop_date.y)
       )) %>%
-      dplyr::filter(overlap > 0)
+      dplyr::filter(.data$overlap > 0)
     y <- overlaps %>%
-      dplyr::select(id = id.y, overlap) %>%
+      dplyr::select(id = .data$id.y, .data$overlap) %>%
       dplyr::slice(1) %>%
       dplyr::right_join(y, by = "id") %>%
       dplyr::mutate(
-        overlap = replace(overlap, is.na(overlap), 0),
-        start_date = start_date + overlap,
-        stop_date = stop_date + overlap
+        overlap = replace(.data$overlap, is.na(.data$overlap), 0),
+        start_date = .data$start_date + .data$overlap,
+        stop_date = .data$stop_date + .data$overlap
       ) %>%
-      dplyr::select(-overlap)
+      dplyr::select(-.data$overlap)
     overlap <- nrow(overlaps)
   }
   return(y)

@@ -18,9 +18,25 @@ make_decisions(
 )
 }
 \arguments{
-\item{decision_codes}{Character vector of length 10 of default codes}
+\item{implausible_qty}{implausible total drug quantities}
 
-\item{decision_phrases}{Named character vector of \emph{up to} length 10. See details
+\item{missing_qty}{missing total drug quantities}
+
+\item{implausible_ndd}{implausible daily dosage}
+
+\item{missing_ndd}{missing daily dosage}
+
+\item{implausible_duration}{overly-long prescription durations}
+
+\item{calculate_duration}{formula or variable to compute prescription duration}
+
+\item{missing_duration}{missing prescription duration}
+
+\item{clash_start}{how to disambiguate prescriptions that start on the same date}
+
+\item{overlapping}{how to handle prescription periods that overlap with one another}
+
+\item{small_gaps}{how to handle short gaps between successive prescriptions
 
 The argument \code{decision_phrases} may contain the following terms (without brackets, separated with spaces).
 Additional or incorrectly-named elements will be ignored.
