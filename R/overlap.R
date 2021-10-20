@@ -144,6 +144,7 @@ close_small_gaps <- function(data, min_gap = 0L) {
 #'
 #' @import dplyr
 #' @importFrom rlang .data
+#' @importFrom DescTools Overlap
 #' @export
 shift_interval <- function(x) {
   x$id <- seq_along(x$patid)
