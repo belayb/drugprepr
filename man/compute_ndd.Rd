@@ -2,26 +2,19 @@
 % Please edit documentation in R/ndd.R
 \name{compute_ndd}
 \alias{compute_ndd}
-\title{Compute the numerical daily dose from free text}
+\title{Compute numerical daily dose from free-text prescribing instructions}
 \usage{
-compute_ndd(data, decision)
+compute_ndd(data, dose_fn = mean, freq_fn = mean, interval_fn = mean)
 }
 \arguments{
 \item{data}{a data frame containing free-text prescribing instructions in a
 column called \code{text}.}
 
-\item{decision}{one of the following strings:
-\describe{
-\item{"min_min"}{minimum dose number and minimum dose frequency}
-\item{"min_mean"}{minimum dose number and mean dose frequency}
-\item{"min_max"}{minimum dose number and maximum dose frequency}
-\item{"mean_min"}{mean dose number and minimum dose frequency}
-\item{"mean_mean"}{mean dose number and mean dose frequency}
-\item{"mean_max"}{mean dose number and maximum dose frequency}
-\item{"max_min"}{maximum dose number and minimum dose frequency}
-\item{"max_mean"}{maximum dose number and mean dose frequency}
-\item{"max_max"}{maximum dose number and maximum dose frequency}
-}}
+\item{dose_fn}{function to summarise range of numbers by a single value}
+
+\item{freq_fn}{function to summarise range of frequencies by a single value}
+
+\item{interval_fn}{function to summarise range of intervals by a single value}
 }
 \value{
 A data frame mapping the raw \code{text} to structured dosage information.
@@ -46,6 +39,6 @@ to reduce these ranges to single values by taking the minimum, maximum or
 average of these endpoints.
 }
 \examples{
-compute_ndd(dataset1, "min_min")
+compute_ndd(dataset1, min, min, mean)
 
 }

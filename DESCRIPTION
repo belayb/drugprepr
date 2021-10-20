@@ -1,6 +1,6 @@
 Package: drugprepr
 Title: CPRD Drug Preparation
-Version: 0.0.2.9002
+Version: 0.0.3.9000
 Authors@R: 
     c(person(given = "Belay Birlie",
            family = "Yimer",

@@ -1,4 +1,4 @@
-#' Compute the numerical daily dose from free text
+#' Compute numerical daily dose from free-text prescribing instructions
 #'
 #' The function calls the \R package \strong{doseminer} to extract dose
 #' information from free-text prescribing instructions, then computes the
@@ -19,63 +19,36 @@
 #'
 #' @param data a data frame containing free-text prescribing instructions in a
 #' column called \code{text}.
-#' @param decision one of the following strings:
-#' \describe{
-#' \item{"min_min"}{minimum dose number and minimum dose frequency}
-#' \item{"min_mean"}{minimum dose number and mean dose frequency}
-#' \item{"min_max"}{minimum dose number and maximum dose frequency}
-#' \item{"mean_min"}{mean dose number and minimum dose frequency}
-#' \item{"mean_mean"}{mean dose number and mean dose frequency}
-#' \item{"mean_max"}{mean dose number and maximum dose frequency}
-#' \item{"max_min"}{maximum dose number and minimum dose frequency}
-#' \item{"max_mean"}{maximum dose number and mean dose frequency}
-#' \item{"max_max"}{maximum dose number and maximum dose frequency}
-#' }
+#' @param dose_fn function to summarise range of numbers by a single value
+#' @param freq_fn function to summarise range of frequencies by a single value
+#' @param interval_fn function to summarise range of intervals by a single value
 #'
 #' @examples
-#' compute_ndd(dataset1, "min_min")
+#' compute_ndd(dataset1, min, min, mean)
 #'
 #' @return
 #' A data frame mapping the raw \code{text} to structured dosage information.
 #'
-#' @import dplyr
 #' @importFrom rlang .data
+#' @importFrom doseminer extract_from_prescription
+#' @import dplyr tidyr
 #' @export
-compute_ndd <- function(data, decision) {
-  decision <- match.arg(decision, c('min_min', 'min_mean', 'min_max',
-                                    'mean_min', 'mean_mean', 'mean_max',
-                                    'max_min', 'max_mean', 'max_max'))
+compute_ndd <- function(data, dose_fn = mean, freq_fn = mean, interval_fn = mean) {
+  dose_fn <- match.fun(dose_fn)
+  freq_fn <- match.fun(freq_fn)
+  interval_fn <- match.fun(interval_fn)
 
-  # Extract dose and frequency from free text.
-  temp_presc <- data %>%
-    dplyr::distinct(.data$text) %>%
-    dplyr::pull(.data$text) %>%
+  extracted <- unique(data[['text']]) %>%
     doseminer::extract_from_prescription() %>%
-    tidyr::separate(.data$dose, c('dose1', 'dose2'),
-                    sep = '-', convert = TRUE, fill = 'right') %>%
-    tidyr::separate(.data$freq, c('freq1', 'freq2'),
-                    sep = '-', convert = TRUE, fill = 'right') %>%
-    dplyr::mutate(
-      dose2 = dplyr::coalesce(.data$dose2, .data$dose1),
-      freq2 = dplyr::coalesce(.data$freq2, .data$freq1),
-      DF_mean = (.data$freq1 + .data$freq2) / 2,
-      DN_mean = (.data$dose1 + .data$dose2) / 2,
-      DF_min = .data$freq1, DF_max = .data$freq2,
-      DN_min = .data$dose1, DN_max = .data$dose2) %>%
-    dplyr::select(text = .data$raw, .data$optional, .data$DF_mean:.data$DN_max) %>%
-    dplyr::right_join(data, by = 'text')
+    dplyr::mutate(dplyr::across(c(.data$dose, .data$freq, .data$itvl),
+                                strsplit, split = '-')) %>%
+    dplyr::mutate(dplyr::across(c(.data$dose, .data$freq, .data$itvl),
+                                lapply, FUN = as.numeric)) %>%
+    dplyr::mutate(dose = purrr::map_dbl(.data$dose, dose_fn),
+                  freq = purrr::map_dbl(.data$freq, freq_fn),
+                  itvl = purrr::map_dbl(.data$itvl, interval_fn),
+                  ndd = dose * freq / itvl) %>%
+    dplyr::select(text = raw, ndd, optional)
 
-  # Decide how to compute numeric daily dose.
-  temp_presc %>%
-    dplyr::mutate(ndd = switch(decision,
-                               min_min  = .data$DN_min * .data$DF_min,
-                               min_mean = .data$DN_min * .data$DF_max,
-                               min_max  = .data$DN_min * .data$DF_max,
-                               mean_min = .data$DN_mean * .data$DF_min,
-                               mean_mean = .data$DN_mean * .data$DF_mean,
-                               mean_max = .data$DN_mean * .data$DF_max,
-                               max_min  = .data$DN_max * .data$DF_min,
-                               max_mean = .data$DN_max * .data$DF_mean,
-                               max_max  = .data$DN_max * .data$DF_max)) %>%
-    dplyr::select(-matches('ndd\\d|^DN|^DF'))
+  dplyr::left_join(data, extracted, by = 'text')
 }
