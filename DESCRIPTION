@@ -48,7 +48,8 @@ Imports:
     magrittr,
     tidyr,
     sqldf,
-    stringr
+    stringr,
+    purrr
 Depends: 
     R (>= 2.10)
 Suggests: 

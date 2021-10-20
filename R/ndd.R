@@ -31,6 +31,7 @@
 #'
 #' @importFrom rlang .data
 #' @importFrom doseminer extract_from_prescription
+#' @importFrom purrr map_dbl
 #' @import dplyr tidyr
 #' @export
 compute_ndd <- function(data, dose_fn = mean, freq_fn = mean, interval_fn = mean) {
@@ -47,8 +48,8 @@ compute_ndd <- function(data, dose_fn = mean, freq_fn = mean, interval_fn = mean
     dplyr::mutate(dose = purrr::map_dbl(.data$dose, dose_fn),
                   freq = purrr::map_dbl(.data$freq, freq_fn),
                   itvl = purrr::map_dbl(.data$itvl, interval_fn),
-                  ndd = dose * freq / itvl) %>%
-    dplyr::select(text = raw, ndd, optional)
+                  ndd = .data$dose * .data$freq / .data$itvl) %>%
+    dplyr::select(text = .data$raw, .data$ndd, .data$optional)
 
   dplyr::left_join(data, extracted, by = 'text')
 }

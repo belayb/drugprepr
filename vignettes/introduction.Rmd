@@ -131,12 +131,12 @@ In the case of regular prescriptions (prescriptions with fixed instructions such
 Computation of numerical daily dose can be done using the `compute_ndd` function as follows.
 
 ```{r ndd, echo = 1}
-data_ndd <- compute_ndd(dataset1, "min_min")
+data_ndd <- compute_ndd(dataset1, min, min)
 data_ndd %>%
   subset(!duplicated(text),
          select = c(patid, pracid, prodcode, text, ndd)) %>%
   kable(booktabs = TRUE, row.names = FALSE, position = 'ht',
-        caption = 'Sample output from the \\texttt{compute\\_ndd} function with \\texttt{decision} option set to \\texttt{min\\_min}')
+        caption = 'Sample output from the \\texttt{compute\\_ndd} function, selecting minimum frequency and minimum dosage number')
 ```
 
 Here, we specified to use the minimum values for both the DF and DN in the computation of `ndd`.
