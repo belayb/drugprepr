@@ -21,6 +21,6 @@ min_max_dat
 \description{
 A dataset containing minimum and maximum possible values for quantity and
 number of daily dose for given prescription.
-The dataset is a hypothetical data.
+The dataset is hypothetical.
 }
 \keyword{datasets}

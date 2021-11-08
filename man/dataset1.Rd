@@ -12,7 +12,7 @@ A data frame with 18 rows and 9 variables:
 \item{start_date}{Beginning of the prescription period}
 \item{prodcode}{CPRD unique code for the treatment selected by the GP}
 \item{dossageid}{Identifier that allows dosage information on the event to be retrieved from Common Dosages Lookup table}
-\item{text}{Prescription instraction for the prescribed product, as entered by the GP}
+\item{text}{Prescription instruction for the prescribed product, as entered by the GP}
 \item{qty}{Total quantity entered by the GP for the prescribed product}
 \item{numdays}{Number of treatment days prescribed for a specific therapy event}
 \item{dose_duration}{an estimated prescription duration, as entered by CPRD}
@@ -27,6 +27,6 @@ dataset1
 }
 \description{
 A dataset containing prescription information for two individuals.
-The dataset is a hypothetical data resembling the real CPRD data.
+The dataset is a hypothetical dataset resembling the real CPRD data.
 }
 \keyword{datasets}
