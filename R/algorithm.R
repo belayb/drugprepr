@@ -19,7 +19,7 @@
 #'           decisions = c('a', 'a', 'a', 'a', 'a',
 #'                         'c', 'a', 'a', 'a', 'a'))
 #'
-#' @family \code{\link{drug_prep}} decision functions
+#' @family decision functions
 #'
 #' @import dplyr
 #' @importFrom rlang .data
@@ -239,7 +239,7 @@ make_decisions <- function(implausible_qty,
 #'
 #' @note Decisions \code{f} and \code{g} are not yet implemented.
 #'
-#' @family \code{\link{drug_prep}} decision functions
+#' @family decision functions
 #'
 decision_1 <- function(data, decision = 'a') {
   decision <- match.arg(decision,
@@ -278,7 +278,7 @@ decision_1 <- function(data, decision = 'a') {
 #'
 #' @note Decisions \code{e} and \code{f} are not yet implemented.
 #'
-#' @family \code{\link{drug_prep}} decision functions
+#' @family decision functions
 #'
 decision_2 <- function(data, decision = 'a') {
   decision <- match.arg(decision,
@@ -297,7 +297,7 @@ decision_2 <- function(data, decision = 'a') {
 #'
 #' @note Decisions \code{f} and \code{g} are not yet implemented.
 #'
-#' @family \code{\link{drug_prep}} decision functions
+#' @family decision functions
 #'
 decision_3 <- function(data, decision = 'a') {
   decision <- match.arg(decision,
@@ -317,7 +317,7 @@ decision_3 <- function(data, decision = 'a') {
 #'
 #' @note Decisions \code{e} and \code{f} are not yet implemented.
 #'
-#' @family \code{\link{drug_prep}} decision functions
+#' @family decision functions
 #'
 decision_4 <- function(data, decision = 'a') {
   decision <- match.arg(decision,
@@ -344,7 +344,7 @@ decision_4 <- function(data, decision = 'a') {
 #' 		\item{"c_24"}{set to 24 months if > 24 months}
 #' }
 #'
-#' @family \code{\link{drug_prep}} decision functions
+#' @family decision functions
 #'
 decision_5 <- function(data, decision = 'a') {
   decision <- match.arg(decision, c('a',
@@ -376,7 +376,7 @@ decision_5 <- function(data, decision = 'a') {
 #' 	 \item{"c"}{\code{qty / ndd}}
 #' }
 #'
-#' @family \code{\link{drug_prep}} decision functions
+#' @family decision functions
 #'
 #' @importFrom dplyr mutate
 #' @importFrom rlang .data
@@ -401,7 +401,7 @@ decision_6 <- function(data, decision = 'c') {
 #' \item{"d"}{Use individual mean duration; if not available use population mean}
 #' }
 #'
-#' @family \code{\link{drug_prep}} decision functions
+#' @family decision functions
 #'
 decision_7 <- function(data, decision = 'a') {
   decision <- match.arg(decision, letters[1:4])
@@ -437,7 +437,7 @@ decision_7 <- function(data, decision = 'a') {
 #'  \item{"e"}{replace with a prescription of duration equal to the sum}
 #' }
 #'
-#' @family \code{\link{drug_prep}} decision functions
+#' @family decision functions
 #'
 #' @import dplyr
 #' @importFrom rlang .data
@@ -475,7 +475,7 @@ decision_8 <- function(data, decision = 'a') {
 ##'  \item{"b"}{move later prescription to next available time that this product is not prescribed}
 ##' }
 #'
-#' @family \code{\link{drug_prep}} decision functions
+#' @family decision functions
 #'
 #' @import dplyr
 #' @importFrom rlang .data
@@ -509,7 +509,7 @@ decision_9 <- function(data, decision = 'a') {
 #'  \item{"b_60"}{change stop date of first prescription to start date of next if gap is \eqn{\leq 60} days}
 #' }
 #'
-#' @family \code{\link{drug_prep}} decision functions
+#' @family decision functions
 #'
 decision_10 <- function(data, decision = 'a') {
   decision <- match.arg(decision, c('a', 'b_15', 'b_30', 'b_60'))
