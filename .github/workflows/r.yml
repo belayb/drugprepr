@@ -36,5 +36,4 @@ jobs:
       - run: tlmgr --version
       - uses: r-lib/actions/check-r-package@v1
         with:
-          build_args: |
-            '--compact-vignettes="gs+qpdf"'
+          build_args: c('--compact-vignettes=gs+qpdf')
