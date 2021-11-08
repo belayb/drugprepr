@@ -38,7 +38,7 @@
 #' This may be relevant to models using weighted dosages.
 #'
 #' @seealso
-#' \code{\link[intervalaverage]{isolateoverlaps}},
+#' \code{intervalaverage::isolateoverlaps},
 #' \code{\link[data.table]{foverlaps}}
 #'
 #' @import dplyr tidyr
