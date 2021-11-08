@@ -18,5 +18,6 @@ LineEndingConversion: Posix
 
 BuildType: Package
 PackageInstallArgs: --no-multiarch --with-keep.source
-PackageBuildArgs: --compact-vignettes=gs+qpdf
+PackageBuildArgs: --compact-vignettes="gs+qpdf"
+PackageBuildBinaryArgs: --md5
 PackageRoxygenize: rd,collate,namespace
