@@ -27,7 +27,7 @@ The underlying algorithm for shifting overlapping intervals is implemented
 by the internal function \code{shift_interval}.
 }
 \seealso{
-Other \code{\link{drug_prep}} decision functions: 
+Other decision functions: 
 \code{\link{decision_10}()},
 \code{\link{decision_1}()},
 \code{\link{decision_2}()},
@@ -39,4 +39,4 @@ Other \code{\link{drug_prep}} decision functions:
 \code{\link{decision_8}()},
 \code{\link{drug_prep}()}
 }
-\concept{\code{\link{drug_prep}} decision functions}
+\concept{decision functions}

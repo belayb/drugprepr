@@ -21,7 +21,7 @@ decision_7(data, decision = "a")
 A light wrapper around \code{\link{impute_duration}}.
 }
 \seealso{
-Other \code{\link{drug_prep}} decision functions: 
+Other decision functions: 
 \code{\link{decision_10}()},
 \code{\link{decision_1}()},
 \code{\link{decision_2}()},
@@ -33,4 +33,4 @@ Other \code{\link{drug_prep}} decision functions:
 \code{\link{decision_9}()},
 \code{\link{drug_prep}()}
 }
-\concept{\code{\link{drug_prep}} decision functions}
+\concept{decision functions}

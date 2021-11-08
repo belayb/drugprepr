@@ -33,7 +33,7 @@ drug_prep(example_therapy,
 
 }
 \seealso{
-Other \code{\link{drug_prep}} decision functions: 
+Other decision functions: 
 \code{\link{decision_10}()},
 \code{\link{decision_1}()},
 \code{\link{decision_2}()},
@@ -45,4 +45,4 @@ Other \code{\link{drug_prep}} decision functions:
 \code{\link{decision_8}()},
 \code{\link{decision_9}()}
 }
-\concept{\code{\link{drug_prep}} decision functions}
+\concept{decision functions}

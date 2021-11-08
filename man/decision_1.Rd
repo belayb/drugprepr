@@ -37,7 +37,7 @@ A light wrapper around \code{\link{impute_qty}}.
 Decisions \code{f} and \code{g} are not yet implemented.
 }
 \seealso{
-Other \code{\link{drug_prep}} decision functions: 
+Other decision functions: 
 \code{\link{decision_10}()},
 \code{\link{decision_2}()},
 \code{\link{decision_3}()},
@@ -49,4 +49,4 @@ Other \code{\link{drug_prep}} decision functions:
 \code{\link{decision_9}()},
 \code{\link{drug_prep}()}
 }
-\concept{\code{\link{drug_prep}} decision functions}
+\concept{decision functions}

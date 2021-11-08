@@ -26,7 +26,7 @@ the prescription was continuous over the entire period.
 The underlying function is called \code{close_small_gaps}
 }
 \seealso{
-Other \code{\link{drug_prep}} decision functions: 
+Other decision functions: 
 \code{\link{decision_1}()},
 \code{\link{decision_2}()},
 \code{\link{decision_3}()},
@@ -38,4 +38,4 @@ Other \code{\link{drug_prep}} decision functions:
 \code{\link{decision_9}()},
 \code{\link{drug_prep}()}
 }
-\concept{\code{\link{drug_prep}} decision functions}
+\concept{decision functions}
