@@ -84,6 +84,8 @@ impute <- function(data,
 #' @examples
 #' impute_qty(example_therapy, 'mean')
 #'
+#' @return A data frame of the same structure as \code{data}, with values imputed
+#'
 #' @importFrom rlang .data
 #' @export
 impute_qty <- function(data,
@@ -100,6 +102,8 @@ impute_qty <- function(data,
 #'
 #' @examples
 #' impute_ndd(example_therapy, 'mean')
+#'
+#' @return A data frame of the same structure as \code{data}, with values imputed
 #'
 #' @importFrom rlang .data
 #' @export
@@ -126,6 +130,8 @@ impute_ndd <- function(data,
 #' @examples
 #' example_duration <- transform(example_therapy, duration = qty / ndd)
 #' impute_duration(example_duration, method = 'mean', group = 'patid')
+#'
+#' @return A data frame of the same structure as \code{data}, with values imputed
 #'
 #' @importFrom rlang .data
 #' @export
@@ -162,6 +168,8 @@ impute_duration <- function(data,
 #' long_presc <- data.frame(duration = c(100, 300, 400, 800))
 #' clean_duration(long_presc, 6)
 #' clean_duration(long_presc, 12, 'remove')
+#'
+#' @return A data frame of the same structure as the input, possibly with some elements of the \code{duration} column changed
 #'
 #' @importFrom rlang .data :=
 #' @export

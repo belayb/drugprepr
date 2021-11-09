@@ -17,6 +17,9 @@ impute_ndd(data, method, where = is.na, group = "population", ...)
 
 \item{...}{Extra arguments, currently ignored}
 }
+\value{
+A data frame of the same structure as \code{data}, with values imputed
+}
 \description{
 Replace implausible or missing numerical daily doses (NDD)
 }

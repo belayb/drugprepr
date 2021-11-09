@@ -23,6 +23,9 @@ impute_duration(
 
 \item{...}{Extra arguments, currently ignored}
 }
+\value{
+A data frame of the same structure as \code{data}, with values imputed
+}
 \description{
 Instead of replacing missing stop dates, we impute the durations and then
 infer the stop dates from there.

@@ -15,6 +15,9 @@ plausible ranges for values for each drug}
 
 \item{decisions}{character vector of length 10}
 }
+\value{
+A data frame including estimated \code{stop_date} for each prescription
+}
 \description{
 Run drug preparation algorithm
 }

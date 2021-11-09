@@ -10,6 +10,9 @@ shift_interval(x)
 \item{x}{a data frame containing variables \code{start_date},
 \code{stop_date} and \code{patid}}
 }
+\value{
+A data frame with time intervals moved such that they no longer overlap
+}
 \description{
 This is a function used by \code{\link{decision_9}}.
 }

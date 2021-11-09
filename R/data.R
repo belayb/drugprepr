@@ -1,4 +1,4 @@
-#' Example CPRD data.
+#' Example data from the Clinical Practice Research Datalink (CPRD).
 #'
 #' A dataset containing prescription information for two individuals.
 #' The dataset is a hypothetical dataset resembling the real CPRD data.

@@ -3,7 +3,7 @@
 \docType{data}
 \name{dataset1}
 \alias{dataset1}
-\title{Example CPRD data.}
+\title{Example data from the Clinical Practice Research Datalink (CPRD).}
 \format{
 A data frame with 18 rows and 9 variables:
 \describe{

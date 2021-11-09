@@ -21,6 +21,8 @@
 #'
 #' @family decision functions
 #'
+#' @return A data frame including estimated \code{stop_date} for each prescription
+#'
 #' @import dplyr
 #' @importFrom rlang .data
 #' @export

@@ -18,6 +18,9 @@ impute_qty(data, method, where = is.na, group = "population", ...)
 
 \item{...}{Extra arguments, currently ignored}
 }
+\value{
+A data frame of the same structure as \code{data}, with values imputed
+}
 \description{
 Find implausible entries
 Replace implausible or missing prescription quantities

@@ -142,6 +142,9 @@ close_small_gaps <- function(data, min_gap = 0L) {
 #' @param x a data frame containing variables \code{start_date},
 #' \code{stop_date} and \code{patid}
 #'
+#' @return
+#' A data frame with time intervals moved such that they no longer overlap
+#'
 #' @import dplyr
 #' @importFrom rlang .data
 #' @importFrom DescTools Overlap

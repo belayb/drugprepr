@@ -13,6 +13,9 @@ clean_duration(data, max_months = Inf, method = c("truncate", "remove"))
 
 \item{method}{Either 'truncate' or 'remove'. See details}
 }
+\value{
+A data frame of the same structure as the input, possibly with some elements of the \code{duration} column changed
+}
 \description{
 Given a prescription length limit, truncate any prescriptions that appear to
 be longer than this, or mark them as missing.
