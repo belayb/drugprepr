@@ -1,19 +1,55 @@
 # R package drugprepr
 
-Belay B. Yimer, David A. Selby, Meghna Jani, Goran Nenadic, Mark Lunt, William G. Dixon
+Prepare prescription data (such as from the [Clinical Practice Research Datalink](https://www.cprd.com/)) into an analysis-ready format, with start and stop dates for each patient's prescriptions. Based on [Pye et al (2018)](https://doi.org/10.1002/pds.4440).
 
-An algorithm for the transparent and efficient preparation of electronic prescription data into information on individuals’ drug use over time. 
-The goal of the `drugprepr` package is to allow users to perform multiverse analyses in a concise and easily interpretable manner. The `drugprepr` package allows researchers to specify sets of defensible data processing options at each decision node (e.g., different ways of imputing missing quantity and daily dose, different ways of handling multiple prescriptions), implement them all, and then report the outcomes of all analyses resulting from all possible choice combinations. 
-The package depends on the R package `doseminer` for extracting drug dosage information from freetext prescription data.
+The package **drugprepr** is designed to help improve transparency and efficiency in pharmaco-epidemiology studies that depend on electronic prescribing records.
+By pre-processing data in a reproducible way, it is easier to evaluate the sensitivity of analyses to different decisions, such as how to deal with overlapping prescriptions or missing data.
 
-# Installation
-You can install the latest development version from `GitHub`:
+Much of the package depends on a workhorse function, `impute()`, which replaces elements that match some predicate (indicating implausiblity or missingness) with a summary of a grouping level (for instance, the mean of values from the same GP practice).
+You can use this function in your own analyses.
 
+The algorithm of [Pye et al (2018)](https://doi.org/10.1002/pds.4440) is implemented in the function `drug_prep()`, which performs the following steps.
+
+1. Impute implausible prescription quantities
+2. Impute missing prescription quantities
+3. Impute implausible daily doses
+4. Impute missing daily doses
+5. Estimate prescription durations
+6. Remove or truncate implausibly-long prescription durations
+7. Impute missing prescription durations
+8. Disambiguate prescriptions with the same start date
+9. Handle overlapping prescription periods
+10. Close small gaps between successive prescriptions
+
+The user is welcome to define their own algorithm with different steps or a different ordering; see the source code on GitHub to see how.
+
+Output is a data frame containing prescription start and stop dates for each patient, practice and drug.
+This may be fed into a statistical model to estimate the effect of drug exposure on events, for example exposure to opioids and incidence of fractures.
+
+**drugprepr** can also be used in combination with the package [**doseminer**](https://github.com/Selbosh/doseminer) to extract structured information from freetext prescription instructions.
+
+## Installation
+
+You can install **drugprepr** from CRAN:
+
+```r
+install.packages('drugprepr')
 ```
-devtools::install_github("belayb/drugprepr")
+
+Or get the latest development version from GitHub:
+
+```r
+remotes::install_github('belayb/drugprepr')
 ```
 
-# Contributors
+## Usage
 
-Maintained by Belay Birlie Yimer and David Selby of the Centre for Musculoskeletal Research, University of Manchester, UK.
-Pull requests and GitHub issues are welcomed.
+The main function to use is `drug_prep()`.
+See the package vignettes and examples in the documentation for more details.
+
+## Contributors
+
+Maintained by Belay Birlie Yimer and David Selby of the [Centre for Epidemiology Versus Arthritis](https://www.cfe.manchester.ac.uk/), University of Manchester, UK.
+Other co-authors: Meghna Jani, Goran Nenadic, Mark Lunt, William G. Dixon.
+
+Pull requests and GitHub issues are welcome.
