@@ -39,6 +39,6 @@ to reduce these ranges to single values by taking the minimum, maximum or
 average of these endpoints.
 }
 \examples{
-compute_ndd(dataset1, min, min, mean)
+compute_ndd(cprd, min, min, mean)
 
 }

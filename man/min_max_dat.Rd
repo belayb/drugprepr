@@ -3,7 +3,7 @@
 \docType{data}
 \name{min_max_dat}
 \alias{min_max_dat}
-\title{Example min-max data.}
+\title{Example plausible ranges for prescription quantity and dosage}
 \format{
 A data frame with 2 rows and 5 variables:
 \describe{
@@ -19,8 +19,11 @@ A data frame with 2 rows and 5 variables:
 min_max_dat
 }
 \description{
-A dataset containing minimum and maximum possible values for quantity and
-number of daily dose for given prescription.
-The dataset is hypothetical.
+Minimum and maximum plausible values for total prescription quantity and
+numerical daily dose of prescriptions given in the \code{\link{cprd}} dataset.
+Both datasets are hypothetical.
+}
+\seealso{
+\code{\link{cprd}}
 }
 \keyword{datasets}

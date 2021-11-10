@@ -9,7 +9,7 @@
 #'   \item{pracid}{unique identifier given to a practice in CPRD GOLD}
 #'   \item{start_date}{Beginning of the prescription period}
 #'   \item{prodcode}{CPRD unique code for the treatment selected by the GP}
-#'   \item{dossageid}{Identifier that allows dosage information on the event to be retrieved from Common Dosages Lookup table}
+#'   \item{dosageid}{Identifier that allows dosage information on the event to be retrieved from a Common Dosages lookup table}
 #'   \item{text}{Prescription instruction for the prescribed product, as entered by the GP}
 #'   \item{qty}{Total quantity entered by the GP for the prescribed product}
 #'   \item{numdays}{Number of treatment days prescribed for a specific therapy event}
@@ -17,13 +17,15 @@
 #'   ...
 #' }
 #' @source \url{https://cprdcw.cprd.com/_docs/CPRD_GOLD_Full_Data_Specification_v2.0.pdf}
-"dataset1"
-
-#' Example min-max data.
 #'
-#' A dataset containing minimum and maximum possible values for quantity and
-#' number of daily dose for given prescription.
-#' The dataset is hypothetical.
+#' @seealso \code{\link{min_max_dat}}
+"cprd"
+
+#' Example plausible ranges for prescription quantity and dosage
+#'
+#' Minimum and maximum plausible values for total prescription quantity and
+#' numerical daily dose of prescriptions given in the \code{\link{cprd}} dataset.
+#' Both datasets are hypothetical.
 #'
 #' @format A data frame with 2 rows and 5 variables:
 #' \describe{
@@ -34,6 +36,8 @@
 #'   \item{min_ndd}{minimum possible number of daily dose  to be prescribed for the product}
 #'   ...
 #' }
+#'
+#' @seealso \code{\link{cprd}}
 "min_max_dat"
 
 #' Example electronic prescription dataset

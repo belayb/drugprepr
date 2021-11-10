@@ -45,13 +45,13 @@ The CPRD Gold data follows the [CPRD Gold specification](https://cprdcw.cprd.com
 It is made up of several tables containing information related to the patients.
 One of the CPRD tables, called 'Therapy', contains the prescription information for a patient.
 This table can be linked to the 'common dosages' lookup table to get the text instructions for the prescribed product (i.e. a drug).
-Table \ref{tab:dataset1}, based on the fictional dataset `dataset1` that is bundled with this package, presents hypothetical prescription data for two individuals.
+Table \ref{tab:cprd-data}, based on the fictional dataset `cprd` that is bundled with this package, presents hypothetical prescription data for two individuals.
 
-```{r dataset1, echo=FALSE}
+```{r cprd-data, echo=FALSE}
 library(drugprepr)
 library(kableExtra)
-kable(dataset1, booktabs = TRUE,
-      caption = 'Prescription data for two fictional individuals. Stored in \\texttt{dataset1}') %>%
+kable(cprd, booktabs = TRUE,
+      caption = 'Prescription data for two fictional individuals. Stored in \\texttt{cprd}') %>%
   kable_styling(latex_options = 'scale_down')
 ```
 
@@ -64,7 +64,7 @@ The package works at the `prodcode` level to give granularity for each medicatio
 
 # The algorithm 
 
-The `drugprepr` is made up of the following functions that must be executed sequentially. 
+The package `drugprepr` is made up of the following functions that must be executed sequentially. 
 
 Compute numerical daily dose (ndd)
 : Extract dose frequency (number of times the prescription is to be taken per day) and dose number (number of units of drug to take at a time) from the free text, in order to compute the numerical daily dose.
@@ -131,7 +131,7 @@ In the case of regular prescriptions (prescriptions with fixed instructions such
 Computation of numerical daily dose can be done using the `compute_ndd` function as follows.
 
 ```{r ndd, echo = 1}
-data_ndd <- compute_ndd(dataset1, min, min)
+data_ndd <- compute_ndd(cprd, min, min)
 data_ndd %>%
   subset(!duplicated(text),
          select = c(patid, pracid, prodcode, text, ndd)) %>%

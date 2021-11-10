@@ -24,7 +24,7 @@
 #' @param interval_fn function to summarise range of intervals by a single value
 #'
 #' @examples
-#' compute_ndd(dataset1, min, min, mean)
+#' compute_ndd(cprd, min, min, mean)
 #'
 #' @return
 #' A data frame mapping the raw \code{text} to structured dosage information.
