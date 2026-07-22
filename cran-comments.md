@@ -8,6 +8,5 @@
 
 0 errors | 0 warnings | 1 note
 
-* This is a new release (resubmission).
-* Missing Rd \value tags have been added
-* Previously-undefined acronyms in documentation have been clarified
+* Updated maintainer e-mail addresses, as previous ones were unreachable, causing package to be archived.
+

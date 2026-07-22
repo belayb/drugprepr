@@ -1,16 +1,16 @@
 Package: drugprepr
 Title: Prepare Electronic Prescription Record Data to Estimate Drug Exposure
-Version: 0.0.5.9000
+Version: 0.0.7
 Authors@R: 
     c(person(given = "Belay Birlie",
            family = "Yimer",
            role = c("aut"),
-           email = "BelayBirlie.Yimer@manchester.ac.uk",
+           email = "BelayBirlie.Yimer@astellas.com",
            comment = c(ORCID = "0000-0001-8621-6539")),
     person(given = "David",
            family = "Selby",
            role = c("aut", "cre"),
-           email = "David.Selby@manchester.ac.uk",
+           email = "David.Selby@dfki.de",
            comment = c(ORCID = "0000-0001-8026-5663")),
     person(given = "Meghna",
            family = "Jani",
@@ -29,7 +29,8 @@ Authors@R:
            role = c("aut"),
            email = "will.dixon@manchester.ac.uk")
            )
-Maintainer: David Selby <David.Selby@manchester.ac.uk>
+Date: 2026-07-22
+Maintainer: David Selby <David.Selby@dfki.de>
 BugReports: https://github.com/belayb/drugprepr/issues
 Description: Prepare prescription data (such as from the Clinical Practice Research Datalink) into an analysis-ready format, with start and stop dates for each patient's prescriptions. Based on Pye et al (2018) <doi:10.1002/pds.4440>.
 License: MIT + file LICENSE
@@ -37,16 +38,16 @@ Encoding: UTF-8
 Language: en-GB
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
 Imports:
     dplyr,
-    doseminer,
     rlang,
     tidyr,
     sqldf,
     stringr,
     purrr,
     DescTools
+Remotes:
+    Selbosh/doseminer
 Depends: 
     R (>= 2.10)
 Suggests: 
@@ -55,3 +56,4 @@ Suggests:
     testthat,
     kableExtra
 VignetteBuilder: knitr
+Config/roxygen2/version: 8.0.0
