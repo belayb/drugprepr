@@ -20,7 +20,7 @@ A data frame with 18 rows and 9 variables:
 }
 }
 \source{
-\url{https://cprdcw.cprd.com/_docs/CPRD_GOLD_Full_Data_Specification_v2.0.pdf}
+\url{https://www.cprd.com/sites/default/files/2022-02/CPRD\%20GOLD\%20Full\%20Data\%20Specification\%20v2.5.pdf}
 }
 \usage{
 cprd

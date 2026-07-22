@@ -46,9 +46,8 @@ Imports:
     sqldf,
     stringr,
     purrr,
-    DescTools
-Remotes:
-    Selbosh/doseminer
+    DescTools,
+    doseminer
 Depends: 
     R (>= 2.10)
 Suggests: 

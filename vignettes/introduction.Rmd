@@ -41,7 +41,7 @@ We assume the user is already familiar with CPRD data and has basic knowledge of
 
 # CPRD data  
 
-The CPRD Gold data follows the [CPRD Gold specification](https://cprdcw.cprd.com/_docs/CPRD_GOLD_Full_Data_Specification_v2.0.pdf).
+The CPRD Gold data follows the [CPRD Gold specification](https://www.cprd.com/sites/default/files/2022-02/CPRD%20GOLD%20Full%20Data%20Specification%20v2.5.pdf).
 It is made up of several tables containing information related to the patients.
 One of the CPRD tables, called 'Therapy', contains the prescription information for a patient.
 This table can be linked to the 'common dosages' lookup table to get the text instructions for the prescribed product (i.e. a drug).

@@ -36,16 +36,16 @@ drug_prep(example_therapy,
 
 }
 \seealso{
-Other decision functions: 
-\code{\link{decision_10}()},
-\code{\link{decision_1}()},
-\code{\link{decision_2}()},
-\code{\link{decision_3}()},
-\code{\link{decision_4}()},
-\code{\link{decision_5}()},
-\code{\link{decision_6}()},
-\code{\link{decision_7}()},
-\code{\link{decision_8}()},
-\code{\link{decision_9}()}
+Other decision functions:
+\code{\link[=decision_1]{decision_1()}},
+\code{\link[=decision_10]{decision_10()}},
+\code{\link[=decision_2]{decision_2()}},
+\code{\link[=decision_3]{decision_3()}},
+\code{\link[=decision_4]{decision_4()}},
+\code{\link[=decision_5]{decision_5()}},
+\code{\link[=decision_6]{decision_6()}},
+\code{\link[=decision_7]{decision_7()}},
+\code{\link[=decision_8]{decision_8()}},
+\code{\link[=decision_9]{decision_9()}}
 }
 \concept{decision functions}

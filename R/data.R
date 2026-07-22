@@ -16,7 +16,7 @@
 #'   \item{dose_duration}{an estimated prescription duration, as entered by CPRD}
 #'   ...
 #' }
-#' @source \url{https://cprdcw.cprd.com/_docs/CPRD_GOLD_Full_Data_Specification_v2.0.pdf}
+#' @source \url{https://www.cprd.com/sites/default/files/2022-02/CPRD%20GOLD%20Full%20Data%20Specification%20v2.5.pdf}
 #'
 #' @seealso \code{\link{min_max_dat}}
 "cprd"
