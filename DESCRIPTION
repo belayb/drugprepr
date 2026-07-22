@@ -9,7 +9,7 @@ Authors@R:
            comment = c(ORCID = "0000-0001-8621-6539")),
     person(given = "David",
            family = "Selby",
-           role = c("aut", "cre"),
+           role = c("aut", "cre", "cph"),
            email = "David.Selby@dfki.de",
            comment = c(ORCID = "0000-0001-8026-5663")),
     person(given = "Meghna",
@@ -31,6 +31,7 @@ Authors@R:
            )
 Date: 2026-07-22
 Maintainer: David Selby <David.Selby@dfki.de>
+URL: https://github.com/belayb/drugprepr
 BugReports: https://github.com/belayb/drugprepr/issues
 Description: Prepare prescription data (such as from the Clinical Practice Research Datalink) into an analysis-ready format, with start and stop dates for each patient's prescriptions. Based on Pye et al (2018) <doi:10.1002/pds.4440>.
 License: MIT + file LICENSE
@@ -57,3 +58,4 @@ Suggests:
     kableExtra
 VignetteBuilder: knitr
 Config/roxygen2/version: 8.0.0
+
