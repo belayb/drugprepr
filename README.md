@@ -1,5 +1,9 @@
 # R package drugprepr
 
+ <!-- badges: start -->
+  [![CRAN status](https://www.r-pkg.org/badges/version/drugprepr)](https://CRAN.R-project.org/package=drugprepr)
+  <!-- badges: end -->
+
 Prepare prescription data (such as from the [Clinical Practice Research Datalink](https://www.cprd.com/)) into an analysis-ready format, with start and stop dates for each patient's prescriptions. Based on [Pye et al (2018)](https://doi.org/10.1002/pds.4440).
 
 The package **drugprepr** is designed to help improve transparency and efficiency in pharmaco-epidemiology studies that depend on electronic prescribing records.
