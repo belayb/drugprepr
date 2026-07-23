@@ -1,6 +1,6 @@
 Package: drugprepr
 Title: Prepare Electronic Prescription Record Data to Estimate Drug Exposure
-Version: 0.0.7
+Version: 0.0.7.9000
 Authors@R: 
     c(person(given = "Belay Birlie",
            family = "Yimer",
@@ -57,4 +57,3 @@ Suggests:
     kableExtra
 VignetteBuilder: knitr
 Config/roxygen2/version: 8.0.0
-

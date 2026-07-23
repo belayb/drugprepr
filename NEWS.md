@@ -1,3 +1,5 @@
+# drugprepr (development version)
+
 # drugprepr 0.0.7
 
 * Fixes to documentation and metadata; updated e-mail addresses of maintainers.
